@@ -10,7 +10,7 @@ _gitshort="${_githash:0:7}"
 
 pkgname=rpi-kernel
 version=4.19.49
-revision=1
+revision=2
 wrksrc="linux-${_githash}"
 maintainer="Juan RP <xtraeme@voidlinux.org>"
 homepage="http://www.kernel.org"
@@ -66,6 +66,9 @@ do_configure() {
 		echo "CONFIG_PROC_EVENTS=y" >> arch/arm/configs/bcm2709_defconfig
 		echo "CONFIG_F2FS_FS_SECURITY=y" >> arch/arm/configs/bcm2709_defconfig
 		echo "CONFIG_CGROUP_PIDS=y" >> arch/arm/configs/bcm2709_defconfig
+		echo "CONFIG_64BIT_TIME=y" >> arch/arm/configs/bcm2709_defconfig
+		echo "CONFIG_WLAN_VENDOR_MEDIATEK=y" >> arch/arm/configs/bcm2709_defconfig
+		echo "CONFIG_MT7601U=m" >> arch/arm/configs/bcm2709_defconfig
 		make ${makejobs} ${_args} ARCH=arm bcm2709_defconfig
 		;;
 	armv6l*)
