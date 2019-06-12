@@ -1,0 +1,28 @@
+# Template file for 'fuse-sshfs'
+pkgname=loggedfs
+version=0.9
+revision=1
+wrksrc="loggedfs-loggedfs-${version}"
+build_style=gnu-makefile
+makedepends="fuse-devel pcre-devel libxml2-devel"
+depends=""
+checkdepends=""
+short_desc="FUSE client based on the SSH File Transfer Protocol"
+maintainer="Juan RP <xtraeme@voidlinux.org>"
+license="Apache-2.0"
+homepage="https://github.com/rflament/loggedfs"
+distfiles="https://github.com/rflament/loggedfs/archive/loggedfs-${version}.tar.gz"
+checksum=10cd007782c6b91a154758dabac0c3b41e580ca0f9496cab411054219ef52b22
+
+do_build() {
+        make ${makejobs}
+}
+
+do_install() {
+        make install
+        vlicense LICENSE
+        vinstall loggedfs.1.gz 0644 /usr/share/man/man1/
+        vinstall loggedfs 0755 /usr/bin/
+        vinstall loggedfs.xml 0644 /etc/
+}
+
