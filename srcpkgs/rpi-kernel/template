@@ -10,7 +10,7 @@ _gitshort="${_githash:0:7}"
 
 pkgname=rpi-kernel
 version=4.19.49
-revision=2
+revision=5
 wrksrc="linux-${_githash}"
 maintainer="Juan RP <xtraeme@voidlinux.org>"
 homepage="http://www.kernel.org"
@@ -233,3 +233,4 @@ rpi-kernel-headers_package() {
 		vmove usr/lib/modules/${_kernver}/build
 	}
 }
+
