@@ -1,0 +1,144 @@
+pkgname=kodi-opi
+version=19.0
+revision=1
+_fullversion=29f64ce850040abc9972fcf015a02a3804bdf8c6
+build_style=cmake
+wrksrc="xbmc-${_fullversion}"
+short_desc="Software media player and entertainment hub for digital media (RPi)"
+maintainer="Helmut Pozimski <helmut@pozimski.eu>"
+homepage="http://www.kodi.tv/"
+license="GPL-2.0-or-later"
+distfiles="https://github.com/xbmc/xbmc/archive/${_fullversion}.tar.gz"
+checksum=1ee23b6d1b72f4224f9b0011195c65357cdab88579144e852967f6d3dd298c6c
+LDFLAGS+=" -Wl,-z,stack-size=1048576"
+CFLAGS=" -march=armv7-a+neon-vfpv4"
+CXXFLAGS=$CFLAGS
+patch_args="-Np1"
+#subpackages="libmali" # to make right dependency with SONAME
+
+nopie=yes
+# armv7 only, musl not supported because of proprietary blobs 
+archs="armv7l"
+
+hostmakedepends="
+ automake libtool pkg-config gperf cmake zip unzip nasm yasm
+ gettext-devel libltdl-devel libmysqlclient-devel
+ lzo-devel flatbuffers openjdk11 swig giflib-devel libpng-devel zlib-devel libjpeg-turbo-devel"
+makedepends="
+ eudev-libudev-devel pcre-devel expat-devel giflib-devel libpng-devel
+ libjpeg-turbo-devel avahi-libs-devel alsa-lib-devel samba-devel tiff-devel
+ libmysqlclient-devel libmpeg2-devel wavpack-devel zlib-devel lzo-devel
+ fribidi-devel sqlite-devel freetype-devel jasper-devel faac-devel
+ faad2-devel libmodplug-devel libressl-devel libass-devel libmad-devel
+ fontconfig-devel libsamplerate-devel libmms-devel libcurl-devel ffmpeg-devel
+ enca-devel boost-devel libbluetooth-devel yajl-devel libplist-devel
+ librtmp-devel tinyxml-devel taglib-devel libcap-devel lame-devel libnfs-devel
+ libxslt-devel libuuid-devel giflib-devel libcec-devel libmicrohttpd-devel
+ libcdio-devel libssh-devel dcadec-devel
+ flatbuffers-devel fmt-devel lcms2-devel libfstrcmp-devel rapidjson crossguid
+ libinput-devel libxkbcommon-devel libcdio-paranoia libmali-devel libdrm-devel pulseaudio-devel python3-devel"
+
+configure_args="
+	-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
+	-DENABLE_INTERNAL_CROSSGUID=OFF
+	-DENABLE_VAAPI=OFF
+	-DENABLE_VDPAU=OFF
+	-DWITH_FFMPEG=/usr
+	-DGBM_RENDER_SYSTEM=gles
+	-DCORE_PLATFORM_NAME=gbm
+	-DENABLE_OPENGL=OFF
+	-DENABLE_OPENGLES=ON
+"
+#	-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
+
+#-DENABLE_NEON=OFF
+#-DENABLE_X11=OFF
+	#-DENABLE_INTERNAL_CROSSGUID=OFF
+# -DGBM_LIBRARY=/usr/lib/mali/libgbm.so
+# -DOPENGLES_gl_LIBRARY=/usr/lib/mali/libGLESv2.so
+# -DEGL_LIBRARY=/usr/lib/mali/libEGL.so
+# -DGBM_INCLUDE_DIR=/BUILD/include
+# -DEGL_INCLUDE_DIR=/BUILD/include
+# -DOPENGLES_INCLUDE_DIR=/BUILD/include
+
+
+
+case "$XBPS_TARGET_MACHINE" in
+	armv6*)   configure_args+=" -DWITH_CPU=arm1176jzf-s -DCMAKE_EXE_LINKER_FLAGS=-latomic"
+		  LDFLAGS+=" -latomic";;
+	# armv7*)   configure_args+=" -DWITH_CPU=cortex-a7+neon-vfpv4";;
+	aarch64*) configure_args+=" -DWITH_CPU=cortex-a53";;
+esac
+
+# The following dependencies are dlopen(3)ed.
+depends="libmad libogg libcurl libflac libmodplug libass libmpeg2 lame
+ librtmp libnfs>=1.9.7 libplist>=1.12 libssh"
+depends+=" hicolor-icon-theme desktop-file-utils"
+
+provides="kodi-${version}_${revision}"
+
+# Create xbmc system user to launch xbmc-standalone.
+system_accounts="kodi"
+xbmc_homedir="/home/kodi"
+xbmc_groups="audio,input,video"
+
+pre_configure() {
+	# find -type f | \
+	# 	grep "configure\.ac\|Makefile\|cmake\|config\.site" | \
+	# 	xargs sed -i  -e "s;-isystem;-I;g"
+
+	# # Copy generated files to avoid requiring java.
+	# mkdir -p build/build/swig
+
+	# # THESE FILES MUST BE UPDATED WITH EVERY VERSION BUMP!
+	# # (See kodi template)
+	# cp -r $FILESDIR/swig.nojava-$version/* -t build/build/swig
+	# cp $FILESDIR/CMakeCache.txt.nojava build/CMakeCache.txt
+
+	# echo "set(FOUND_SWIG Yes)" > cmake/modules/FindSWIG.cmake
+
+	if [ "$CROSS_BUILD" ]; then
+		for i in JsonSchemaBuilder TexturePacker; do
+			cat > cmake/modules/Find$i.cmake <<EOF
+				add_executable($i::$i IMPORTED GLOBAL)
+				set_target_properties($i::$i PROPERTIES
+				IMPORTED_LOCATION "\${CORE_SOURCE_DIR}/tools/depends/native/$i/bin/$i")
+				set_target_properties($i::$i PROPERTIES FOLDER Tools)
+EOF
+		done
+	fi
+}
+
+pre_build() {
+	if [ "$CROSS_BUILD" ]; then
+		for i in JsonSchemaBuilder TexturePacker; do
+			CC= LD= CXX= LDFLAGS= CFLAGS= CXXFLAGS= \
+				make -C tools/depends/native/$i
+		done
+	fi
+	# echo "========================"
+	# set | grep ^C
+	# echo "========================"
+	# exit 1
+}
+
+post_build() {
+	# Rebuild for target
+	if [ "$CROSS_BUILD" ]; then
+		for i in JsonSchemaBuilder TexturePacker; do
+			make -C tools/depends/native/$i clean all \
+				CC="$CC" CXX="$CXX" LD="$LD" AR="$AR" RANLIB="$RANLIB" \
+				CPP="$CPP" AS="$AS" OBJDUMP="$OBJDUMP" \
+				CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS"
+		done
+	fi
+}
+
+post_install() {
+	# remove unused stuff
+	rm -rf ${DESTDIR}/usr/include
+	find ${DESTDIR}/usr/lib -name "*.cmake" -delete
+	vsv kodi-standalone
+	vinstall ${FILESDIR}/kodi.sudoers 600 etc/sudoers.d kodi
+	vinstall ${FILESDIR}/reboot.py 755 usr/share/kodi/system
+}
