@@ -1,0 +1,234 @@
+# Template file for 'ffmpeg'
+# audacity also needs to be bumped when a new ffmpeg version bumps libavformat's soname!
+pkgname=ffmpeg-opi
+version=4.0.4
+_full_version=4.0.4-Leia-18.4
+revision=1
+short_desc="Decoding, encoding and streaming software"
+maintainer="Johannes <johannes.brechtmann@gmail.com>"
+license="GPL-3.0-or-later"
+homepage="https://www.ffmpeg.org"
+changelog="https://raw.githubusercontent.com/FFmpeg/FFmpeg/master/Changelog"
+distfiles="https://github.com/xbmc/FFmpeg/archive/${_full_version}.tar.gz"
+checksum=e11e7594af35f36ab2711252c3d6bb106908f26605498aef4a9be2d7bc001db2
+patch_args="-Np1"
+
+wrksrc="FFmpeg-4.0.4-Leia-18.4"
+hostmakedepends="pkg-config perl yasm"
+makedepends="zlib-devel bzip2-devel freetype-devel alsa-lib-devel
+ libXvMC-devel faad2-devel lame-devel libtheora-devel
+ gnutls-devel libvorbis-devel x264-devel xvidcore-devel jack-devel
+ libcdio-paranoia-devel librtmp-devel libmodplug-devel
+ speex-devel celt-devel harfbuzz-devel libass-devel opus-devel $(vopt_if pulseaudio pulseaudio-devel)
+ ocl-icd-devel $(vopt_if x265 x265-devel) $(vopt_if vaapi libva-devel)
+ $(vopt_if vdpau libvdpau-devel) $(vopt_if v4l2 v4l-utils-devel) libbs2b-devel
+ libvidstab-devel $(vopt_if faac faac-devel) $(vopt_if fdk_aac fdk-aac-devel)
+ $(vopt_if vpx libvpx-devel) $(vopt_if aom libaom-devel)
+ $(vopt_if nvenc nv-codec-headers) $(vopt_if sndio sndio-devel)
+ $(vopt_if dav1d libdav1d-devel) libdrm-devel"
+
+build_options="x265 v4l2 vaapi vdpau vpx faac fdk_aac aom nvenc sndio pulseaudio dav1d"
+build_options_default="x265 v4l2 vpx sndio pulseaudio dav1d"
+
+CFLAGS="-march=armv7-a+neon-vfpv4"
+CXXFLAGS=$CFLAGS
+
+
+case "$XBPS_TARGET_MACHINE" in
+	i686*|x86_64*) build_options_default+=" vaapi vdpau nvenc";;
+	ppc64*) build_options_default+=" vaapi vdpau";;
+	mips*) CFLAGS="-mnan=legacy";;
+esac
+
+dis_post_extract() {
+	cd ${wrksrc}
+	for i in ${FILESDIR}/*.patch;
+	do
+	  cat "$i" | patch -p1
+	done
+}
+
+
+do_configure() {
+	# Fix gcc on x86_64-musl only
+	if [ "$XBPS_TARGET_MACHINE" = "x86_64-musl" ]; then
+		sed -i configure -e "s;_cflags_speed='-O3';_cflags_speed='-O2';"
+	fi
+
+	if [ "$CROSS_BUILD" ]; then
+		case "$XBPS_TARGET_MACHINE" in
+			arm*) _arch="arm";;
+			aarch64*) _arch="aarch64";;
+			mips*) _arch="mips";;
+			ppc64*) _arch="ppc64";;
+			ppc*) _arch="ppc";;
+			*) _arch="${XBPS_TARGET_MACHINE%%-musl}";;
+		esac
+
+		_args+=" --enable-cross-compile
+			--sysroot=$XBPS_CROSS_BASE
+			--cross-prefix=${XBPS_CROSS_TRIPLET}-
+			--target-os=linux --arch=${_arch}"
+	fi
+
+	case "$XBPS_TARGET_MACHINE" in
+		ppc|ppc-musl) _args+=" --disable-altivec";;
+	esac
+
+	./configure ${_args} --prefix=/usr --disable-debug \
+	--enable-shared \
+	--enable-gpl \
+	--disable-version3 \
+	--enable-logging \
+	--disable-doc \
+	--disable-debug \
+	--enable-stripping \
+	--enable-pic \
+	--enable-optimizations \
+	--disable-extra-warnings \
+	--disable-programs \
+	--enable-avdevice \
+	--enable-avcodec \
+	--enable-avformat \
+	--enable-swscale \
+	--enable-postproc \
+	--enable-avfilter \
+	--disable-devices \
+	--enable-pthreads \
+	--enable-network \
+	--enable-gnutls \
+	--disable-openssl \
+	--disable-gray \
+	--enable-swscale-alpha \
+	--disable-small \
+	--enable-dct \
+	--enable-fft \
+	--enable-mdct \
+	--enable-rdft \
+	--disable-crystalhd \
+	--disable-v4l2_m2m \
+	--disable-vaapi \
+	--disable-vdpau \
+	--disable-rkmpp \
+	--enable-v4l2-request \
+	--enable-libudev \
+	--enable-libdrm \
+	--enable-runtime-cpudetect \
+	--disable-hardcoded-tables \
+	--disable-encoders \
+	--enable-encoder=ac3 \
+	--enable-encoder=aac \
+	--enable-encoder=wmav2 \
+	--enable-encoder=mjpeg \
+	--enable-encoder=png \
+	--enable-hwaccels \
+	--disable-muxers \
+	--enable-muxer=spdif \
+	--enable-muxer=adts \
+	--enable-muxer=asf \
+	--enable-muxer=ipod \
+	--enable-muxer=mpegts \
+	--enable-demuxers \
+	--enable-parsers \
+	--enable-bsfs \
+	--enable-protocol=http \
+	--disable-indevs \
+	--disable-outdevs \
+	--enable-filters \
+	--disable-avisynth \
+	--enable-bzlib \
+	--disable-lzma \
+	--enable-libdav1d \
+	--enable-libspeex \
+	--enable-zlib \
+	--enable-asm \
+	--disable-altivec \
+	--enable-neon \
+	--enable-avresample \
+	--disable-symver
+
+}
+do_build() {
+	rm ${XBPS_WRAPPERDIR}/strip
+	make ${makejobs}
+	make doc/ff{mpeg,play}.1
+}
+do_install() {
+	make DESTDIR=${DESTDIR} install install-man
+}
+
+# libavcodec_package() {
+# 	short_desc="FFmpeg codec library"
+# 	pkg_install() {
+# 		vmove "usr/lib/libavcodec.so.*"
+# 	}
+# }
+# libavdevice_package() {
+# 	short_desc="FFmpeg device handling library"
+# 	pkg_install() {
+# 		vmove "usr/lib/libavdevice.so.*"
+# 	}
+# }
+# libavresample_package() {
+# 	short_desc="FFmpeg audio resampling library"
+# 	pkg_install() {
+# 		vmove "usr/lib/libavresample.so.*"
+# 	}
+# }
+# libavformat_package() {
+# 	short_desc="FFmpeg file format library"
+# 	pkg_install() {
+# 		vmove "usr/lib/libavformat.so.*"
+# 	}
+# }
+# libavutil_package() {
+# 	short_desc="FFmpeg utility library"
+# 	pkg_install() {
+# 		vmove "usr/lib/libavutil.so.*"
+# 	}
+# }
+# libavfilter_package() {
+# 	short_desc="FFmpeg audio/video filter library"
+# 	pkg_install() {
+# 		vmove "usr/lib/libavfilter.so.*"
+# 	}
+# }
+# libpostproc_package() {
+# 	short_desc="FFmpeg video postprocessing library"
+# 	pkg_install() {
+# 		vmove "usr/lib/libpostproc.so.*"
+# 	}
+# }
+# libswscale_package() {
+# 	short_desc="FFmpeg video scaling library"
+# 	pkg_install() {
+# 		vmove "usr/lib/libswscale.so.*"
+# 	}
+# }
+# libswresample_package() {
+# 	short_desc="FFmpeg video resampling library"
+# 	pkg_install() {
+# 		vmove "usr/lib/libswresample.so.*"
+# 	}
+# }
+ffmpeg-opi-devel_package() {
+	depends="
+		libavcodec>=${version}_${revision}
+		libavdevice>=${version}_${revision}
+		libavformat>=${version}_${revision}
+		libavutil>=${version}_${revision}
+		libavfilter>=${version}_${revision}
+		libpostproc>=${version}_${revision}
+		libswscale>=${version}_${revision}
+		libswresample>=${version}_${revision}
+		libavresample>=${version}_${revision}"
+	short_desc+=" - development files"
+	pkg_install() {
+		vmove usr/include
+		vmove usr/lib/pkgconfig
+		vmove usr/lib/*.a
+		vmove usr/lib/*.so
+		vmove usr/share/ffmpeg/examples
+		vmove usr/share/man/man3
+	}
+}
