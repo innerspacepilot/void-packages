@@ -1,0 +1,1 @@
+kodi ALL=(ALL) NOPASSWD:/bin/poweroff,/bin/reboot

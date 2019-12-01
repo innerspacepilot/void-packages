@@ -1,0 +1,20 @@
+--- a/addons/skin.estuary/xml/DialogButtonMenu.xml	2019-11-08 21:33:02.830186908 +0000
++++ b/addons/skin.estuary/xml/DialogButtonMenu.xml	2019-11-08 21:36:46.173521038 +0000
+@@ -24,7 +24,7 @@
+ 					</item>
+ 					<item>
+ 						<label>$LOCALIZE[13016]</label>
+-						<onclick>Powerdown()</onclick>
++						<onclick>RunScript("/usr/share/kodi/system/reboot.py","poweroff")</onclick>
+ 						<visible>System.CanPowerDown</visible>
+ 					</item>
+ 					<item>
+@@ -50,7 +50,7 @@
+ 					</item>
+ 					<item>
+ 						<label>$LOCALIZE[13013]</label>
+-						<onclick>Reset()</onclick>
++						<onclick>RunScript("/usr/share/kodi/system/reboot.py","reboot")</onclick>
+ 						<visible>System.CanReboot</visible>
+ 					</item>
+ 					<item>
