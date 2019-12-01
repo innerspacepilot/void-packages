@@ -1,0 +1,42 @@
+pkgname=u-boot-opi
+version=2019.10
+revision=1
+wrksrc="u-boot-${version}"
+short_desc="Linux kernel and modules (${version%.*} series)"
+maintainer="innerspacepilot <innerspacepilot@gmx.com>"
+license="GPL-2.0-only"
+homepage="https://github.com/u-boot/u-boot"
+distfiles="https://github.com/u-boot/u-boot/archive/v${version}.tar.gz"
+checksum="47427ac301a7fcf76d73196b920c90d4ef63175cf6471c916993ee60de329ee8"
+patch_args="-Np1"
+
+nostrip=yes
+noverifyrdeps=yes
+noshlibprovides=yes
+
+archs="armv7l*"
+hostmakedepends="flex bison python swig python-devel"
+
+do_configure() {
+	local=_args
+	if [ "$CROSS_BUILD" ]; then
+		_args="CROSS_COMPILE=${XBPS_CROSS_TRIPLET}-"
+	fi
+
+	cp -f ${FILESDIR}/h3.cfg .config
+	make ${makejobs} ${_args} oldconfig
+}
+
+do_build() {
+	local _args
+	if [ "$CROSS_BUILD" ]; then
+		_args="CROSS_COMPILE=${XBPS_CROSS_TRIPLET}-"
+	fi
+	make ${makejobs} ${_args}
+}
+
+do_install() {
+	vmkdir usr/share/${pkgname}
+	vinstall u-boot-sunxi-with-spl.bin 644 usr/share/${pkgname}
+	vinstall ${FILESDIR}/README 644 usr/share/${pkgname}
+}

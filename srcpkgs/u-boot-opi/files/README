@@ -1,0 +1,2 @@
+Install bootloader:
+dd if=/usr/share/u-boot-opi/u-boot-sunxi-with-spl.bin of=/dev/<your device> bs=1024 seek=8
