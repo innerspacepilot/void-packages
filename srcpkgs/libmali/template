@@ -1,0 +1,48 @@
+# Template file for 'sunxi-mali'
+pkgname=libmali
+version=20190501
+_fullversion="4cbf211cfd9b07854aab4978e50b1151052c6d4c"
+revision=1
+
+wrksrc=${pkgname}-${_fullversion}
+short_desc="Linux sunxi MALI userpace propietary libraries"
+maintainer="Orphaned <orphan@voidlinux.org>"
+license="MIT"
+homepage="https://github.com/LibreELEC/libmali"
+nostrip=yes
+archs="armv7l"
+distfiles="https://github.com/LibreELEC/libmali/archive/${_fullversion}.tar.gz"
+checksum=d3c5dd43ee0830feada4a86d32b9c794cddab29a863dfd1dddb3954f380086c5
+provides="libEGL-1.0_1 libGLES-1.0_1"
+replaces="libEGL>=0 libGLES>=0"
+
+shlib_provides="
+ libEGL.so
+ libGLESv2.so
+ libGLESv1_CM.so
+ libgbm.so"
+
+
+do_install() {
+	vmkdir usr/lib
+	vinstall lib/arm-linux-gnueabihf/libmali-utgard-400-r7p0-gbm.so 755 usr/lib
+
+	ln -srf ${DESTDIR}/usr/lib/libmali-utgard-400-r7p0-gbm.so ${DESTDIR}/usr/lib/libEGL.so
+	ln -srf ${DESTDIR}/usr/lib/libmali-utgard-400-r7p0-gbm.so ${DESTDIR}/usr/lib/libEGL.so.1
+	ln -srf ${DESTDIR}/usr/lib/libmali-utgard-400-r7p0-gbm.so ${DESTDIR}/usr/lib/libGLESv1_CM.so
+	ln -srf ${DESTDIR}/usr/lib/libmali-utgard-400-r7p0-gbm.so ${DESTDIR}/usr/lib/libGLESv1_CM.so.1
+	ln -srf ${DESTDIR}/usr/lib/libmali-utgard-400-r7p0-gbm.so ${DESTDIR}/usr/lib/libGLESv2.so
+	ln -srf ${DESTDIR}/usr/lib/libmali-utgard-400-r7p0-gbm.so ${DESTDIR}/usr/lib/libGLESv2.so.2
+	ln -srf ${DESTDIR}/usr/lib/libmali-utgard-400-r7p0-gbm.so ${DESTDIR}/usr/lib/libMali.so
+	ln -srf ${DESTDIR}/usr/lib/libmali-utgard-400-r7p0-gbm.so ${DESTDIR}/usr/lib/libgbm.so
+	ln -srf ${DESTDIR}/usr/lib/libmali-utgard-400-r7p0-gbm.so ${DESTDIR}/usr/lib/libmali.so
+}
+
+libmali-devel_package() {
+	short_desc+=" - development files"
+	depends="${sourcepkg}-${version}_${revision}"
+	pkg_install() {
+		vmkdir usr
+		vcopy include usr
+	}
+}
