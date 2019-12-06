@@ -30,7 +30,7 @@ makedepends="
  libmysqlclient-devel libmpeg2-devel wavpack-devel zlib-devel lzo-devel
  fribidi-devel sqlite-devel freetype-devel jasper-devel faac-devel
  faad2-devel libmodplug-devel libressl-devel libass-devel libmad-devel
- fontconfig-devel libsamplerate-devel libmms-devel libcurl-devel ffmpeg-devel
+ fontconfig-devel libsamplerate-devel libmms-devel libcurl-devel ffmpeg-opi-devel
  enca-devel boost-devel libbluetooth-devel yajl-devel libplist-devel
  librtmp-devel tinyxml-devel taglib-devel libcap-devel lame-devel libnfs-devel
  libxslt-devel libuuid-devel giflib-devel libcec-devel libmicrohttpd-devel
