@@ -1,9 +1,9 @@
-# Template file for 'ffmpeg'
+# Template file for 'ffmpeg-opi'
 # audacity also needs to be bumped when a new ffmpeg version bumps libavformat's soname!
 pkgname=ffmpeg-opi
 version=4.0.4
 _full_version=4.0.4-Leia-18.4
-revision=1
+revision=2
 short_desc="Decoding, encoding and streaming software"
 maintainer="Johannes <johannes.brechtmann@gmail.com>"
 license="GPL-3.0-or-later"
@@ -12,6 +12,12 @@ changelog="https://raw.githubusercontent.com/FFmpeg/FFmpeg/master/Changelog"
 distfiles="https://github.com/xbmc/FFmpeg/archive/${_full_version}.tar.gz"
 checksum=e11e7594af35f36ab2711252c3d6bb106908f26605498aef4a9be2d7bc001db2
 patch_args="-Np1"
+replaces="ffmpeg>=0"
+provides="ffmpeg-${version}_${revision}"
+conflicts="libavformat libavutil libswscale libpostproc libavcodec libswresample libavresample"
+shlib_provides="libavformat.so libavutil.so libswscale.so libpostproc.so libavcodec.so libswresample.so libavresample.so"
+
+
 
 wrksrc="FFmpeg-4.0.4-Leia-18.4"
 hostmakedepends="pkg-config perl yasm"
@@ -212,16 +218,6 @@ do_install() {
 # 	}
 # }
 ffmpeg-opi-devel_package() {
-	depends="
-		libavcodec>=${version}_${revision}
-		libavdevice>=${version}_${revision}
-		libavformat>=${version}_${revision}
-		libavutil>=${version}_${revision}
-		libavfilter>=${version}_${revision}
-		libpostproc>=${version}_${revision}
-		libswscale>=${version}_${revision}
-		libswresample>=${version}_${revision}
-		libavresample>=${version}_${revision}"
 	short_desc+=" - development files"
 	pkg_install() {
 		vmove usr/include
