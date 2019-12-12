@@ -1,6 +1,6 @@
 pkgname=kodi-opi
 version=19.0
-revision=1
+revision=3
 _fullversion=29f64ce850040abc9972fcf015a02a3804bdf8c6
 build_style=cmake
 wrksrc="xbmc-${_fullversion}"
@@ -15,6 +15,7 @@ CFLAGS=" -march=armv7-a+neon-vfpv4"
 CXXFLAGS=$CFLAGS
 patch_args="-Np1"
 #subpackages="libmali" # to make right dependency with SONAME
+depends="ffmpeg-opi"
 
 nopie=yes
 # armv7 only, musl not supported because of proprietary blobs 
@@ -79,8 +80,9 @@ provides="kodi-${version}_${revision}"
 
 # Create xbmc system user to launch xbmc-standalone.
 system_accounts="kodi"
-xbmc_homedir="/home/kodi"
-xbmc_groups="audio,input,video"
+kodi_homedir="/home/kodi"
+kodi_groups="audio,input,video"
+kodi_shell="/bin/bash"
 
 pre_configure() {
 	# find -type f | \
