@@ -1,7 +1,7 @@
 # Template file for 'sunxi-mali'
 pkgname=libmali
-version=20190501
-_fullversion="4cbf211cfd9b07854aab4978e50b1151052c6d4c"
+version=20191113
+_fullversion="d4000def121b818ae0f583d8372d57643f723fdc"
 revision=1
 
 wrksrc=${pkgname}-${_fullversion}
@@ -12,7 +12,7 @@ homepage="https://github.com/LibreELEC/libmali"
 nostrip=yes
 archs="armv7l"
 distfiles="https://github.com/LibreELEC/libmali/archive/${_fullversion}.tar.gz"
-checksum=d3c5dd43ee0830feada4a86d32b9c794cddab29a863dfd1dddb3954f380086c5
+checksum=4f2103fc927cc006ee5c9b647e899f50b0dcaeee127fec713387d06a333eb404
 provides="libEGL-1.0_1 libGLES-1.0_1"
 replaces="libEGL>=0 libGLES>=0"
 
