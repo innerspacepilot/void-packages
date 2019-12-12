@@ -1,6 +1,6 @@
 pkgname=kodi-opi
 version=19.0
-revision=3
+revision=4
 _fullversion=29f64ce850040abc9972fcf015a02a3804bdf8c6
 build_style=cmake
 wrksrc="xbmc-${_fullversion}"
@@ -14,8 +14,6 @@ LDFLAGS+=" -Wl,-z,stack-size=1048576"
 CFLAGS=" -march=armv7-a+neon-vfpv4"
 CXXFLAGS=$CFLAGS
 patch_args="-Np1"
-#subpackages="libmali" # to make right dependency with SONAME
-depends="ffmpeg-opi"
 
 nopie=yes
 # armv7 only, musl not supported because of proprietary blobs 
@@ -31,7 +29,7 @@ makedepends="
  libmysqlclient-devel libmpeg2-devel wavpack-devel zlib-devel lzo-devel
  fribidi-devel sqlite-devel freetype-devel jasper-devel faac-devel
  faad2-devel libmodplug-devel libressl-devel libass-devel libmad-devel
- fontconfig-devel libsamplerate-devel libmms-devel libcurl-devel ffmpeg-opi-devel
+ fontconfig-devel libsamplerate-devel libmms-devel libcurl-devel ffmpeg-opi ffmpeg-opi-devel
  enca-devel boost-devel libbluetooth-devel yajl-devel libplist-devel
  librtmp-devel tinyxml-devel taglib-devel libcap-devel lame-devel libnfs-devel
  libxslt-devel libuuid-devel giflib-devel libcec-devel libmicrohttpd-devel
@@ -72,7 +70,7 @@ case "$XBPS_TARGET_MACHINE" in
 esac
 
 # The following dependencies are dlopen(3)ed.
-depends="libmad libogg libcurl libflac libmodplug libass libmpeg2 lame
+depends="ffmpeg-opi libmad libogg libcurl libflac libmodplug libass libmpeg2 lame
  librtmp libnfs>=1.9.7 libplist>=1.12 libssh"
 depends+=" hicolor-icon-theme desktop-file-utils"
 
