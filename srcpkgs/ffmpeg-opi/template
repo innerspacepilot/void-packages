@@ -3,7 +3,7 @@
 pkgname=ffmpeg-opi
 version=4.0.4
 _full_version=4.0.4-Leia-18.4
-revision=2
+revision=3
 short_desc="Decoding, encoding and streaming software"
 maintainer="Johannes <johannes.brechtmann@gmail.com>"
 license="GPL-3.0-or-later"
@@ -15,8 +15,7 @@ patch_args="-Np1"
 replaces="ffmpeg>=0"
 provides="ffmpeg-${version}_${revision}"
 conflicts="libavformat libavutil libswscale libpostproc libavcodec libswresample libavresample"
-shlib_provides="libavformat.so libavutil.so libswscale.so libpostproc.so libavcodec.so libswresample.so libavresample.so"
-
+noverifyrdeps=1
 
 
 wrksrc="FFmpeg-4.0.4-Leia-18.4"
@@ -219,6 +218,7 @@ do_install() {
 # }
 ffmpeg-opi-devel_package() {
 	short_desc+=" - development files"
+	depends="ffmpeg-opi"
 	pkg_install() {
 		vmove usr/include
 		vmove usr/lib/pkgconfig
