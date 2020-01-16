@@ -1,7 +1,7 @@
 pkgname=kodi-opi
 version=19.0
-revision=4
-_fullversion=29f64ce850040abc9972fcf015a02a3804bdf8c6
+revision=5
+_fullversion=6e15fcb9ff05ed7463d69083b2fa2fd702f3abd0
 build_style=cmake
 wrksrc="xbmc-${_fullversion}"
 short_desc="Software media player and entertainment hub for digital media (RPi)"
@@ -9,7 +9,7 @@ maintainer="Helmut Pozimski <helmut@pozimski.eu>"
 homepage="http://www.kodi.tv/"
 license="GPL-2.0-or-later"
 distfiles="https://github.com/xbmc/xbmc/archive/${_fullversion}.tar.gz"
-checksum=1ee23b6d1b72f4224f9b0011195c65357cdab88579144e852967f6d3dd298c6c
+checksum=6f133b742e96755709d2ca04b2e9ed76640d60421847c472836598450e1ec60c
 LDFLAGS+=" -Wl,-z,stack-size=1048576"
 CFLAGS=" -march=armv7-a+neon-vfpv4"
 CXXFLAGS=$CFLAGS
