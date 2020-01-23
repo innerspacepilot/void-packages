@@ -1,6 +1,6 @@
 # Template file for 'linux5.4-opi'
 pkgname=linux5.4-opi
-version=5.4.12
+version=5.4.13
 revision=1
 wrksrc="linux-5.4"
 short_desc="Linux kernel and modules (${version%.*} series)"
@@ -13,11 +13,11 @@ noverifyrdeps=yes
 noshlibprovides=yes
 preserve=yes
 distfiles="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.4.tar.xz
-https://github.com/gregkh/linux/compare/v5.4...innerspacepilot:v5.4.12-opi.patch
+https://github.com/gregkh/linux/compare/v5.4...innerspacepilot:v${version}-opi.patch
 https://github.com/innerspacepilot/rtl8189ES_linux/archive/no-debug.tar.gz
 https://github.com/LibreELEC/mali-utgard/archive/5d89e2a946c7e4dbd7e627202e7bd7c3ed49954a.tar.gz"
 checksum="bf338980b1670bca287f9994b7441c2361907635879169c64ae78364efc5f491
-4bab6c9cddf92f7565c9abd89123b45e3e1c825c423d56cb369a29bdeb60af32
+2c98dbb7c114c87ef469a246e6b543e4d2fe7f28390734df0a2494d8d6811457
 1a1a2dab0bea7917601f936438f9f8bed6d3e5c9a832e23d792b7dc877d42efe
 c3e6199f58807558eb665357a35e2f86c161fc1a55f27988e604671bc27e98c7"
 
@@ -44,7 +44,7 @@ mutable_files="
 CFLAGS=" -march=armv7-a+neon-vfpv4"
 
 do_configure() {
-	patch -p1 < "../v5.4...innerspacepilot:v5.4.12-opi.patch"
+	patch -p1 < "../v5.4...innerspacepilot:v${version}-opi.patch"
 	touch .scmversion
 	cp orange-5.4.config .config
 	# Always use our revision to CONFIG_LOCALVERSION to match our pkg version.
