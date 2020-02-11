@@ -2,7 +2,7 @@
 pkgname=libmali
 version=20191113
 _fullversion="d4000def121b818ae0f583d8372d57643f723fdc"
-revision=1
+revision=2
 
 wrksrc=${pkgname}-${_fullversion}
 short_desc="Linux sunxi MALI userpace propietary libraries"
@@ -13,8 +13,6 @@ nostrip=yes
 archs="armv7l"
 distfiles="https://github.com/LibreELEC/libmali/archive/${_fullversion}.tar.gz"
 checksum=4f2103fc927cc006ee5c9b647e899f50b0dcaeee127fec713387d06a333eb404
-provides="libEGL-1.0_1 libGLES-1.0_1"
-replaces="libEGL>=0 libGLES>=0"
 
 shlib_provides="
  libEGL.so
