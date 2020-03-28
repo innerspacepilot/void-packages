@@ -1,10 +1,10 @@
 # Template file for 'linux5.5'
 pkgname=linux5.5-opi
-version=5.5.2
+version=5.5.13
 revision=1
 wrksrc="linux-5.5"
 short_desc="Linux kernel and modules (${version%.*} series)"
-maintainer="Juan RP <xtraeme@gmail.com>"
+maintainer="innerspacepilot@gmail.com"
 license="GPL-2.0-only"
 homepage="https://www.kernel.org"
 mali_commit_id=5d89e2a946c7e4dbd7e627202e7bd7c3ed49954a
@@ -14,7 +14,7 @@ distfiles="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.5.tar.xz
            https://github.com/LibreELEC/mali-utgard/archive/${mali_commit_id}.tar.gz
            https://github.com/innerspacepilot/rtl8189ES_linux/archive/${rtl8189_commit_id}.tar.gz"
 checksum="a6fbd4ee903c128367892c2393ee0d9657b6ed3ea90016d4dc6f1f6da20b2330
-          07cbd21a049b0bf5a96d7e0b8272db8e53e9947f0eff06fa2a765bb3b34bc8fa
+          a58dad931dda6eba7656551da73d1c452317617c8282c094fa4f646d9422993a
           c3e6199f58807558eb665357a35e2f86c161fc1a55f27988e604671bc27e98c7
           70cb14b68c4b5215c5d40a0634b514da71731f91a1663edd084ccc39ccf1a34f"
 patch_args="-Np1"

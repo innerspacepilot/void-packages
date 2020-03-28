@@ -1,39 +1,56 @@
-From cf913e9683273f2640501094fa63a67e29f437b3 Mon Sep 17 00:00:00 2001
-From: Jernej Skrabec <jernej.skrabec@siol.net>
-Date: Sun, 26 Jan 2020 07:59:37 +0100
-Subject: [PATCH] Revert "drm/sun4i: drv: Allow framebuffer modifiers in mode
- config"
+From 3abe422fdc65ba08054659b0d27c71e24346021d Mon Sep 17 00:00:00 2001
+From: Ondrej Jirman <megous@megous.com>
+Date: Sun, 23 Feb 2020 11:40:19 +0100
+Subject: [PATCH] arm64: dts: sun50i-h5-orange-pi-pc2: Add CPUX voltage
+ regulator
 
-This reverts commit 9db9c0cf5895e4ddde2814360cae7bea9282edd2.
+Orange Pi PC2 features sy8106a regulator just like Orange Pi PC.
 
-Setting mode_config.allow_fb_modifiers manually is completely
-unnecessary. It is set automatically by drm_universal_plane_init() based
-on the fact if modifier list is provided or not. Even more, it breaks
-DE2 and DE3 as they don't support any modifiers beside linear. Modifiers
-aware applications can be confused by provided empty modifier list - at
-least linear modifier should be included, but it's not for DE2 and DE3.
-
-Fixes: 9db9c0cf5895 ("drm/sun4i: drv: Allow framebuffer modifiers in mode config")
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Reviewed-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Signed-off-by: Ondrej Jirman <megous@megous.com>
+Reviewed-by: Samuel Holland <samuel@sholland.org>
 Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200126065937.9564-1-jernej.skrabec@siol.net
 ---
- drivers/gpu/drm/sun4i/sun4i_drv.c | 1 -
- 1 file changed, 1 deletion(-)
+ .../dts/allwinner/sun50i-h5-orangepi-pc2.dts  | 20 +++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/drivers/gpu/drm/sun4i/sun4i_drv.c b/drivers/gpu/drm/sun4i/sun4i_drv.c
-index a5757b11b730..5b54eff12cc0 100644
---- a/drivers/gpu/drm/sun4i/sun4i_drv.c
-+++ b/drivers/gpu/drm/sun4i/sun4i_drv.c
-@@ -85,7 +85,6 @@ static int sun4i_drv_bind(struct device *dev)
- 	}
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts b/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts
+index c4f89c312f42..7d7aad18f078 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts
+@@ -94,6 +94,10 @@ &codec {
+ 	status = "okay";
+ };
  
- 	drm_mode_config_init(drm);
--	drm->mode_config.allow_fb_modifiers = true;
++&cpu0 {
++	cpu-supply = <&reg_vdd_cpux>;
++};
++
+ &de {
+ 	status = "okay";
+ };
+@@ -169,6 +173,22 @@ &ohci3 {
+ 	status = "okay";
+ };
  
- 	ret = component_bind_all(drm->dev, drm);
- 	if (ret) {
++&r_i2c {
++	status = "okay";
++
++	reg_vdd_cpux: regulator@65 {
++		compatible = "silergy,sy8106a";
++		reg = <0x65>;
++		regulator-name = "vdd-cpux";
++		silergy,fixed-microvolt = <1100000>;
++		regulator-min-microvolt = <1000000>;
++		regulator-max-microvolt = <1400000>;
++		regulator-ramp-delay = <200>;
++		regulator-boot-on;
++		regulator-always-on;
++	};
++};
++
+ &spi0  {
+ 	status = "okay";
+ 
 -- 
-2.25.0
+2.25.1
 
