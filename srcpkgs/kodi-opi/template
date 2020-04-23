@@ -1,7 +1,7 @@
 pkgname=kodi-opi
 version=19.0
-revision=5
-_fullversion=6e15fcb9ff05ed7463d69083b2fa2fd702f3abd0
+revision=7
+_fullversion=392dcf7331e06afda77d957d12664d3e1dc6c714
 build_style=cmake
 wrksrc="xbmc-${_fullversion}"
 short_desc="Software media player and entertainment hub for digital media (RPi)"
@@ -9,7 +9,7 @@ maintainer="Helmut Pozimski <helmut@pozimski.eu>"
 homepage="http://www.kodi.tv/"
 license="GPL-2.0-or-later"
 distfiles="https://github.com/xbmc/xbmc/archive/${_fullversion}.tar.gz"
-checksum=6f133b742e96755709d2ca04b2e9ed76640d60421847c472836598450e1ec60c
+checksum=7ecc55d7c2930efbf0156d74a341a58b8580dd05226bef63768702ae3892b7ae
 LDFLAGS+=" -Wl,-z,stack-size=1048576"
 CFLAGS=" -march=armv7-a+neon-vfpv4"
 CXXFLAGS=$CFLAGS
@@ -33,7 +33,7 @@ makedepends="
  enca-devel boost-devel libbluetooth-devel yajl-devel libplist-devel
  librtmp-devel tinyxml-devel taglib-devel libcap-devel lame-devel libnfs-devel
  libxslt-devel libuuid-devel giflib-devel libcec-devel libmicrohttpd-devel
- libcdio-devel libssh-devel dcadec-devel
+ libcdio-devel libssh-devel dcadec-devel spdlog
  flatbuffers-devel fmt-devel lcms2-devel libfstrcmp-devel rapidjson crossguid
  libinput-devel libxkbcommon-devel libcdio-paranoia libmali-devel libdrm-devel pulseaudio-devel python3-devel"
 
@@ -141,4 +141,6 @@ post_install() {
 	vsv kodi-standalone
 	vinstall ${FILESDIR}/kodi.sudoers 600 etc/sudoers.d kodi
 	vinstall ${FILESDIR}/reboot.py 755 usr/share/kodi/system
+	mkdir -p ${DESTDIR}/usr/lib/python3.8
 }
+
