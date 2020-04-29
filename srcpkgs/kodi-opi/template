@@ -1,6 +1,6 @@
 pkgname=kodi-opi
 version=19.0
-revision=7
+revision=8
 _fullversion=392dcf7331e06afda77d957d12664d3e1dc6c714
 build_style=cmake
 wrksrc="xbmc-${_fullversion}"
@@ -142,5 +142,6 @@ post_install() {
 	vinstall ${FILESDIR}/kodi.sudoers 600 etc/sudoers.d kodi
 	vinstall ${FILESDIR}/reboot.py 755 usr/share/kodi/system
 	mkdir -p ${DESTDIR}/usr/lib/python3.8
+	touch ${DESTDIR}/usr/lib/python3.8/.void-python-hack
 }
 
