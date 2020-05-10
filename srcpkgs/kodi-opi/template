@@ -1,6 +1,6 @@
 pkgname=kodi-opi
 version=19.0
-revision=8
+revision=10
 _fullversion=392dcf7331e06afda77d957d12664d3e1dc6c714
 build_style=cmake
 wrksrc="xbmc-${_fullversion}"
