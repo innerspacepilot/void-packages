@@ -1,8 +1,9 @@
+# DRMPRIME must be disabled for video to work
 pkgname=kodi-opi
 version=19.0
-revision=11
-_fullversion=06d904b5aab0ede4a777ac644051fc52fd74dc61
-checksum=51634aadfbe2e7ce5c5295673336f9be1f351dee320275bd39661aa01dfb13d1
+revision=12
+_fullversion=db74480506b32d0e8df429882d5bab8b9172db69
+checksum=c06563bef2ca53c80d62a9302938482ebdc29b4ee453253516e65df925039cc8
 build_style=cmake
 wrksrc="xbmc-${_fullversion}"
 short_desc="Software media player and entertainment hub for digital media (RPi)"
@@ -47,6 +48,7 @@ configure_args="
 	-DCORE_PLATFORM_NAME=gbm
 	-DENABLE_OPENGL=OFF
 	-DENABLE_OPENGLES=ON
+	-DENABLE_CEC=ON
 "
 #	-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
 
@@ -71,7 +73,7 @@ esac
 
 # The following dependencies are dlopen(3)ed.
 depends="ffmpeg-opi libmad libogg libcurl libflac libmodplug libass libmpeg2 lame
- librtmp libnfs>=1.9.7 libplist>=1.12 libssh"
+ librtmp libnfs>=1.9.7 libplist>=1.12 libssh libcec-devel>=4.0.5"
 depends+=" hicolor-icon-theme desktop-file-utils"
 
 provides="kodi-${version}_${revision}"
