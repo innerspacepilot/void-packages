@@ -1,8 +1,8 @@
 # Template file for 'ffmpeg-opi'
 # audacity also needs to be bumped when a new ffmpeg version bumps libavformat's soname!
 pkgname=ffmpeg-opi
-version=4.2.2
-_full_version=4.2.2-Matrix-Alpha1
+version=4.3.1
+_full_version=4.3.1-Matrix-Alpha1
 revision=1
 short_desc="Decoding, encoding and streaming software"
 maintainer="Johannes <johannes.brechtmann@gmail.com>"
@@ -10,7 +10,7 @@ license="GPL-3.0-or-later"
 homepage="https://www.ffmpeg.org"
 changelog="https://raw.githubusercontent.com/FFmpeg/FFmpeg/master/Changelog"
 distfiles="https://github.com/xbmc/FFmpeg/archive/${_full_version}.tar.gz"
-checksum=0dba571f9809588cfbdc29d6a551dab4cd5736701653d9263847c9ac67bcde86
+checksum=3015cbe76b450ca9a2a656b4d92ec9a56b8ed99f6b20b486467d35d3b570c215
 patch_args="-Np1"
 replaces="ffmpeg>=0"
 provides="ffmpeg-${version}_${revision}"
@@ -111,7 +111,7 @@ do_configure() {
 	--enable-mdct \
 	--enable-rdft \
 	--disable-crystalhd \
-	--disable-v4l2_m2m \
+	--enable-v4l2_m2m \
 	--disable-vaapi \
 	--disable-vdpau \
 	--disable-rkmpp \
