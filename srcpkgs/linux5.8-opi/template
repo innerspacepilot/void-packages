@@ -1,22 +1,22 @@
 # Template file for 'linux5.8'
 pkgname=linux5.8-opi
-version=5.8.6
-revision=1
+version=5.8.11
+revision=2
 wrksrc="linux-5.8"
 short_desc="Linux kernel and modules (${version%.*} series)"
 maintainer="innerspacepilot@gmail.com"
 license="GPL-2.0-only"
 homepage="https://www.kernel.org"
 mali_commit_id=94bd7a2f8b8b152a85caa9f4e6d31d36e0f2d5cd
-rtl8189_commit_id=cc80ba6a913db7d1dfe6a883aa41a079953d2d9d
+rtl8189_commit_id=kernel_5.8_fix
 distfiles="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.8.tar.xz
            https://cdn.kernel.org/pub/linux/kernel/v5.x/patch-${version}.xz
            https://github.com/innerspacepilot/mali-utgard/archive/${mali_commit_id}.tar.gz
-           https://github.com/CGarces/rtl8189ES_linux/archive/${rtl8189_commit_id}.tar.gz"
+           https://github.com/innerspacepilot/rtl8189ES_linux/archive/${rtl8189_commit_id}.tar.gz"
 checksum="e7f75186aa0642114af8f19d99559937300ca27acaf7451b36d4f9b0f85cf1f5
-          b4ab9987a715753e64f0aa264dac91c3d7ca0651bfdd8fa5d19c8990f3b08abc
+          a95a6f53a3662734218eb6270c993114897e6a3c97b8cdbbabbf027af1e11edd
           28c9259d7a93a48515206cb6c2e194a1944ba730eb52363790799018ad6655e5
-          be9af716de117afe2ed1e294d843c5c1bd0abc453bbb75ee74e41e19746bde9b"
+          09c26dceb5fca4af0cae752f1d383dc638984c67c87cd514779592610fce165f"
 patch_args="-Np1"
 
 # XXX restrict archs until all archs are updated.
@@ -129,6 +129,7 @@ do_build() {
 	cd ${_pwd}
 	cd "../rtl8189ES_linux-${rtl8189_commit_id}"
 	make ARCH=$arch ${_cross} ${makejobs} KSRC="${_pwd}"
+	# make ARCH=arm CROSS_COMPILE=armv7l-linux-gnueabihf" -j32 KSRC=../linux-5.8
 }
 
 do_install() {
