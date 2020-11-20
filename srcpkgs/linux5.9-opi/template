@@ -1,7 +1,7 @@
 # Template file for 'linux5.9'
 pkgname=linux5.9-opi
 version=5.9.6
-revision=2
+revision=3
 wrksrc="linux-5.9"
 short_desc="Linux kernel and modules (${version%.*} series)"
 maintainer="innerspacepilot@gmail.com"
@@ -126,9 +126,9 @@ do_build() {
 
 	# build modules
 	_pwd=`pwd`
-	cd "../mali-utgard-${mali_commit_id}/driver/src/devicedrv/mali"
-	echo make ARCH=$arch ${_cross} ${makejobs} KDIR="${_pwd}" MALI_PLATFORM_FILES=platform/sunxi/sunxi.c GIT_REV="" EXTRA_CFLAGS="-DMALI_FAKE_PLATFORM_DEVICE=1 -DCONFIG_MALI_DMA_BUF_MAP_ON_ATTACH -DCONFIG_MALI400=1 -DCONFIG_MALI450=1 -DCONFIG_MALI470=1" CONFIG_MALI400=m CONFIG_MALI450=m CONFIG_MALI470=m CONFIG_MALI_DMA_BUF_MAP_ON_ATTACH=y
-	make ARCH=$arch ${_cross} ${makejobs} KDIR="${_pwd}" MALI_PLATFORM_FILES=platform/sunxi/sunxi.c GIT_REV="" EXTRA_CFLAGS="-DMALI_FAKE_PLATFORM_DEVICE=1 -DCONFIG_MALI_DMA_BUF_MAP_ON_ATTACH -DCONFIG_MALI400=1 -DCONFIG_MALI450=1 -DCONFIG_MALI470=1" CONFIG_MALI400=m CONFIG_MALI450=m CONFIG_MALI470=m CONFIG_MALI_DMA_BUF_MAP_ON_ATTACH=y
+	# cd "../mali-utgard-${mali_commit_id}/driver/src/devicedrv/mali"
+	# echo make ARCH=$arch ${_cross} ${makejobs} KDIR="${_pwd}" MALI_PLATFORM_FILES=platform/sunxi/sunxi.c GIT_REV="" EXTRA_CFLAGS="-DMALI_FAKE_PLATFORM_DEVICE=1 -DCONFIG_MALI_DMA_BUF_MAP_ON_ATTACH -DCONFIG_MALI400=1 -DCONFIG_MALI450=1 -DCONFIG_MALI470=1" CONFIG_MALI400=m CONFIG_MALI450=m CONFIG_MALI470=m CONFIG_MALI_DMA_BUF_MAP_ON_ATTACH=y
+	# make ARCH=$arch ${_cross} ${makejobs} KDIR="${_pwd}" MALI_PLATFORM_FILES=platform/sunxi/sunxi.c GIT_REV="" EXTRA_CFLAGS="-DMALI_FAKE_PLATFORM_DEVICE=1 -DCONFIG_MALI_DMA_BUF_MAP_ON_ATTACH -DCONFIG_MALI400=1 -DCONFIG_MALI450=1 -DCONFIG_MALI470=1" CONFIG_MALI400=m CONFIG_MALI450=m CONFIG_MALI470=m CONFIG_MALI_DMA_BUF_MAP_ON_ATTACH=y
 
 	cd ${_pwd}
 	cd "../rtl8189ES_linux-${rtl8189_commit_id}"
@@ -189,7 +189,7 @@ do_install() {
 
 	# install modules
 	mkdir -p ${DESTDIR}/usr/lib/modules/${_kernver}/extra
-	vinstall ../mali-utgard-${mali_commit_id}/driver/src/devicedrv/mali/mali.ko 644 usr/lib/modules/${_kernver}/extra mali.ko
+	# vinstall ../mali-utgard-${mali_commit_id}/driver/src/devicedrv/mali/mali.ko 644 usr/lib/modules/${_kernver}/extra mali.ko
 	vinstall ../rtl8189ES_linux-${rtl8189_commit_id}/8189fs.ko 644 usr/lib/modules/${_kernver}/extra 8189fs.ko
 
 	cd ${DESTDIR}/usr/lib/modules/${_kernver}
