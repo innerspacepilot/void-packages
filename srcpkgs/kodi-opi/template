@@ -1,9 +1,9 @@
 # DRMPRIME must be disabled for video to work
 pkgname=kodi-opi
 version=19.0
-revision=19
-_fullversion=7cb0e644620c3d5c3cc435dc6130d21176926226
-checksum=262f564219cf8a3b83241b16ce5ac91bcc5df97dcf221b0924b147ce60c2d956
+revision=22
+_fullversion=19.0b1-Matrix
+checksum=9bc8c94aa60eb4012b8f18dd8fd8eed20fd9a9e8c655fcc922998d7df654c8b5
 build_style=cmake
 wrksrc="xbmc-${_fullversion}"
 short_desc="Software media player and entertainment hub for digital media (RPi)"
@@ -12,12 +12,12 @@ homepage="http://www.kodi.tv/"
 license="GPL-2.0-or-later"
 distfiles="https://github.com/xbmc/xbmc/archive/${_fullversion}.tar.gz"
 LDFLAGS+=" -Wl,-z,stack-size=1048576"
-CFLAGS=" -march=armv7-a+neon-vfpv4"
+CFLAGS="-DEGL_NO_X11 -march=armv7-a+neon-vfpv4"
 CXXFLAGS=$CFLAGS
 patch_args="-Np1"
 
 nopie=yes
-# armv7 only, musl not supported because of proprietary blobs 
+# armv7 only, musl not supported because of proprietary blobs
 archs="armv7l"
 
 hostmakedepends="
@@ -36,7 +36,7 @@ makedepends="
  libxslt-devel libuuid-devel giflib-devel libcec-devel libmicrohttpd-devel
  libcdio-devel libssh-devel dcadec-devel spdlog
  flatbuffers-devel fmt-devel lcms2-devel libfstrcmp-devel rapidjson crossguid
- libinput-devel libxkbcommon-devel libcdio-paranoia libmali-devel libdrm-devel pulseaudio-devel python3-devel"
+ libinput-devel libxkbcommon-devel MesaLib-devel libcdio-paranoia libdrm-devel pulseaudio-devel python3-devel libdrm-devel"
 
 configure_args="
 	-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
@@ -44,7 +44,7 @@ configure_args="
 	-DENABLE_VAAPI=OFF
 	-DENABLE_VDPAU=OFF
 	-DWITH_FFMPEG=/usr
-	-DGBM_RENDER_SYSTEM=gles
+	-DAPP_RENDER_SYSTEM=gles
 	-DCORE_PLATFORM_NAME=gbm
 	-DENABLE_OPENGL=OFF
 	-DENABLE_OPENGLES=ON
@@ -73,7 +73,7 @@ esac
 
 # The following dependencies are dlopen(3)ed.
 depends="ffmpeg-opi libmad libogg libcurl libflac libmodplug libass libmpeg2 lame
- librtmp libnfs>=1.9.7 libplist>=1.12 libssh libcec-devel>=4.0.5"
+ librtmp libnfs>=1.9.7 libplist>=1.12 libssh libcec-devel>=4.0.5 mesa mesa-lima-dri"
 depends+=" hicolor-icon-theme desktop-file-utils"
 
 provides="kodi-${version}_${revision}"
