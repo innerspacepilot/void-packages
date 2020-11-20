@@ -2,15 +2,15 @@
 # audacity also needs to be bumped when a new ffmpeg version bumps libavformat's soname!
 pkgname=ffmpeg-opi
 version=4.3.1
-_full_version=4.3.1-Matrix-Alpha1-2
-revision=2
+_full_version=4.3.1-Matrix-Beta1
+revision=5
 short_desc="Decoding, encoding and streaming software"
 maintainer="Johannes <johannes.brechtmann@gmail.com>"
 license="GPL-3.0-or-later"
 homepage="https://www.ffmpeg.org"
 changelog="https://raw.githubusercontent.com/FFmpeg/FFmpeg/master/Changelog"
 distfiles="https://github.com/xbmc/FFmpeg/archive/${_full_version}.tar.gz"
-checksum=a28ec40eb2457a4c3607757ec1e912c0f0f9a804f9cbef76a4b36ba57b5ecae3
+checksum=0b209a9b15f2335e516bf2ad1249fffc6b55425145f17c9674dc430abf6a67ad
 patch_args="-Np1"
 replaces="ffmpeg>=0"
 provides="ffmpeg-${version}_${revision}"
