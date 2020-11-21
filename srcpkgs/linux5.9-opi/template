@@ -1,7 +1,7 @@
 # Template file for 'linux5.9'
 pkgname=linux5.9-opi
 version=5.9.6
-revision=3
+revision=6
 wrksrc="linux-5.9"
 short_desc="Linux kernel and modules (${version%.*} series)"
 maintainer="innerspacepilot@gmail.com"
@@ -29,7 +29,7 @@ noshlibprovides=yes
 preserve=yes
 
 hostmakedepends="tar xz bc elfutils-devel flex gmp-devel kmod libmpc-devel
- libressl-devel perl uboot-mkimage cpio pahole python3"
+ libressl-devel perl uboot-mkimage cpio pahole python3 rsync"
 
 _kernver="${version}_${revision}"
 triggers="kernel-hooks"
@@ -155,6 +155,8 @@ do_install() {
 	make ${makejobs} ARCH=${subarch:-$arch} INSTALL_MOD_PATH=${DESTDIR} ${_cross} modules_install
 
 	hdrdest=${DESTDIR}/usr/src/kernel-headers-${_kernver}
+
+	make ${makejobs} ARCH=${subarch:-$arch} INSTALL_HDR_PATH=${hdrdest}/installed_headers ${_cross} headers_install
 
 	vinstall .config 644 boot config-${_kernver}
 	vinstall System.map 644 boot System.map-${_kernver}
