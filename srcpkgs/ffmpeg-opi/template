@@ -32,7 +32,7 @@ makedepends="zlib-devel bzip2-devel freetype-devel alsa-lib-devel
  $(vopt_if nvenc nv-codec-headers) $(vopt_if sndio sndio-devel)
  $(vopt_if dav1d libdav1d-devel) libdrm-devel"
 
-build_options="x265 v4l2 vaapi vdpau vpx faac fdk_aac aom nvenc sndio pulseaudio dav1d"
+build_options="x265 v4l2 vpx faac fdk_aac aom nvenc sndio pulseaudio"
 build_options_default="x265 v4l2 vpx sndio pulseaudio dav1d"
 
 CFLAGS="-march=armv7-a+neon-vfpv4"
@@ -80,18 +80,19 @@ do_configure() {
 		ppc|ppc-musl) _args+=" --disable-altivec";;
 	esac
 
-	./configure ${_args} --prefix=/usr --disable-debug \
+	./configure ${_args} \
+	--prefix=/usr --disable-debug \
 	--enable-shared \
 	--enable-gpl \
 	--disable-version3 \
 	--enable-logging \
 	--disable-doc \
 	--disable-debug \
+	--disable-frei0r \
 	--enable-stripping \
 	--enable-pic \
 	--enable-optimizations \
 	--disable-extra-warnings \
-	--disable-programs \
 	--enable-avdevice \
 	--enable-avcodec \
 	--enable-avformat \
@@ -126,7 +127,6 @@ do_configure() {
 	--enable-encoder=wmav2 \
 	--enable-encoder=mjpeg \
 	--enable-encoder=png \
-	--enable-hwaccels \
 	--disable-muxers \
 	--enable-muxer=spdif \
 	--enable-muxer=adts \
@@ -143,14 +143,31 @@ do_configure() {
 	--disable-avisynth \
 	--enable-bzlib \
 	--disable-lzma \
-	--enable-libdav1d \
 	--enable-libspeex \
 	--enable-zlib \
 	--enable-asm \
 	--disable-altivec \
 	--enable-neon \
 	--enable-avresample \
-	--disable-symver
+	--disable-symver \
+  --disable-libdc1394 \
+  --disable-libfreetype \
+  --disable-libgsm \
+  --disable-libmp3lame \
+  --disable-libopencore-amrnb \
+  --disable-libopencore-amrwb \
+  --disable-libopencv \
+  --disable-libopenjpeg \
+  --disable-librtmp \
+  --disable-libtheora \
+  --disable-libvo-amrwbenc \
+  --disable-libvorbis \
+  --disable-libvpx \
+  --disable-libx264 \
+  --disable-libxavs \
+  --disable-libxvid \
+  --disable-small \
+  --enable-ffplay
 
 }
 do_build() {
