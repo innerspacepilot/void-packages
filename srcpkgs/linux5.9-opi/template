@@ -1,7 +1,7 @@
 # Template file for 'linux5.9'
 pkgname=linux5.9-opi
-version=5.9.6
-revision=6
+version=5.9.11
+revision=1
 wrksrc="linux-5.9"
 short_desc="Linux kernel and modules (${version%.*} series)"
 maintainer="innerspacepilot@gmail.com"
@@ -14,7 +14,7 @@ distfiles="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.9.tar.xz
            https://github.com/innerspacepilot/mali-utgard/archive/${mali_commit_id}.tar.gz
            https://github.com/innerspacepilot/rtl8189ES_linux/archive/${rtl8189_commit_id}.tar.gz"
 checksum="3239a4ee1250bf2048be988cc8cb46c487b2c8a0de5b1b032d38394d5c6b1a06
-          05c34bad1f3ed02494322637b2a246f7d666a118e5e77b85b4b0b24f063d2055
+          a0f35d02672add81985b2b3e899efafb119cb3a4587e0bfbe5a0ad19b739e993
           5a16091e8b24433f3aacb352ec2e4c7cdcb9df60b1fb1a61d598cb30b63547d9
           09c26dceb5fca4af0cae752f1d383dc638984c67c87cd514779592610fce165f"
 patch_args="-Np1"
