@@ -1,7 +1,7 @@
 # DRMPRIME must be disabled for video to work
 pkgname=kodi-opi
 version=19.0
-revision=22
+revision=24
 _fullversion=19.0b1-Matrix
 checksum=9bc8c94aa60eb4012b8f18dd8fd8eed20fd9a9e8c655fcc922998d7df654c8b5
 build_style=cmake
@@ -11,7 +11,7 @@ maintainer="Helmut Pozimski <helmut@pozimski.eu>"
 homepage="http://www.kodi.tv/"
 license="GPL-2.0-or-later"
 distfiles="https://github.com/xbmc/xbmc/archive/${_fullversion}.tar.gz"
-LDFLAGS+=" -Wl,-z,stack-size=1048576"
+#LDFLAGS+=" -Wl,-z,stack-size=1048576"
 CFLAGS="-DEGL_NO_X11 -march=armv7-a+neon-vfpv4"
 CXXFLAGS=$CFLAGS
 patch_args="-Np1"
@@ -73,7 +73,7 @@ esac
 
 # The following dependencies are dlopen(3)ed.
 depends="ffmpeg-opi libmad libogg libcurl libflac libmodplug libass libmpeg2 lame
- librtmp libnfs>=1.9.7 libplist>=1.12 libssh libcec-devel>=4.0.5 mesa mesa-lima-dri"
+ librtmp libnfs>=1.9.7 libplist>=1.12 libssh libcec-devel>=4.0.5 mesa"
 depends+=" hicolor-icon-theme desktop-file-utils"
 
 provides="kodi-${version}_${revision}"
