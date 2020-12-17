@@ -3,7 +3,7 @@
 pkgname=ffmpeg-opi
 version=4.3.1
 _full_version=4.3.1-Matrix-Beta1
-revision=5
+revision=9
 short_desc="Decoding, encoding and streaming software"
 maintainer="Johannes <johannes.brechtmann@gmail.com>"
 license="GPL-3.0-or-later"
@@ -30,9 +30,9 @@ makedepends="zlib-devel bzip2-devel freetype-devel alsa-lib-devel
  libvidstab-devel $(vopt_if faac faac-devel) $(vopt_if fdk_aac fdk-aac-devel)
  $(vopt_if vpx libvpx-devel) $(vopt_if aom libaom-devel)
  $(vopt_if nvenc nv-codec-headers) $(vopt_if sndio sndio-devel)
- $(vopt_if dav1d libdav1d-devel) libdrm-devel"
+ $(vopt_if dav1d libdav1d-devel) libdrm-devel SDL2-devel"
 
-build_options="x265 v4l2 vpx faac fdk_aac aom nvenc sndio pulseaudio"
+build_options="x265 v4l2 vpx faac fdk_aac aom nvenc sndio pulseaudio dav1d"
 build_options_default="x265 v4l2 vpx sndio pulseaudio dav1d"
 
 CFLAGS="-march=armv7-a+neon-vfpv4"
@@ -167,8 +167,8 @@ do_configure() {
   --disable-libxavs \
   --disable-libxvid \
   --disable-small \
-  --enable-ffplay
-
+  --enable-ffplay \
+  --enable-libdav1d
 }
 do_build() {
 	rm ${XBPS_WRAPPERDIR}/strip
