@@ -1,7 +1,7 @@
 # DRMPRIME must be disabled for video to work
 pkgname=kodi-opi
 version=19.0
-revision=24
+revision=25
 _fullversion=19.0b1-Matrix
 checksum=9bc8c94aa60eb4012b8f18dd8fd8eed20fd9a9e8c655fcc922998d7df654c8b5
 build_style=cmake
@@ -44,8 +44,8 @@ configure_args="
 	-DENABLE_VAAPI=OFF
 	-DENABLE_VDPAU=OFF
 	-DWITH_FFMPEG=/usr
-	-DAPP_RENDER_SYSTEM=gles
-	-DCORE_PLATFORM_NAME=gbm
+	# -DAPP_RENDER_SYSTEM=gles
+	# -DCORE_PLATFORM_NAME=gbm
 	-DENABLE_OPENGL=OFF
 	-DENABLE_OPENGLES=ON
 	-DENABLE_CEC=ON
