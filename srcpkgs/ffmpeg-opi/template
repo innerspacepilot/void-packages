@@ -3,7 +3,7 @@
 pkgname=ffmpeg-opi
 version=4.3.1
 _full_version=4.3.1-Matrix-Beta1
-revision=9
+revision=10
 short_desc="Decoding, encoding and streaming software"
 maintainer="Johannes <johannes.brechtmann@gmail.com>"
 license="GPL-3.0-or-later"
@@ -30,12 +30,12 @@ makedepends="zlib-devel bzip2-devel freetype-devel alsa-lib-devel
  libvidstab-devel $(vopt_if faac faac-devel) $(vopt_if fdk_aac fdk-aac-devel)
  $(vopt_if vpx libvpx-devel) $(vopt_if aom libaom-devel)
  $(vopt_if nvenc nv-codec-headers) $(vopt_if sndio sndio-devel)
- $(vopt_if dav1d libdav1d-devel) libdrm-devel SDL2-devel"
+ $(vopt_if dav1d libdav1d-devel) libdrm-devel eudev-libudev-devel v4l-utils-devel SDL2-devel pkg-config linux5.10-opi-headers"
 
 build_options="x265 v4l2 vpx faac fdk_aac aom nvenc sndio pulseaudio dav1d"
 build_options_default="x265 v4l2 vpx sndio pulseaudio dav1d"
 
-CFLAGS="-march=armv7-a+neon-vfpv4"
+CFLAGS="-march=armv7-a+neon-vfpv4 -I/usr/armv7l-linux-gnueabihf/usr/src/kernel-headers-5.10.1_1/installed_headers/include"
 CXXFLAGS=$CFLAGS
 
 
@@ -52,7 +52,6 @@ dis_post_extract() {
 	  cat "$i" | patch -p1
 	done
 }
-
 
 do_configure() {
 	# Fix gcc on x86_64-musl only
@@ -170,69 +169,17 @@ do_configure() {
   --enable-ffplay \
   --enable-libdav1d
 }
+
 do_build() {
 	rm ${XBPS_WRAPPERDIR}/strip
 	make ${makejobs}
 	make doc/ff{mpeg,play}.1
 }
+
 do_install() {
 	make DESTDIR=${DESTDIR} install install-man
 }
 
-# libavcodec_package() {
-# 	short_desc="FFmpeg codec library"
-# 	pkg_install() {
-# 		vmove "usr/lib/libavcodec.so.*"
-# 	}
-# }
-# libavdevice_package() {
-# 	short_desc="FFmpeg device handling library"
-# 	pkg_install() {
-# 		vmove "usr/lib/libavdevice.so.*"
-# 	}
-# }
-# libavresample_package() {
-# 	short_desc="FFmpeg audio resampling library"
-# 	pkg_install() {
-# 		vmove "usr/lib/libavresample.so.*"
-# 	}
-# }
-# libavformat_package() {
-# 	short_desc="FFmpeg file format library"
-# 	pkg_install() {
-# 		vmove "usr/lib/libavformat.so.*"
-# 	}
-# }
-# libavutil_package() {
-# 	short_desc="FFmpeg utility library"
-# 	pkg_install() {
-# 		vmove "usr/lib/libavutil.so.*"
-# 	}
-# }
-# libavfilter_package() {
-# 	short_desc="FFmpeg audio/video filter library"
-# 	pkg_install() {
-# 		vmove "usr/lib/libavfilter.so.*"
-# 	}
-# }
-# libpostproc_package() {
-# 	short_desc="FFmpeg video postprocessing library"
-# 	pkg_install() {
-# 		vmove "usr/lib/libpostproc.so.*"
-# 	}
-# }
-# libswscale_package() {
-# 	short_desc="FFmpeg video scaling library"
-# 	pkg_install() {
-# 		vmove "usr/lib/libswscale.so.*"
-# 	}
-# }
-# libswresample_package() {
-# 	short_desc="FFmpeg video resampling library"
-# 	pkg_install() {
-# 		vmove "usr/lib/libswresample.so.*"
-# 	}
-# }
 ffmpeg-opi-devel_package() {
 	short_desc+=" - development files"
 	# depends="ffmpeg-opi"
