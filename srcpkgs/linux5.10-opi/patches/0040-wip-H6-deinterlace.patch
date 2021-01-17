@@ -1,7 +1,7 @@
-From 70ad6a66d55ec76f7a0595b7c1bc94bca11dd289 Mon Sep 17 00:00:00 2001
+From 91c70ea17b58c9205c35cd43a3dd8266bbe035b1 Mon Sep 17 00:00:00 2001
 From: Jernej Skrabec <jernej.skrabec@siol.net>
 Date: Mon, 25 May 2020 19:06:07 +0200
-Subject: [PATCH 1/2] wip: H6 deinterlace
+Subject: [PATCH 40/44] wip: H6 deinterlace
 
 Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
 ---
@@ -15,11 +15,9 @@ Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
  create mode 100644 drivers/media/platform/sunxi/sun50i-di/sun50i-di.c
  create mode 100644 drivers/media/platform/sunxi/sun50i-di/sun50i-di.h
 
-diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
-index c57ee78fa99d..0d3b25d96b10 100644
 --- a/drivers/media/platform/Kconfig
 +++ b/drivers/media/platform/Kconfig
-@@ -495,6 +495,19 @@ config VIDEO_QCOM_VENUS
+@@ -510,6 +510,19 @@ config VIDEO_QCOM_VENUS
  	  on various Qualcomm SoCs.
  	  To compile this driver as a module choose m here.
  
@@ -39,8 +37,6 @@ index c57ee78fa99d..0d3b25d96b10 100644
  config VIDEO_SUN8I_DEINTERLACE
  	tristate "Allwinner Deinterlace driver"
  	depends on VIDEO_DEV && VIDEO_V4L2
-diff --git a/drivers/media/platform/sunxi/Makefile b/drivers/media/platform/sunxi/Makefile
-index fc537c9f5ca9..b28f3b15329f 100644
 --- a/drivers/media/platform/sunxi/Makefile
 +++ b/drivers/media/platform/sunxi/Makefile
 @@ -3,4 +3,5 @@
@@ -49,17 +45,11 @@ index fc537c9f5ca9..b28f3b15329f 100644
  obj-y		+= sun8i-di/
 +obj-y		+= sun50i-di/
  obj-y		+= sun8i-rotate/
-diff --git a/drivers/media/platform/sunxi/sun50i-di/Makefile b/drivers/media/platform/sunxi/sun50i-di/Makefile
-new file mode 100644
-index 000000000000..225b3b808069
 --- /dev/null
 +++ b/drivers/media/platform/sunxi/sun50i-di/Makefile
 @@ -0,0 +1,2 @@
 +# SPDX-License-Identifier: GPL-2.0
 +obj-$(CONFIG_VIDEO_SUN50I_DEINTERLACE) += sun50i-di.o
-diff --git a/drivers/media/platform/sunxi/sun50i-di/sun50i-di.c b/drivers/media/platform/sunxi/sun50i-di/sun50i-di.c
-new file mode 100644
-index 000000000000..f6b706fb1a9a
 --- /dev/null
 +++ b/drivers/media/platform/sunxi/sun50i-di/sun50i-di.c
 @@ -0,0 +1,1134 @@
@@ -1197,9 +1187,6 @@ index 000000000000..f6b706fb1a9a
 +MODULE_LICENSE("GPL v2");
 +MODULE_AUTHOR("Jernej Skrabec <jernej.skrabec@siol.net>");
 +MODULE_DESCRIPTION("Allwinner Deinterlace driver");
-diff --git a/drivers/media/platform/sunxi/sun50i-di/sun50i-di.h b/drivers/media/platform/sunxi/sun50i-di/sun50i-di.h
-new file mode 100644
-index 000000000000..8cb19955ef06
 --- /dev/null
 +++ b/drivers/media/platform/sunxi/sun50i-di/sun50i-di.h
 @@ -0,0 +1,172 @@
@@ -1375,6 +1362,3 @@ index 000000000000..8cb19955ef06
 +};
 +
 +#endif
--- 
-2.27.0
-
