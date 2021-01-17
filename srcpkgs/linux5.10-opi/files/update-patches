@@ -1,0 +1,20 @@
+#!/bin/bash
+
+
+LIBRE_PATH="$1" # full path to Libreelec
+PATCHES="patches"
+
+mkdir -p $PATCHES
+
+if [ ! -d "$LIBRE_PATH" ];
+then
+	echo "LIBRE_PATH is wrong"
+	exit 1
+fi
+
+cp -v $LIBRE_PATH/packages/linux/patches/default/*.patch $PATCHES/
+
+cp -v $LIBRE_PATH/projects/Allwinner/patches/linux/*.patch $PATCHES/
+
+cp -v $LIBRE_PATH/projects/Allwinner/devices/H3/patches/linux/*.patch $PATCHES/
+

@@ -1,16 +1,25 @@
-diff --git a/arch/arm/boot/dts/sunxi-h3-h5.dtsi b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
-index 8aa2befc..d3d70eac 100644
+From d0428e1d4b2a1a3d640f6052646e0f8ca7fc2d53 Mon Sep 17 00:00:00 2001
+From: Jernej Skrabec <jernej.skrabec@siol.net>
+Date: Sat, 16 Jan 2021 10:57:58 +0100
+Subject: [PATCH 44/44] HACK: h3/h5: Add HDMI sound card
+
+Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+---
+ arch/arm/boot/dts/sunxi-h3-h5.dtsi | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
+
 --- a/arch/arm/boot/dts/sunxi-h3-h5.dtsi
 +++ b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
-@@ -53,6 +53,23 @@
- 	#address-cells = <1>;
- 	#size-cells = <1>;
+@@ -77,6 +77,24 @@
+ 		};
+ 	};
  
 +	sound_hdmi: sound {
 +		compatible = "simple-audio-card";
 +		simple-audio-card,format = "i2s";
 +		simple-audio-card,name = "allwinner-hdmi";
 +		simple-audio-card,mclk-fs = <128>;
++		simple-audio-card,frame-inversion;
 +
 +		simple-audio-card,codec {
 +			sound-dai = <&hdmi>;
@@ -26,27 +35,15 @@ index 8aa2befc..d3d70eac 100644
  	clocks {
  		#address-cells = <1>;
  		#size-cells = <1>;
-@@ -631,6 +648,19 @@
- 			status = "disabled";
+@@ -672,7 +690,6 @@
+ 			dmas = <&dma 27>;
+ 			resets = <&ccu RST_BUS_I2S2>;
+ 			dma-names = "tx";
+-			status = "disabled";
  		};
  
-+		i2s2: i2s@1c22800 {
-+			#sound-dai-cells = <0>;
-+			compatible = "allwinner,sun8i-h3-i2s";
-+			reg = <0x01c22800 0x400>;
-+			interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_I2S2>, <&ccu CLK_I2S2>;
-+			clock-names = "apb", "mod";
-+			dmas = <&dma 27>;
-+			resets = <&ccu RST_BUS_I2S2>;
-+			dma-names = "tx";
-+			allwinner,playback-channels = <8>;
-+		};
-+
  		codec: codec@1c22c00 {
- 			#sound-dai-cells = <0>;
- 			compatible = "allwinner,sun8i-h3-codec";
-@@ -110,6 +126,7 @@
+@@ -806,6 +823,7 @@
  		};
  
  		hdmi: hdmi@1ee0000 {
