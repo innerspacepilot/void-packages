@@ -1,9 +1,9 @@
 # DRMPRIME must be disabled for video to work
 pkgname=kodi-opi
 version=19.0
-revision=26
-_fullversion=19.0b2-Matrix
-checksum=7744d0a4c592b7e90ba72a41b69a7e14fd6e418c5732fb6967e440dee9a96ecc
+revision=27
+_fullversion=19.0RC1-Matrix
+checksum=96621a997221f75b151dc76575bc137d1e890d43a9ca37ad8f09f7431f290c9b
 build_style=cmake
 wrksrc="xbmc-${_fullversion}"
 short_desc="Software media player and entertainment hub for digital media (RPi)"
