@@ -15,6 +15,7 @@ fi
 cp -v $LIBRE_PATH/packages/linux/patches/default/*.patch $PATCHES/
 
 cp -v $LIBRE_PATH/projects/Allwinner/patches/linux/*.patch $PATCHES/
+cp -v $LIBRE_PATH/projects/Allwinner/patches/linux/crust/*.patch $PATCHES/
 
 cp -v $LIBRE_PATH/projects/Allwinner/devices/H3/patches/linux/*.patch $PATCHES/
 
