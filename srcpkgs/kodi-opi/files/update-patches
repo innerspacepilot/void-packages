@@ -1,0 +1,18 @@
+#!/bin/bash
+
+
+LIBRE_PATH="$1" # full path to Libreelec
+PATCHES="patches"
+
+mkdir -p $PATCHES
+
+if [ ! -d "$LIBRE_PATH" ];
+then
+  echo "LIBRE_PATH is wrong"
+  exit 1
+fi
+
+cp -v $LIBRE_PATH/packages/mediacenter/kodi/patches/*.patch $PATCHES
+cp -v $LIBRE_PATH/projects/Allwinner/patches/kodi/*.patch $PATCHES
+
+
