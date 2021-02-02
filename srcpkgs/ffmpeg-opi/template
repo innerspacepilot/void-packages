@@ -3,7 +3,7 @@
 pkgname=ffmpeg-opi
 version=4.3.1
 _full_version=4.3.1-Matrix-Beta1
-revision=12
+revision=15
 short_desc="Decoding, encoding and streaming software"
 maintainer="Johannes <johannes.brechtmann@gmail.com>"
 license="GPL-3.0-or-later"
@@ -35,7 +35,7 @@ makedepends="zlib-devel bzip2-devel freetype-devel alsa-lib-devel
 build_options="x265 v4l2 vpx faac fdk_aac aom nvenc sndio pulseaudio dav1d"
 build_options_default="x265 v4l2 vpx sndio pulseaudio dav1d"
 
-CFLAGS="-march=armv7-a+neon-vfpv4 -I/usr/armv7l-linux-gnueabihf/usr/src/kernel-headers-5.10.4_1/installed_headers/include"
+CFLAGS="-march=armv7-a+neon-vfpv4 -I/usr/armv7l-linux-gnueabihf/usr/src/kernel-headers-5.10.11_1/installed_headers/include"
 CXXFLAGS=$CFLAGS
 
 
