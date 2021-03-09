@@ -1,7 +1,7 @@
 # DRMPRIME must be disabled for video to work
 pkgname=kodi-opi
 version=19.0
-revision=30
+revision=31
 _fullversion="19.0-Matrix"
 checksum=f7ef8a6f45862ae3b7ebfce4950d74f534be3cb4a0e67ce640963746b3f668f2
 build_style=cmake
@@ -29,7 +29,7 @@ makedepends="
  libjpeg-turbo-devel avahi-libs-devel alsa-lib-devel samba-devel tiff-devel
  libmysqlclient-devel libmpeg2-devel wavpack-devel zlib-devel lzo-devel
  fribidi-devel sqlite-devel freetype-devel jasper-devel faac-devel
- faad2-devel libmodplug-devel libressl-devel libass-devel libmad-devel
+ faad2-devel libmodplug-devel openssl-devel libass-devel libmad-devel
  fontconfig-devel libsamplerate-devel libmms-devel libcurl-devel ffmpeg-opi ffmpeg-opi-devel
  enca-devel boost-devel libbluetooth-devel yajl-devel libplist-devel
  librtmp-devel tinyxml-devel taglib-devel libcap-devel lame-devel libnfs-devel
