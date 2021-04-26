@@ -1,7 +1,7 @@
 # DRMPRIME must be disabled for video to work
 pkgname=kodi-opi
 version=19.0
-revision=31
+revision=33
 _fullversion="19.0-Matrix"
 checksum=f7ef8a6f45862ae3b7ebfce4950d74f534be3cb4a0e67ce640963746b3f668f2
 build_style=cmake
