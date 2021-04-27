@@ -1,8 +1,8 @@
 # Template file for 'ffmpeg-opi'
 # audacity also needs to be bumped when a new ffmpeg version bumps libavformat's soname!
 pkgname=ffmpeg-opi
-version=4.3.1
-_full_version=4.3.1-Matrix-Beta1
+version=4.3.2
+_full_version="4.3.2-Matrix-19.1"
 revision=18
 short_desc="Decoding, encoding and streaming software"
 maintainer="Johannes <johannes.brechtmann@gmail.com>"
@@ -10,7 +10,7 @@ license="GPL-3.0-or-later"
 homepage="https://www.ffmpeg.org"
 changelog="https://raw.githubusercontent.com/FFmpeg/FFmpeg/master/Changelog"
 distfiles="https://github.com/xbmc/FFmpeg/archive/${_full_version}.tar.gz"
-checksum=0b209a9b15f2335e516bf2ad1249fffc6b55425145f17c9674dc430abf6a67ad
+checksum=c2558449f1eddb6b13ed168288388c7804049c2af8d6db4952ccd6b4af6e9fdd
 patch_args="-Np1"
 replaces="ffmpeg>=0"
 provides="ffmpeg-${version}_${revision}"
@@ -35,7 +35,7 @@ makedepends="zlib-devel bzip2-devel freetype-devel alsa-lib-devel
 build_options="x265 v4l2 vpx faac fdk_aac aom nvenc sndio pulseaudio dav1d"
 build_options_default="x265 v4l2 vpx sndio pulseaudio dav1d"
 
-CFLAGS="-march=armv7-a+neon-vfpv4 -I/usr/armv7l-linux-gnueabihf/usr/src/kernel-headers-5.10.26_2/installed_headers/include"
+CFLAGS="-march=armv7-a+neon-vfpv4 -I/usr/armv7l-linux-gnueabihf/usr/src/kernel-headers-5.10.30_1/installed_headers/include"
 CXXFLAGS=$CFLAGS
 
 

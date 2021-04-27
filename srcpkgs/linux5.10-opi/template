@@ -1,7 +1,7 @@
 # Template file for 'linux5.10'
 pkgname=linux5.10-opi
-version=5.10.26
-revision=2
+version=5.10.30
+revision=1
 wrksrc="linux-5.10"
 short_desc="Linux kernel and modules (${version%.*} series)"
 maintainer="innerspacepilot@gmail.com"
@@ -12,7 +12,7 @@ distfiles="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.10.tar.gz
            https://cdn.kernel.org/pub/linux/kernel/v5.x/patch-${version}.xz
            https://github.com/innerspacepilot/rtl8189ES_linux/archive/${rtl8189_commit_id}.tar.gz"
 checksum="91169da4618d182599963926cad0256bcf6f5c74bac47b24c199374539323e64
-          5bbc24f360f6b02597769a73ba89cfd085cdff2118aa76a0a33f021e1febdea4
+          c56bc587a1d61145bf3e0b0163d390d08d490b38dbc304138a84fe1f6140aed6
           09c26dceb5fca4af0cae752f1d383dc638984c67c87cd514779592610fce165f"
 patch_args="-Np1"
 
