@@ -15,6 +15,14 @@ fi
 cp -v $LIBRE_PATH/packages/multimedia/ffmpeg/patches/libreelec/*.patch $PATCHES
 cp -v $LIBRE_PATH/packages/multimedia/ffmpeg/patches/v4l2-drmprime/*.patch $PATCHES
 cp -v $LIBRE_PATH/packages/multimedia/ffmpeg/patches/v4l2-request/*.patch $PATCHES
-cp -v $LIBRE_PATH/projects/Allwinner/patches/ffmpeg/*.patch $PATCHES
+
+for i in $LIBRE_PATH/projects/Allwinner/patches/ffmpeg/*.patch;
+do
+  if [ -f "$i" ];
+  then
+    name=`basename "$i"`
+    cp -v "$i" "$PATCHES/zzz-$name"
+  fi
+done
 
 
