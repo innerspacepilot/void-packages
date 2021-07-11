@@ -3,7 +3,7 @@
 pkgname=ffmpeg-opi
 version=4.3.2
 _full_version="4.3.2-Matrix-19.1"
-revision=18
+revision=20
 short_desc="Decoding, encoding and streaming software"
 maintainer="Johannes <johannes.brechtmann@gmail.com>"
 license="GPL-3.0-or-later"
