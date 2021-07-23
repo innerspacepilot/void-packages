@@ -3,7 +3,7 @@
 pkgname=ffmpeg-opi
 version=4.3.2
 _full_version="4.3.2-Matrix-19.1"
-revision=20
+revision=21
 short_desc="Decoding, encoding and streaming software"
 maintainer="Johannes <johannes.brechtmann@gmail.com>"
 license="GPL-3.0-or-later"
@@ -126,12 +126,8 @@ do_configure() {
 	--enable-encoder=wmav2 \
 	--enable-encoder=mjpeg \
 	--enable-encoder=png \
-	--disable-muxers \
-	--enable-muxer=spdif \
-	--enable-muxer=adts \
-	--enable-muxer=asf \
-	--enable-muxer=ipod \
-	--enable-muxer=mpegts \
+	--enable-encoder=mp4 \
+	--enable-encoder=mp3 \
 	--enable-demuxers \
 	--enable-parsers \
 	--enable-bsfs \
@@ -152,7 +148,6 @@ do_configure() {
   --disable-libdc1394 \
   --disable-libfreetype \
   --disable-libgsm \
-  --disable-libmp3lame \
   --disable-libopencore-amrnb \
   --disable-libopencore-amrwb \
   --disable-libopencv \
