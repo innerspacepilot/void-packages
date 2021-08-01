@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/arm 5.10.41 Kernel Configuration
+# Linux/arm 5.10.47 Kernel Configuration
 #
 CONFIG_CC_VERSION_TEXT="armv7l-linux-gnueabihf-gcc (GCC) 10.2.1 20201203"
 CONFIG_CC_IS_GCC=y
@@ -1461,6 +1461,7 @@ CONFIG_VIRTIO_BLK=m
 # NVME Support
 #
 # CONFIG_NVME_FC is not set
+# CONFIG_NVME_TCP is not set
 # CONFIG_NVME_TARGET is not set
 # end of NVME Support
 
@@ -4462,8 +4463,8 @@ CONFIG_RTC_NVMEM=y
 #
 # RTC interfaces
 #
-# CONFIG_RTC_INTF_SYSFS is not set
-# CONFIG_RTC_INTF_PROC is not set
+CONFIG_RTC_INTF_SYSFS=y
+CONFIG_RTC_INTF_PROC=y
 CONFIG_RTC_INTF_DEV=y
 # CONFIG_RTC_INTF_DEV_UIE_EMUL is not set
 # CONFIG_RTC_DRV_TEST is not set
@@ -4474,7 +4475,8 @@ CONFIG_RTC_INTF_DEV=y
 # CONFIG_RTC_DRV_ABB5ZES3 is not set
 # CONFIG_RTC_DRV_ABEOZ9 is not set
 # CONFIG_RTC_DRV_ABX80X is not set
-# CONFIG_RTC_DRV_DS1307 is not set
+CONFIG_RTC_DRV_DS1307=m
+CONFIG_RTC_DRV_DS1307_CENTURY=y
 # CONFIG_RTC_DRV_DS1374 is not set
 # CONFIG_RTC_DRV_DS1672 is not set
 # CONFIG_RTC_DRV_HYM8563 is not set
