@@ -1,9 +1,9 @@
 # DRMPRIME must be disabled for video to work
 pkgname=kodi-opi
 version=19.0
-revision=36
-_fullversion=6402a50950ff6463042f8891ec4029c782730391
-checksum=56e1a64f2cd1b38e6997dac3057cdeb81e33109bfa449521493208b514466bd0
+revision=38
+_fullversion=8ea70bc886aff2d6e4ddcd6ae1b651a57debb8f8
+checksum=56d2611afef27272b4db1af042c0fdc995ed0ddd2dc90c6936a1bc7606cbb893
 build_style=cmake
 wrksrc="xbmc-${_fullversion}"
 short_desc="Software media player and entertainment hub for digital media (RPi)"
@@ -23,7 +23,7 @@ archs="armv7l"
 hostmakedepends="
  automake libtool pkg-config gperf cmake zip unzip nasm yasm
  gettext-devel libltdl-devel libmysqlclient-devel
- lzo-devel flatbuffers openjdk11 swig giflib-devel libpng-devel zlib-devel libjpeg-turbo-devel"
+ lzo-devel flatbuffers openjdk11 swig giflib-devel libpng-devel zlib-devel libjpeg-turbo-devel python3"
 makedepends="
  eudev-libudev-devel pcre-devel expat-devel giflib-devel libpng-devel
  libjpeg-turbo-devel avahi-libs-devel alsa-lib-devel samba-devel tiff-devel
