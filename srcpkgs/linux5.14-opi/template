@@ -7,13 +7,13 @@ short_desc="Linux kernel and modules (${version%.*} series)"
 maintainer="innerspacepilot@gmail.com"
 license="GPL-2.0-only"
 homepage="https://www.kernel.org"
-rtl8189_commit_id=kernel_5.8_fix
+rtl8189_commit_id=no-debug
 distfiles="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${version%.*}.tar.gz
  https://cdn.kernel.org/pub/linux/kernel/v5.x/patch-${version}.xz
  https://github.com/innerspacepilot/rtl8189ES_linux/archive/${rtl8189_commit_id}.tar.gz"
 checksum="de416e87b6330686ccb13c7249acb16dabaea145420315237053c7d466064a82
  ce444a50abc335294f6104e075ac2448ee1c677c076031f517dd98c877b4e076
- 09c26dceb5fca4af0cae752f1d383dc638984c67c87cd514779592610fce165f"
+ 45b5f74abdd9cd58d8392165fa20418a38186a0186c3f307c10961841c7d7291"
 python_version=3
 patch_args="-Np1"
 
@@ -116,7 +116,7 @@ do_build() {
 	cd ${_pwd}
 	cd "../rtl8189ES_linux-${rtl8189_commit_id}"
 	make ARCH=$arch ${_cross} ${makejobs} KSRC="${_pwd}"
-	# make ARCH=arm CROSS_COMPILE=armv7l-linux-gnueabihf" -j32 KSRC=../linux-5.8
+	# make ARCH=arm CROSS_COMPILE=armv7l-linux-gnueabihf- -j1 KSRC=../linux-5.14
 }
 
 do_install() {
