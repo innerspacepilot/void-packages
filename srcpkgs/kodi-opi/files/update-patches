@@ -14,5 +14,15 @@ fi
 
 cp -v $LIBRE_PATH/packages/mediacenter/kodi/patches/*.patch $PATCHES
 cp -v $LIBRE_PATH/projects/Allwinner/patches/kodi/*.patch $PATCHES
+cp -v files/crossguid-0.2.patch $PATCHES
 
+# delete unneeded patches
 
+rm -f $PATCHES/kodi-100.02-add-libreelec.tv-RSS-news.patch
+rm -f $PATCHES/kodi-100.04-use-udevil-to-umount.patch
+rm -f $PATCHES/kodi-100.05-make-binary-addons-executable.patch
+rm -f $PATCHES/kodi-100.08-setup-timezone.patch
+rm -f $PATCHES/kodi-100.09-use-a-wrapper-to-setup-service-addons.patch
+rm -f $PATCHES/kodi-100.10-handle-SIGTERM.patch
+rm -f $PATCHES/kodi-100.31.le-addons-no-startupenable.patch
+rm -f $PATCHES/kodi-100.32.add-le-repository-to-officials.patch
