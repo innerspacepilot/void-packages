@@ -1,0 +1,65 @@
+--- a/arch/arm/boot/dts/sunxi-h3-h5.dtsi
++++ b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
+@@ -865,9 +865,13 @@
+ 			resets = <&ccu RST_BUS_I2C0>;
+ 			pinctrl-names = "default";
+ 			pinctrl-0 = <&i2c0_pins>;
+-			status = "disabled";
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
++			ds3231: ds3231@68 {
++				compatible = "maxim,ds3231";
++				reg = <0x68>;
++				#clock-cells = <1>;
++			};
+ 		};
+ 
+ 		i2c1: i2c@1c2b000 {
+@@ -878,7 +882,6 @@
+ 			resets = <&ccu RST_BUS_I2C1>;
+ 			pinctrl-names = "default";
+ 			pinctrl-0 = <&i2c1_pins>;
+-			status = "disabled";
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 		};
+@@ -891,7 +894,6 @@
+ 			resets = <&ccu RST_BUS_I2C2>;
+ 			pinctrl-names = "default";
+ 			pinctrl-0 = <&i2c2_pins>;
+-			status = "disabled";
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 		};
+--- a/arch/arm/boot/dts/sun8i-h3-orangepi-pc-plus.dts
++++ b/arch/arm/boot/dts/sun8i-h3-orangepi-pc-plus.dts
+@@ -50,6 +50,8 @@
+ 	aliases {
+ 		/* ethernet0 is the H3 emac, defined in sun8i-h3.dtsi */
+ 		ethernet1 = &rtl8189ftv;
++		rtc0 = &ds3231;
++		rtc1 = &rtc;
+ 	};
+ };
+
+--- a/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts
++++ b/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts
+@@ -96,6 +96,17 @@
+ 			wakeup-source;
+ 		};
+ 	};
++
++ pause_sensor {
++    compatible = "gpio-keys";
++    #address-cells = <1>;
++    #size-cells = <0>;
++    button@18 {
++      label = "pause_space";
++      linux,code = <KEY_SPACE>;
++      gpios = <&pio 0 18 GPIO_ACTIVE_HIGH>;
++    };
++ };
+ };
+ 
+ &codec {
+

@@ -1,0 +1,23 @@
+#!/bin/bash
+
+
+LIBRE_PATH="$1" # full path to Libreelec
+PATCHES="patches"
+
+mkdir -p $PATCHES
+
+if [ ! -d "$LIBRE_PATH" ];
+then
+	echo "LIBRE_PATH is wrong"
+	exit 1
+fi
+
+cat /dev/null > $PATCHES/series
+
+for i in $LIBRE_PATH/packages/linux/patches/default \
+				 $LIBRE_PATH/projects/Allwinner/patches/linux \
+				 files;
+do
+	cp -v "$i"/*.patch $PATCHES
+	( cd "$i"; ls -1 *.patch ) | cat >> $PATCHES/series
+done
