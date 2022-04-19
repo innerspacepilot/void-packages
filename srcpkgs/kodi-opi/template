@@ -1,19 +1,27 @@
 pkgname=kodi-opi
 version=20.0
-revision=3
-_fullversion=2f11e994f322f7376476b186293a3df34246b9a7
-checksum=7268c2900c5b893f331e471b31bfb214ff91473753b78211887247585bb82487
+revision=4
+_fullversion=70d6b0c2e5a63e8076f7e9cf26331c2441ada371
+_fmt_version="8.0.1"
+_crossguid_version="ca1bf4b810e2d188d04cb6286f957008ee1b7681"
+checksum="6fa01090795b5548db5606e120cade2a93265f65dc4ea3daae5f1ab5701c9fa8
+  b06ca3130158c625848f3fb7418f235155a4d389b2abc3a6245fb01cb0eb1e01
+  6be27e0b3a4907f0cd3cfadec255ee1b925569e1bd06e67a4d2f4267299b69c4"
 build_style=cmake
 wrksrc="xbmc-${_fullversion}"
 short_desc="Software media player and entertainment hub for digital media (RPi)"
 maintainer="Helmut Pozimski <helmut@pozimski.eu>"
 homepage="http://www.kodi.tv/"
 license="GPL-2.0-or-later"
-distfiles="https://github.com/xbmc/xbmc/archive/${_fullversion}.tar.gz"
+distfiles="https://github.com/xbmc/xbmc/archive/${_fullversion}.tar.gz
+  http://mirrors.kodi.tv/build-deps/sources/fmt-$_fmt_version.tar.gz
+	http://mirrors.kodi.tv/build-deps/sources/crossguid-$_crossguid_version.tar.gz"
 #LDFLAGS+=" -Wl,-z,stack-size=1048576"
 CFLAGS="-DEGL_NO_X11 -march=armv7-a+neon-vfpv4"
 CXXFLAGS=$CFLAGS
 patch_args="-Np1"
+skip_extraction="fmt-$_fmt_version.tar.gz
+	crossguid-$_crossguid_version.tar.gz"
 
 nopie=yes
 # armv7 only, musl not supported because of proprietary blobs
@@ -34,23 +42,27 @@ makedepends="
  librtmp-devel tinyxml-devel taglib-devel libcap-devel lame-devel libnfs-devel
  libxslt-devel libuuid-devel giflib-devel libcec-devel libmicrohttpd-devel
  libcdio-devel libssh-devel dcadec-devel spdlog
- flatbuffers-devel fmt-devel lcms2-devel libfstrcmp-devel rapidjson crossguid
+ flatbuffers-devel lcms2-devel libfstrcmp-devel rapidjson
  libinput-devel libxkbcommon-devel MesaLib-devel libcdio-paranoia libdrm-devel pulseaudio-devel python3-devel libdrm-devel"
 
 configure_args="
 	-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
-	-DENABLE_INTERNAL_CROSSGUID=OFF
+	-DENABLE_INTERNAL_CROSSGUID=ON
+	-DENABLE_INTERNAL_FMT=ON
 	-DENABLE_VAAPI=OFF
 	-DENABLE_VDPAU=OFF
 	-DWITH_FFMPEG=/usr
 	-DWITH_TEXTUREPACKER=tools/depends/native/TexturePacker/bin/TexturePacker
 	-DWITH_JSONSCHEMABUILDER=tools/depends/native/JsonSchemaBuilder/bin/JsonSchemaBuilder
-	# -DAPP_RENDER_SYSTEM=gles
-	# -DCORE_PLATFORM_NAME=gbm
 	-DENABLE_OPENGL=OFF
 	-DENABLE_OPENGLES=ON
 	-DENABLE_CEC=ON
+  -DCORE_PLATFORM_NAME=gbm
+  -DAPP_RENDER_SYSTEM=gles
 "
+#	-DFMT_URL="$XBPS_SRCDISTDIR/$pkgname/fmt-$_fmt_version.tar.gz"
+#  -DCROSSGUID_URL="$XBPS_SRCDISTDIR/$pkgname/crossguid-$_crossguid_version.tar.gz"
+
 #	-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
 
 #-DENABLE_NEON=OFF
