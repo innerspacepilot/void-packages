@@ -1,19 +1,19 @@
 # Template file for 'linux5.15'
 pkgname=linux5.17-opi
 version=5.17.1
-revision=1
+revision=2
 wrksrc="linux-${version%.*}"
 short_desc="Linux kernel and modules (${version%.*} series)"
 maintainer="innerspacepilot@gmail.com"
 license="GPL-2.0-only"
 homepage="https://www.kernel.org"
-rtl8189_commit_id="73f826f0fa74b2fc1ad67eaf92bf9787947ae673"
+rtl8189_commit_id="8bd216768ac9fbbd18c17d6384947cdf5151a80b"
 distfiles="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${version%.*}.tar.gz
  https://cdn.kernel.org/pub/linux/kernel/v5.x/patch-${version}.xz
- https://github.com/jwrdegoede/rtl8189ES_linux/archive/${rtl8189_commit_id}.tar.gz"
+ https://github.com/innerspacepilot/rtl8189ES_linux/archive/${rtl8189_commit_id}.tar.gz"
 checksum="9a8bd5e8b309c79743ab9cb3debdef89a903f8f415af568cd20f9e7201f2c0d8
  24c982d6b7b704b31a6b4bc0a59cbf2135697a58d5d6030532ae07856da36944
- fd74248b8cc62e54a954502228be221ace6051832a972b8b3005cc05e9c87761"
+ c9c5b2663f5e9b79b3fc43b53dacdb6228c6ba41cadf49345559c68b7cfd4135"
 python_version=3
 patch_args="-Np1"
 
