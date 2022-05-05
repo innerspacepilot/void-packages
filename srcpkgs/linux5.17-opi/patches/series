@@ -3,8 +3,8 @@ linux-020-eld-constraints-for-compressed-formats.patch
 linux-051-ouya_controller_support.patch
 linux-058.05-hid_sony-add_autorepeat_for_PS3_remotes.patch
 linux-062-imon_pad_ignore_diagonal.patch
-linux-999-no-lzma-in-x86-perf-build.patch
 linux-999.02-0001-pm-disable-async-suspend-resume-by-default.patch
+linux-999-no-lzma-in-x86-perf-build.patch
 0001-Input-axp20x-pek-allow-wakeup-after-shutdown.patch
 0002-clk-Implement-protected-clocks-for-all-OF-clock-prov.patch
 0003-Revert-clk-qcom-Support-protected-clocks-property.patch
@@ -58,10 +58,7 @@ linux-999.02-0001-pm-disable-async-suspend-resume-by-default.patch
 0060-WIP-drm-bridge-synopsys-Fix-CEC-not-working-after-power.patch
 0063-HACK-SW-CEC-implementation-for-H3.patch
 0065-wip-fix-H6-4k-60.patch
-0087-media-hantro-sunxi-Fix-VP9-steps.patch
-0088-media-cedrus-Fix-H265-aux-buffer-size.patch
 0089-media-cedrus-Add-watchdog-for-job-completion.patch
-0090-media-cedrus-h264-Fix-neighbour-info-buffer-size.patch
 0092-media-Add-P010-tiled-format.patch
 0093-media-Add-P010-format.patch
 0094-media-hantro-Support-format-filtering-by-depth.patch
