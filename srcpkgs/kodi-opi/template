@@ -1,10 +1,10 @@
 pkgname=kodi-opi
 version=20.0
-revision=4
-_fullversion=70d6b0c2e5a63e8076f7e9cf26331c2441ada371
+revision=5
+_fullversion=ee3663fd468ec417ea0bba20b0d18f3448c8980c
 _fmt_version="8.0.1"
 _crossguid_version="ca1bf4b810e2d188d04cb6286f957008ee1b7681"
-checksum="6fa01090795b5548db5606e120cade2a93265f65dc4ea3daae5f1ab5701c9fa8
+checksum="609e49b0eaa3deb5f85828f8220e5734cdb316889926dcd4d7d312c4772c7898
   b06ca3130158c625848f3fb7418f235155a4d389b2abc3a6245fb01cb0eb1e01
   6be27e0b3a4907f0cd3cfadec255ee1b925569e1bd06e67a4d2f4267299b69c4"
 build_style=cmake
