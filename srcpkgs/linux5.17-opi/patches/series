@@ -68,4 +68,5 @@ linux-999-no-lzma-in-x86-perf-build.patch
 0098-media-hantro-sunxi-Enable-10-bit-decoding.patch
 0099-media-hantro-postproc-Properly-calculate-chroma-offs.patch
 uksm-5.17.patch
-zzz-i2c.patch
+zzz-01-ds3231.patch
+zzz-02-ir-tx.patch
