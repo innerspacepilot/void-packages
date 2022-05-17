@@ -35,7 +35,7 @@ makedepends="zlib-devel bzip2-devel freetype-devel alsa-lib-devel
 build_options="x265 v4l2 vpx faac fdk_aac aom nvenc sndio pulseaudio dav1d"
 build_options_default="x265 v4l2 vpx sndio pulseaudio dav1d"
 
-CFLAGS="-march=armv7-a+neon-vfpv4 -I/usr/armv7l-linux-gnueabihf/usr/src/kernel-headers-5.17.1_1/installed_headers/include"
+CFLAGS="-march=armv7-a+neon-vfpv4 -I/usr/armv7l-linux-gnueabihf/usr/src/kernel-headers-5.17.4_3/installed_headers/include"
 CXXFLAGS=$CFLAGS
 
 
