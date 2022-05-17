@@ -1,0 +1,6 @@
+case "${ACTION}" in
+post)
+	mkdir -p home/kodi
+	chown kodi:kodi home/kodi
+	;;
+esac

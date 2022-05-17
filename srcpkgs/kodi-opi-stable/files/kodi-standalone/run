@@ -1,0 +1,3 @@
+#!/bin/sh
+PATH=$PATH:/opt/vc/bin
+exec chpst -P sudo -u kodi -- /usr/lib/kodi/kodi-gbm --standalone
