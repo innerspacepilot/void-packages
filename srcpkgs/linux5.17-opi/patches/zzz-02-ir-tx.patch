@@ -1,0 +1,25 @@
+--- a/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts	2022-05-12 19:27:28.361873758 +0000
++++ b/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts	2022-05-12 19:45:33.817568870 +0000
+@@ -96,6 +96,22 @@
+ 			wakeup-source;
+ 		};
+ 	};
++
++	pause_sensor {
++		compatible = "gpio-keys";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		button@18 {
++			label = "pause_space";
++			linux,code = <KEY_SPACE>;
++			gpios = <&pio 0 18 GPIO_ACTIVE_HIGH>;
++		};
++	};
++
++	irled@0 {
++		compatible = "gpio-ir-tx";
++		gpios = <&pio 0 8 GPIO_ACTIVE_HIGH>;
++	};
+ };
+ 
+ &codec {
