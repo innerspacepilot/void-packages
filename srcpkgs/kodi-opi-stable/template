@@ -11,11 +11,11 @@ maintainer="Helmut Pozimski <helmut@pozimski.eu>"
 homepage="http://www.kodi.tv/"
 license="GPL-2.0-or-later"
 distfiles="https://github.com/xbmc/xbmc/archive/${_fullversion}.tar.gz"
-#LDFLAGS+=" -Wl,-z,stack-size=1048576"
 CFLAGS="-DEGL_NO_X11 -march=armv7-a+neon-vfpv4"
+#CFLAGS="-DEGL_NO_X11 -march=armv7-a+neon-vfpv4 -g"
 CXXFLAGS=$CFLAGS
 patch_args="-Np1"
-
+#nostrip=yes
 nopie=yes
 # armv7 only, musl not supported because of proprietary blobs
 archs="armv7l"
@@ -52,20 +52,6 @@ configure_args="
 	-DWITH_TEXTUREPACKER=tools/depends/native/TexturePacker/bin/TexturePacker
 	-DWITH_JSONSCHEMABUILDER=tools/depends/native/JsonSchemaBuilder/bin/JsonSchemaBuilder
 "
-#	-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
-
-#-DENABLE_NEON=OFF
-#-DENABLE_X11=OFF
-	#-DENABLE_INTERNAL_CROSSGUID=OFF
-# -DGBM_LIBRARY=/usr/lib/mali/libgbm.so
-# -DOPENGLES_gl_LIBRARY=/usr/lib/mali/libGLESv2.so
-# -DEGL_LIBRARY=/usr/lib/mali/libEGL.so
-# -DGBM_INCLUDE_DIR=/BUILD/include
-# -DEGL_INCLUDE_DIR=/BUILD/include
-# -DOPENGLES_INCLUDE_DIR=/BUILD/include
-
-
-
 case "$XBPS_TARGET_MACHINE" in
 	armv6*)   configure_args+=" -DWITH_CPU=arm1176jzf-s -DCMAKE_EXE_LINKER_FLAGS=-latomic"
 		  LDFLAGS+=" -latomic";;
@@ -87,20 +73,6 @@ kodi_groups="audio,input,video"
 kodi_shell="/bin/bash"
 
 pre_configure() {
-	# find -type f | \
-	# 	grep "configure\.ac\|Makefile\|cmake\|config\.site" | \
-	# 	xargs sed -i  -e "s;-isystem;-I;g"
-
-	# # Copy generated files to avoid requiring java.
-	# mkdir -p build/build/swig
-
-	# # THESE FILES MUST BE UPDATED WITH EVERY VERSION BUMP!
-	# # (See kodi template)
-	# cp -r $FILESDIR/swig.nojava-$version/* -t build/build/swig
-	# cp $FILESDIR/CMakeCache.txt.nojava build/CMakeCache.txt
-
-	# echo "set(FOUND_SWIG Yes)" > cmake/modules/FindSWIG.cmake
-
 	if [ "$CROSS_BUILD" ]; then
 		i=TexturePacker
 		cat > cmake/modules/Find$i.cmake <<EOF
@@ -125,10 +97,6 @@ pre_build() {
 				make -C tools/depends/native/$i
 		done
 	fi
-	# echo "========================"
-	# set | grep ^C
-	# echo "========================"
-	# exit 1
 }
 
 post_build() {
