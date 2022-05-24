@@ -1,7 +1,7 @@
 # Template file for 'linux5.15'
 pkgname=linux5.17-opi
 version=5.17.4
-revision=3
+revision=4
 wrksrc="linux-${version%.*}"
 short_desc="Linux kernel and modules (${version%.*} series)"
 maintainer="innerspacepilot@gmail.com"

@@ -3,8 +3,8 @@ linux-020-eld-constraints-for-compressed-formats.patch
 linux-051-ouya_controller_support.patch
 linux-058.05-hid_sony-add_autorepeat_for_PS3_remotes.patch
 linux-062-imon_pad_ignore_diagonal.patch
-linux-999.02-0001-pm-disable-async-suspend-resume-by-default.patch
 linux-999-no-lzma-in-x86-perf-build.patch
+linux-999.02-0001-pm-disable-async-suspend-resume-by-default.patch
 0001-Input-axp20x-pek-allow-wakeup-after-shutdown.patch
 0002-clk-Implement-protected-clocks-for-all-OF-clock-prov.patch
 0003-Revert-clk-qcom-Support-protected-clocks-property.patch

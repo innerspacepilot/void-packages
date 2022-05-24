@@ -11,7 +11,7 @@
 +		#size-cells = <0>;
 +		button@18 {
 +			label = "pause_space";
-+			linux,code = <KEY_SPACE>;
++			linux,code = <KEY_PLAYPAUSE>;
 +			gpios = <&pio 0 18 GPIO_ACTIVE_HIGH>;
 +		};
 +	};
