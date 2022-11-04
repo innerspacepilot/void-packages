@@ -50,7 +50,6 @@ linux-999-no-lzma-in-x86-perf-build.patch
 0061-media--cedrus--Don-t-CPU-map-source-buffers.patch
 0062-media--cedrus--hevc--Fix-offset-adjustments.patch
 0063-HACK-SW-CEC-implementation-for-H3.patch
-0064-media--cedrus--Fix-watchdog-race-condition.patch
 0065-wip-fix-H6-4k-60.patch
 0066-arm64-dts-allwinner-h6-Fix-Cedrus-IOMMU-again.patch
 0067-arm64-dts-allwinner-h6-Add-Hantro-G2-IOMMU-phandle.patch
