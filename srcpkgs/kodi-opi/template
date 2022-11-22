@@ -1,10 +1,10 @@
 pkgname=kodi-opi
 version=20.0
 revision=11
-_fullversion="92a0283f169270dc205834b470c09c84e845dfc1"
+_fullversion="20.0b1-Nexus"
 _fmt_version="8.0.1"
 _crossguid_version="ca1bf4b810e2d188d04cb6286f957008ee1b7681"
-checksum="51e2a51d98098662c138ffbcf8c08038e10f9b8b6b933b1a1180f3ec17950f96
+checksum="dc714f4730ad213f8b1dffdea6b93dc88d8e3c7985f45889fcc0fd46951eee27
   b06ca3130158c625848f3fb7418f235155a4d389b2abc3a6245fb01cb0eb1e01
   6be27e0b3a4907f0cd3cfadec255ee1b925569e1bd06e67a4d2f4267299b69c4"
 build_style=cmake
