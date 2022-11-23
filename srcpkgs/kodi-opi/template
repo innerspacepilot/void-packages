@@ -1,6 +1,6 @@
 pkgname=kodi-opi
 version=20.0
-revision=11
+revision=12
 _fullversion="20.0b1-Nexus"
 _fmt_version="8.0.1"
 _crossguid_version="ca1bf4b810e2d188d04cb6286f957008ee1b7681"
