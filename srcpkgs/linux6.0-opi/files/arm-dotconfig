@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/arm 6.0.0 Kernel Configuration
+# Linux/arm 6.0.9 Kernel Configuration
 #
 CONFIG_CC_VERSION_TEXT="armv7l-linux-gnueabihf-gcc (GCC) 10.2.1 20201203"
 CONFIG_CC_IS_GCC=y
@@ -4167,6 +4167,7 @@ CONFIG_HID_SMARTJOYPLUS=m
 CONFIG_SMARTJOYPLUS_FF=y
 CONFIG_HID_TIVO=m
 CONFIG_HID_TOPSEED=m
+# CONFIG_HID_TOPRE is not set
 # CONFIG_HID_THINGM is not set
 # CONFIG_HID_THRUSTMASTER is not set
 # CONFIG_HID_UDRAW_PS3 is not set
@@ -6227,6 +6228,7 @@ CONFIG_DEBUG_MISC=y
 #
 # Compile-time checks and compiler options
 #
+CONFIG_AS_HAS_NON_CONST_LEB128=y
 CONFIG_DEBUG_INFO_NONE=y
 # CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT is not set
 # CONFIG_DEBUG_INFO_DWARF4 is not set

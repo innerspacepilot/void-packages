@@ -1,8 +1,8 @@
 # Template file for 'linux6.0'
 pkgname=linux6.0-opi
-version=6.0.6
+version=6.0.9
 revision=1
-wrksrc="linux-${version%.*}"
+build_wrksrc="linux-${version%.*}"
 short_desc="Linux kernel and modules (${version%.*} series)"
 maintainer="innerspacepilot@gmail.com"
 license="GPL-2.0-only"
@@ -12,10 +12,11 @@ distfiles="https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-${version%.*}.tar.
  https://cdn.kernel.org/pub/linux/kernel/v6.x/patch-${version}.xz
  https://github.com/innerspacepilot/rtl8189ES_linux/archive/${rtl8189_commit_id}.tar.gz"
 checksum="3e7557f0de28c0e8cd2c858c6ff3726aeb778db91b9da14bfc79e6df4169f8bd
- c4920a37259b5a479fd2d6e76aaa040d54cb4cbab2ea4e323e3e0f0adb09324c
+ dc5704014e53dd661f78fd062facc3518242d3412bef6b9bea69089f53f10a78
  c3bf672414a1e8c6e72beaae7bf936b73140db7cfdc618da92360f957b2598f4"
+skip_extraction="patch-${version}.xz"
 python_version=3
-patch_args="-Np1"
+patch_args="-Np1 -d ${build_wrksrc}"
 
 # XXX Restrict archs until a proper <arch>-dotconfig is available in FILESDIR.
 archs="armv7l"
@@ -58,7 +59,12 @@ if [ "$CROSS_BUILD" ]; then
 fi
 
 pre_patch() {
-	cat ../patch-${version} | patch -Np1
+	if [ ! -f $XBPS_SRCDISTDIR/$pkgname-$version/patch-${version}.xz ]
+	then
+		return
+	fi
+	xzcat $XBPS_SRCDISTDIR/$pkgname-$version/patch-${version}.xz |
+		patch -sNp1 -F0
 }
 
 do_configure() {
@@ -181,7 +187,7 @@ do_install() {
 	rm -f source build
 	ln -sf ../../../src/kernel-headers-${_kernver} build
 
-	cd ${wrksrc}
+	cd ${wrksrc}/${build_wrksrc}
 	# Install required headers to build external modules
 	install -Dm644 Makefile ${hdrdest}/Makefile
 	install -Dm644 kernel/Makefile ${hdrdest}/kernel/Makefile
@@ -205,7 +211,7 @@ do_install() {
 		fi
 	done
 
-	cd ${wrksrc}
+	cd ${wrksrc}/${build_wrksrc}
 	mkdir -p ${hdrdest}/arch/${arch}
 	cp -a arch/${arch}/include ${hdrdest}/arch/${arch}
 
