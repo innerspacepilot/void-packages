@@ -1,28 +1,22 @@
 pkgname=kodi-opi
 version=20.0
-revision=14
+revision=15
 _fullversion="20.0b1-Nexus"
 _fmt_version="8.0.1"
 _crossguid_version="ca1bf4b810e2d188d04cb6286f957008ee1b7681"
 _inputstream_version="94833130ecab798cd2a58315a7e31d91c5d27d8d"
-checksum="dc714f4730ad213f8b1dffdea6b93dc88d8e3c7985f45889fcc0fd46951eee27
-  b06ca3130158c625848f3fb7418f235155a4d389b2abc3a6245fb01cb0eb1e01
-  6be27e0b3a4907f0cd3cfadec255ee1b925569e1bd06e67a4d2f4267299b69c4
-  ad96cb4c3779a5cf06b37a1ddcf705e58dc070c93618f4bed5e79631a7cace86"
+checksum="dc714f4730ad213f8b1dffdea6b93dc88d8e3c7985f45889fcc0fd46951eee27"
 build_style=cmake
-build_wrksrc="xbmc-${_fullversion}"
+# build_wrksrc="xbmc-${_fullversion}"
 short_desc="Software media player and entertainment hub for digital media (RPi)"
 maintainer="Helmut Pozimski <helmut@pozimski.eu>"
 homepage="http://www.kodi.tv/"
 license="GPL-2.0-or-later"
-distfiles="https://github.com/xbmc/xbmc/archive/${_fullversion}.tar.gz
-  http://mirrors.kodi.tv/build-deps/sources/fmt-$_fmt_version.tar.gz
-	http://mirrors.kodi.tv/build-deps/sources/crossguid-$_crossguid_version.tar.gz
-	https://github.com/xbmc/inputstream.adaptive/archive/${_inputstream_version}.zip"
+distfiles="https://github.com/xbmc/xbmc/archive/${_fullversion}.tar.gz"
 #LDFLAGS+=" -Wl,-z,stack-size=1048576"
 CFLAGS="-DEGL_NO_X11 -march=armv7-a+neon-vfpv4"
 CXXFLAGS=$CFLAGS
-patch_args="-Np1 -d ${build_wrksrc}"
+# patch_args="-Np1 -d ${build_wrksrc}"
 skip_extraction="fmt-$_fmt_version.tar.gz
 	crossguid-$_crossguid_version.tar.gz"
 
@@ -33,7 +27,7 @@ archs="armv7l"
 hostmakedepends="
  automake libtool pkg-config gperf cmake zip unzip nasm yasm
  gettext-devel libltdl-devel libmysqlclient-devel
- lzo-devel flatbuffers openjdk11 swig giflib-devel libpng-devel zlib-devel libjpeg-turbo-devel python3"
+ lzo-devel flatbuffers openjdk11 swig giflib-devel libpng-devel zlib-devel libjpeg-turbo-devel python3 git"
 makedepends="
  eudev-libudev-devel pcre-devel expat-devel giflib-devel libpng-devel
  libjpeg-turbo-devel avahi-libs-devel alsa-lib-devel samba-devel tiff-devel
@@ -135,12 +129,13 @@ post_build() {
 	# Rebuild for target
 	if [ "$CROSS_BUILD" ]; then
 		for i in JsonSchemaBuilder TexturePacker; do
-			make -C tools/depends/native/$i clean all \
+			#make -C tools/depends/native/$i clean all \
 				CC="$CC" CXX="$CXX" LD="$LD" AR="$AR" RANLIB="$RANLIB" \
 				CPP="$CPP" AS="$AS" OBJDUMP="$OBJDUMP" \
 				CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS"
 		done
 	fi
+	make -C tools/depends/target/binary-addons PREFIX=${DESTDIR}/usr ADDONS=inputstream.adaptive || exit 1
 }
 
 post_install() {
