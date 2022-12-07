@@ -1,6 +1,6 @@
 # Template file for 'linux6.0'
 pkgname=linux6.0-opi
-version=6.0.9
+version=6.0.11
 revision=1
 build_wrksrc="linux-${version%.*}"
 short_desc="Linux kernel and modules (${version%.*} series)"
@@ -12,7 +12,7 @@ distfiles="https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-${version%.*}.tar.
  https://cdn.kernel.org/pub/linux/kernel/v6.x/patch-${version}.xz
  https://github.com/innerspacepilot/rtl8189ES_linux/archive/${rtl8189_commit_id}.tar.gz"
 checksum="3e7557f0de28c0e8cd2c858c6ff3726aeb778db91b9da14bfc79e6df4169f8bd
- dc5704014e53dd661f78fd062facc3518242d3412bef6b9bea69089f53f10a78
+ 1398bc1d9c56110929d0e28a1026f418385ab8c9895eaad437f3e79d610a4d42
  c3bf672414a1e8c6e72beaae7bf936b73140db7cfdc618da92360f957b2598f4"
 skip_extraction="patch-${version}.xz"
 python_version=3

@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/arm 6.0.9 Kernel Configuration
+# Linux/arm 6.0.11 Kernel Configuration
 #
 CONFIG_CC_VERSION_TEXT="armv7l-linux-gnueabihf-gcc (GCC) 10.2.1 20201203"
 CONFIG_CC_IS_GCC=y
@@ -889,6 +889,7 @@ CONFIG_INET_ESP=m
 # CONFIG_INET_ESP_OFFLOAD is not set
 # CONFIG_INET_ESPINTCP is not set
 # CONFIG_INET_IPCOMP is not set
+CONFIG_INET_TABLE_PERTURB_ORDER=16
 CONFIG_INET_TUNNEL=m
 # CONFIG_INET_DIAG is not set
 # CONFIG_TCP_CONG_ADVANCED is not set
