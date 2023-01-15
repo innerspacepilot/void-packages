@@ -1,0 +1,28 @@
+--- a/arch/arm/boot/dts/sun8i-h3-orangepi-pc-plus.dts	2022-05-12 19:27:28.361873758 +0000
++++ b/arch/arm/boot/dts/sun8i-h3-orangepi-pc-plus.dts	2022-05-12 19:37:52.566594735 +0000
+@@ -50,6 +50,8 @@
+ 	aliases {
+ 		/* ethernet0 is the H3 emac, defined in sun8i-h3.dtsi */
+ 		ethernet1 = &rtl8189ftv;
++		rtc0 = &ds3231;
++		rtc1 = &rtc;
+ 	};
+ };
+ 
+--- a/arch/arm/boot/dts/sunxi-h3-h5.dtsi	2022-05-12 19:27:28.369873771 +0000
++++ b/arch/arm/boot/dts/sunxi-h3-h5.dtsi	2022-05-12 19:37:52.564594735 +0000
+@@ -755,9 +755,13 @@
+ 			resets = <&ccu RST_BUS_I2C0>;
+ 			pinctrl-names = "default";
+ 			pinctrl-0 = <&i2c0_pins>;
+-			status = "disabled";
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
++			ds3231: ds3231@68 {
++				compatible = "maxim,ds3231";
++				reg = <0x68>;
++				#clock-cells = <1>;
++			};
+ 		};
+ 
+ 		i2c1: i2c@1c2b000 {
