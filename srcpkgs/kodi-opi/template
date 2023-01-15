@@ -1,11 +1,11 @@
 pkgname=kodi-opi
 version=20.0
-revision=16
-_fullversion="20.0b1-Nexus"
+revision=17
+_fullversion="20.0-Nexus"
 _fmt_version="8.0.1"
 _crossguid_version="ca1bf4b810e2d188d04cb6286f957008ee1b7681"
 _inputstream_version="94833130ecab798cd2a58315a7e31d91c5d27d8d"
-checksum="dc714f4730ad213f8b1dffdea6b93dc88d8e3c7985f45889fcc0fd46951eee27"
+checksum="4c75add8b9ea44924b6ee45f94439545676033f35f5993908871e3dded527b79"
 build_style=cmake
 # build_wrksrc="xbmc-${_fullversion}"
 short_desc="Software media player and entertainment hub for digital media (RPi)"
