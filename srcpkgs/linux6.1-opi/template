@@ -123,6 +123,7 @@ do_build() {
 	cd "../rtl8189ES_linux-${rtl8189_commit_id}"
 	make CONFIG_RTW_DEBUG=n ARCH=$arch ${_cross} ${makejobs} KSRC="${_pwd}"
 	# make ARCH=arm CROSS_COMPILE=armv7l-linux-gnueabihf- -j1 KSRC=../linux-5.14
+	# make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- dtbs
 }
 
 do_install() {
