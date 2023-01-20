@@ -12,4 +12,4 @@ done
 
 # match all configuration
 [ -r /etc/wpa_supplicant/wpa_supplicant.conf ] &&
-	AUTO="${AUTO} -M -c /etc/wpa_supplicant/wpa_supplicant.conf"
+	AUTO="${AUTO} -c /etc/wpa_supplicant/wpa_supplicant.conf"

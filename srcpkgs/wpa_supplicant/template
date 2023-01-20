@@ -1,20 +1,35 @@
 # Template file for 'wpa_supplicant'
 pkgname=wpa_supplicant
-version=2.10
-revision=4
-build_wrksrc="$pkgname"
+version=2.99
+revision=1
+build_wrksrc="wpa_supplicant"
 short_desc="WPA/WPA2/IEEE 802.1X Supplicant"
 maintainer="Enno Boland <gottox@voidlinux.org>"
 license="BSD-3-Clause"
 homepage="http://w1.fi/wpa_supplicant/"
-distfiles="http://w1.fi/releases/${pkgname}-${version}.tar.gz"
-checksum=20df7ae5154b3830355f8ab4269123a87affdea59fe74fe9292a91d0d7e17b2f
+distfiles="http://deb.debian.org/debian/pool/main/w/wpa/wpa_2.9.0.orig.tar.xz
+http://deb.debian.org/debian/pool/main/w/wpa/wpa_2.9.0-21.debian.tar.xz"
+checksum="4032da92d97cb555053d94d514d590d0ce066ca13ba5ef144063450bc56161a7
+494f259c14d85d68ca5bb695e363c124b1a11ddf0f23c34d7e1498d0605dd746"
+skip_extraction="wpa_2.9.0-21.debian.tar.xz"
 
 hostmakedepends="pkg-config"
 makedepends="libnl3-devel openssl-devel $(vopt_if dbus dbus-devel) $(vopt_if readline readline-devel)"
 build_options="dbus readline"
 build_options_default="dbus readline"
 conf_files="/etc/${pkgname}/${pkgname}.conf"
+
+post_extract() {
+	bsdtar -xf $XBPS_SRCDISTDIR/wpa_supplicant-${version}/$skip_extraction
+	cat debian/patches/series | while read p; do
+		if [ "x$p" == "x" ];
+		then
+			continue;
+		fi
+		echo "patch $p"
+		patch -Np1 -F0 -i debian/patches/$p
+	done
+}
 
 pre_build() {
 	vsed -e 's|/usr/local|$(PREFIX)|g' -i Makefile
@@ -35,6 +50,7 @@ do_build() {
 	export CFLAGS+=" $(pkg-config --cflags libnl-3.0) $CPPFLAGS"
 	make ${makejobs} V=1 PREFIX=/usr BINDIR=/usr/bin
 }
+
 do_install() {
 	make PREFIX=/usr BINDIR=/usr/bin DESTDIR=${DESTDIR} install
 
@@ -47,13 +63,13 @@ do_install() {
 	vinstall ${FILESDIR}/${pkgname}.conf 640 etc/$pkgname
 	vsconf wpa_supplicant.conf
 
-	for d in doc/docbook/*.[58]; do
-		vman $d
-	done
+	# for d in doc/docbook/*.[58]; do
+	# 	vman $d
+	# done
 
-	rm ${DESTDIR}/usr/share/man/man8/wpa_gui.8
-	rm ${DESTDIR}/usr/share/man/man8/wpa_priv.8
-	rm ${DESTDIR}/usr/share/man/man8/eapol_test.8
+	# rm ${DESTDIR}/usr/share/man/man8/wpa_gui.8
+	# rm ${DESTDIR}/usr/share/man/man8/wpa_priv.8
+	# rm ${DESTDIR}/usr/share/man/man8/eapol_test.8
 
 	vlicense README
 	vsv wpa_supplicant
