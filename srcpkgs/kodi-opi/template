@@ -14,15 +14,15 @@ homepage="http://www.kodi.tv/"
 license="GPL-2.0-or-later"
 distfiles="https://github.com/xbmc/xbmc/archive/${_fullversion}.tar.gz"
 #LDFLAGS+=" -Wl,-z,stack-size=1048576"
-CFLAGS="-DEGL_NO_X11 -march=armv7-a+neon-vfpv4"
-CXXFLAGS=$CFLAGS
+#CFLAGS="-DEGL_NO_X11 -march=armv7-a+neon-vfpv4"
+#CXXFLAGS=$CFLAGS
 # patch_args="-Np1 -d ${build_wrksrc}"
 skip_extraction="fmt-$_fmt_version.tar.gz
 	crossguid-$_crossguid_version.tar.gz"
 
 nopie=yes
 # armv7 only, musl not supported because of proprietary blobs
-archs="armv7l"
+archs="armv7l aarch64"
 
 hostmakedepends="
  automake libtool pkg-config gperf cmake zip unzip nasm yasm
@@ -76,9 +76,9 @@ configure_args="
 
 case "$XBPS_TARGET_MACHINE" in
 	armv6*)   configure_args+=" -DWITH_CPU=arm1176jzf-s -DCMAKE_EXE_LINKER_FLAGS=-latomic"
-		  LDFLAGS+=" -latomic";;
-	# armv7*)   configure_args+=" -DWITH_CPU=cortex-a7+neon-vfpv4";;
-	aarch64*) configure_args+=" -DWITH_CPU=cortex-a53";;
+		LDFLAGS+=" -latomic";;
+	armv7*)   configure_args+=" -DWITH_CPU=cortex-a7+neon-vfpv4";;
+	aarch64*) CFLAGS="-march=armv8-a+crc+crypto";;
 esac
 
 # The following dependencies are dlopen(3)ed.
