@@ -1,24 +1,21 @@
 # Template file for 'linux5.15'
+# make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- dtbs
+# make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- menuconfig
 pkgname=linux5.15-opi
-version=5.15.8
-revision=2
+version=5.15.89
+revision=1
 wrksrc="linux-${version%.*}"
 short_desc="Linux kernel and modules (${version%.*} series)"
-maintainer="innerspacepilot@gmail.com"
+maintainer="innerspacepilot@gmx.com"
 license="GPL-2.0-only"
 homepage="https://www.kernel.org"
-rtl8189_commit_id=no-debug
-distfiles="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${version%.*}.tar.gz
- https://cdn.kernel.org/pub/linux/kernel/v5.x/patch-${version}.xz
- https://github.com/innerspacepilot/rtl8189ES_linux/archive/${rtl8189_commit_id}.tar.gz"
-checksum="4d7908da75ad50a70a0141721e259c2589b7bdcc317f7bd885b80c2ffa689211
- c122c139f9b16fb6b78a70259c7fb689773c14581eb202425395e9ee251e98fb
- 45b5f74abdd9cd58d8392165fa20418a38186a0186c3f307c10961841c7d7291"
+distfiles="file://$XBPS_SRCDISTDIR/linux-source-current-sunxi64_23.02.0-trunk_all.deb"
+checksum="82f4300dd783aff3f5e078cf404c8d224cba16bffbffc2be4deed54ce643e6c1"
 python_version=3
 patch_args="-Np1"
 
 # XXX Restrict archs until a proper <arch>-dotconfig is available in FILESDIR.
-archs="armv7l"
+archs="armv7l aarch64"
 
 nodebug=yes  # -dbg package is generated below manually
 nostrip=yes
@@ -57,8 +54,14 @@ if [ "$CROSS_BUILD" ]; then
 	_cross="CROSS_COMPILE=${XBPS_CROSS_TRIPLET}-"
 fi
 
-pre_patch() {
-	cat ../patch-${version} | patch -Np1
+do_extract() {
+	ar x $XBPS_SRCDISTDIR/linux-source-current-sunxi64_23.02.0-trunk_all.deb
+	echo "pwd: `pwd`"
+	tar xfJ data.tar.xz
+	tar xfJ "usr/src/linux-source-${version}-sunxi64.tar.xz"
+	rm -f debian-binary control.tar.xz data.tar.xz
+	rm -fr usr/src
+	rm default_linux-sunxi64-current.config
 }
 
 do_configure() {
@@ -106,17 +109,6 @@ do_build() {
 	export LDFLAGS=
 	make ARCH=$arch ${_cross} ${makejobs} prepare
 	make ARCH=$arch ${_cross} ${makejobs} ${_args}
-
-	# build modules
-	_pwd=`pwd`
-	# cd "../mali-utgard-${mali_commit_id}/driver/src/devicedrv/mali"
-	# echo make ARCH=$arch ${_cross} ${makejobs} KDIR="${_pwd}" MALI_PLATFORM_FILES=platform/sunxi/sunxi.c GIT_REV="" EXTRA_CFLAGS="-DMALI_FAKE_PLATFORM_DEVICE=1 -DCONFIG_MALI_DMA_BUF_MAP_ON_ATTACH -DCONFIG_MALI400=1 -DCONFIG_MALI450=1 -DCONFIG_MALI470=1" CONFIG_MALI400=m CONFIG_MALI450=m CONFIG_MALI470=m CONFIG_MALI_DMA_BUF_MAP_ON_ATTACH=y
-	# make ARCH=$arch ${_cross} ${makejobs} KDIR="${_pwd}" MALI_PLATFORM_FILES=platform/sunxi/sunxi.c GIT_REV="" EXTRA_CFLAGS="-DMALI_FAKE_PLATFORM_DEVICE=1 -DCONFIG_MALI_DMA_BUF_MAP_ON_ATTACH -DCONFIG_MALI400=1 -DCONFIG_MALI450=1 -DCONFIG_MALI470=1" CONFIG_MALI400=m CONFIG_MALI450=m CONFIG_MALI470=m CONFIG_MALI_DMA_BUF_MAP_ON_ATTACH=y
-
-	cd ${_pwd}
-	cd "../rtl8189ES_linux-${rtl8189_commit_id}"
-	make ARCH=$arch ${_cross} ${makejobs} KSRC="${_pwd}"
-	# make ARCH=arm CROSS_COMPILE=armv7l-linux-gnueabihf- -j1 KSRC=../linux-5.14
 }
 
 do_install() {
@@ -175,7 +167,7 @@ do_install() {
 	# install modules
 	mkdir -p ${DESTDIR}/usr/lib/modules/${_kernver}/extra
 	# vinstall ../mali-utgard-${mali_commit_id}/driver/src/devicedrv/mali/mali.ko 644 usr/lib/modules/${_kernver}/extra mali.ko
-	vinstall ../rtl8189ES_linux-${rtl8189_commit_id}/8189fs.ko 644 usr/lib/modules/${_kernver}/extra 8189fs.ko
+	# vinstall ../rtl8189ES_linux-${rtl8189_commit_id}/8189fs.ko 644 usr/lib/modules/${_kernver}/extra 8189fs.ko
 
 	cd ${DESTDIR}/usr/lib/modules/${_kernver}
 	rm -f source build
@@ -335,16 +327,3 @@ linux5.15-opi-headers_package() {
 		vmove usr/lib/modules/${_kernver}/build
 	}
 }
-#linux5.15-dbg_package() {
-#	preserve=yes
-#	nostrip=yes
-#	noverifyrdeps=yes
-#	noshlibprovides=yes
-#	repository=debug
-#	short_desc+=" - debugging symbols"
-#	pkg_install() {
-#		vmove usr/lib/debug
-#		vmove "boot/System.map-${_kernver}"
-#	}
-#}
-
