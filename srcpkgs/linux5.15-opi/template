@@ -1,4 +1,4 @@
-# Template file for 'linux5.15'
+# Template file for 'linux5.15-opi'
 # make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- dtbs
 # make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- menuconfig
 pkgname=linux5.15-opi
@@ -56,7 +56,7 @@ fi
 
 do_extract() {
 	ar x $XBPS_SRCDISTDIR/linux-source-current-sunxi64_23.02.0-trunk_all.deb
-	echo "pwd: `pwd`"
+	#echo "pwd: `pwd`"
 	tar xfJ data.tar.xz
 	tar xfJ "usr/src/linux-source-${version}-sunxi64.tar.xz"
 	rm -f debian-binary control.tar.xz data.tar.xz
@@ -102,7 +102,7 @@ do_build() {
 		i686*) _args="bzImage modules"; arch=i386;;
 		x86_64*) _args="bzImage modules"; arch=x86_64;;
 		arm*) _args="zImage modules dtbs"; arch=arm;;
-		aarch64*) _args="Image modules dtbs"; arch=arm64;;
+		aarch64*) _args="Image.bz2 modules dtbs"; arch=arm64;;
 		ppc*) _args="zImage modules"; arch=powerpc;;
 		mips*) _args="uImage modules dtbs"; arch=mips;;
 	esac
@@ -145,7 +145,7 @@ do_install() {
 			make ${makejobs} ARCH=${subarch:-$arch} INSTALL_DTBS_PATH=${DESTDIR}/boot/dtbs/dtbs-${_kernver} ${_cross} dtbs_install
 			;;
 		arm64)
-			vinstall arch/arm64/boot/Image 644 boot vmlinux-${_kernver}
+			vinstall arch/arm64/boot/Image.bz2 644 boot vmlinuz-${_kernver}
 			make ${makejobs} ARCH=${subarch:-$arch} INSTALL_DTBS_PATH=${DESTDIR}/boot/dtbs/dtbs-${_kernver} ${_cross} dtbs_install
 			;;
 		powerpc)
