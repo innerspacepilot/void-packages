@@ -1,6 +1,6 @@
 pkgname=kodi-opi
 version=20.0
-revision=17
+revision=18
 _fullversion="20.0-Nexus"
 _fmt_version="8.0.1"
 _crossguid_version="ca1bf4b810e2d188d04cb6286f957008ee1b7681"
@@ -13,6 +13,7 @@ maintainer="Helmut Pozimski <helmut@pozimski.eu>"
 homepage="http://www.kodi.tv/"
 license="GPL-2.0-or-later"
 distfiles="https://github.com/xbmc/xbmc/archive/${_fullversion}.tar.gz"
+python_version=3
 #LDFLAGS+=" -Wl,-z,stack-size=1048576"
 #CFLAGS="-DEGL_NO_X11 -march=armv7-a+neon-vfpv4"
 #CXXFLAGS=$CFLAGS
@@ -56,6 +57,7 @@ configure_args="
 	-DENABLE_CEC=ON
   -DCORE_PLATFORM_NAME=gbm
   -DAPP_RENDER_SYSTEM=gles
+  -DENABLE_EVENTCLIENTS=ON
 "
 #	-DFMT_URL="$XBPS_SRCDISTDIR/$pkgname/fmt-$_fmt_version.tar.gz"
 #  -DCROSSGUID_URL="$XBPS_SRCDISTDIR/$pkgname/crossguid-$_crossguid_version.tar.gz"
@@ -83,8 +85,14 @@ esac
 
 # The following dependencies are dlopen(3)ed.
 depends="ffmpeg-opi libmad libogg libcurl libflac libmodplug libass libmpeg2 lame
- librtmp libnfs>=1.9.7 libplist>=1.12 libssh libcec-devel>=4.0.5 mesa"
-depends+=" hicolor-icon-theme desktop-file-utils"
+ librtmp libnfs>=1.9.7 libplist>=1.12 libssh libcec-devel>=4.0.5 mesa v4l-utils"
+depends+=" hicolor-icon-theme desktop-file-utils alsa-utils "
+
+case "$XBPS_TARGET_MACHINE" in
+	armv7*) depends+="mesa-lima-dri";;
+	aarch64*) depends+="mesa-panfrost-dri";;
+esac
+
 
 provides="kodi-${version}_${revision}"
 
