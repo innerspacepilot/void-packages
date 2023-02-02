@@ -15,9 +15,9 @@ fi
 cat /dev/null > $PATCHES/series
 
 for i in $LIBRE_PATH/packages/linux/patches/default \
-				 $LIBRE_PATH/projects/Allwinner/patches/linux \
-				 files;
+				 $LIBRE_PATH/projects/Allwinner/patches/linux;
 do
 	cp -v "$i"/*.patch $PATCHES
 	( cd "$i"; ls -1 *.patch ) | cat >> $PATCHES/series
 done
+

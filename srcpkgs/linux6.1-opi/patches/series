@@ -63,5 +63,3 @@ linux-999-no-lzma-in-x86-perf-build.patch
 0102-Bluetooth-btrtl-Add-support-for-RTL8822BS-UART.patch
 0103-arm64-dts-allwinner-h6-tanix-tx6-Add-compatible-blue.patch
 0104-Bluetooth-btrtl-set-HCI_QUIRK_BROKEN_LOCAL_EXT_FTR_M.patch
-zzz-01-ds3231.patch
-zzz-02-ir-tx.patch
