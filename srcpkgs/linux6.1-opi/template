@@ -156,7 +156,7 @@ do_install() {
 			vinstall arch/x86/boot/bzImage 644 boot vmlinuz-${_kernver}
 			;;
 		arm)
-			vinstall arch/arm/boot/zImage 644 boot
+			vinstall arch/arm/boot/zImage 644 boot vmlinuz-${_kernver}
 			make ${makejobs} ARCH=${subarch:-$arch} INSTALL_DTBS_PATH=${DESTDIR}/boot/dtbs/dtbs-${_kernver} ${_cross} dtbs_install
 			;;
 		arm64)
