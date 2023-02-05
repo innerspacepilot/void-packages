@@ -1,6 +1,7 @@
 # Template file for 'linux6.0'
+# make ARCH=arm CROSS_COMPILE=armv7l-linux-gnueabihf- 
 pkgname=linux6.1-opi
-version=6.1.8
+version=6.1.9
 revision=1
 build_wrksrc="linux-${version%.*}"
 short_desc="Linux kernel and modules (${version%.*} series)"
@@ -12,7 +13,7 @@ distfiles="https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-${version%.*}.tar.
  https://cdn.kernel.org/pub/linux/kernel/v6.x/patch-${version}.xz
  https://github.com/innerspacepilot/rtl8189ES_linux/archive/${rtl8189_commit_id}.tar.gz"
 checksum="de4ee64f1e86da97c0c2974c02a77c01ea81eed0c04b6319fbc719810104de92
- b66c64b8288bfdaa1ce8e9f06af53697e2f538698786c2b6bae79084d8c74323
+ 64e27f1de56225372d29ff92dc2d8fca6ae961e7470f2364e98c5af0aef261dc
  34321ef57f8d5925fd52e234d1cabed1428c2d06e47e49d1eee20775635157e4"
 skip_extraction="patch-${version}.xz"
 python_version=3
