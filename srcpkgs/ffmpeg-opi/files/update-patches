@@ -13,9 +13,9 @@ then
 fi
 
 cp -v $LIBRE_PATH/packages/multimedia/ffmpeg/patches/libreelec/*.patch $PATCHES
-cp -v $LIBRE_PATH/packages/multimedia/ffmpeg/patches/kodi/*.patch $PATCHES
 cp -v $LIBRE_PATH/packages/multimedia/ffmpeg/patches/v4l2-drmprime/*.patch $PATCHES
 cp -v $LIBRE_PATH/packages/multimedia/ffmpeg/patches/v4l2-request/*.patch $PATCHES
+cp -v $LIBRE_PATH/packages/multimedia/ffmpeg/patches/vf-deinterlace-v4l2m2m/*.patch $PATCHES
 
 for i in $LIBRE_PATH/projects/Allwinner/patches/ffmpeg/*.patch;
 do
