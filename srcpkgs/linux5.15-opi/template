@@ -2,7 +2,7 @@
 # make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- dtbs
 # make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- menuconfig
 pkgname=linux5.15-opi
-version=5.15.89
+version=5.15.93
 revision=1
 wrksrc="linux-${version%.*}"
 short_desc="Linux kernel and modules (${version%.*} series)"
@@ -10,7 +10,7 @@ maintainer="innerspacepilot@gmx.com"
 license="GPL-2.0-only"
 homepage="https://www.kernel.org"
 distfiles="file://$XBPS_SRCDISTDIR/linux-source-current-sunxi64_23.02.0-trunk_all.deb"
-checksum="82f4300dd783aff3f5e078cf404c8d224cba16bffbffc2be4deed54ce643e6c1"
+checksum="ba360190efeac69ed3e8378e92745b215f2d979373699c4e5a4dd085985c85ba"
 python_version=3
 patch_args="-Np1"
 
