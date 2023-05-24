@@ -3,7 +3,7 @@
 # make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- menuconfig
 pkgname=linux5.15-opi
 version=5.15.93
-revision=1
+revision=2
 wrksrc="linux-${version%.*}"
 short_desc="Linux kernel and modules (${version%.*} series)"
 maintainer="innerspacepilot@gmx.com"
@@ -65,7 +65,7 @@ do_extract() {
 }
 
 do_configure() {
-  # make ARCH=arm CROSS_COMPILE=armv7l-linux-gnueabihf-
+  # make -j8 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- oldconfig
 	# If there's a file called <arch>-dotconfig, use it to
 	# configure the kernel; otherwise use arch defaults and all stuff
 	# as modules (allmodconfig).
@@ -89,6 +89,7 @@ do_configure() {
 	elif [ -f ${FILESDIR}/${subarch:-$arch}-dotconfig ]; then
 		msg_normal "Detected a .config file for your arch, using it.\n"
 		cp -f ${FILESDIR}/${subarch:-$arch}-dotconfig .config
+		echo "make ${makejobs} ARCH=$arch ${_cross} oldconfig"
 		make ${makejobs} ARCH=$arch ${_cross} oldconfig
 	fi
 	# Always use our revision to CONFIG_LOCALVERSION to match our pkg version.
