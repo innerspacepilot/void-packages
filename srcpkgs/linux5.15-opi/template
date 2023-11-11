@@ -10,7 +10,7 @@ maintainer="innerspacepilot@gmx.com"
 license="GPL-2.0-only"
 homepage="https://www.kernel.org"
 distfiles="file://$XBPS_SRCDISTDIR/linux-source-current-sunxi64_23.02.0-trunk_all.deb"
-checksum="ba360190efeac69ed3e8378e92745b215f2d979373699c4e5a4dd085985c85ba"
+checksum="fce9d0034e94a48592e712d2b0660b0c9a031ad878ba60806ce45ba64a26cf2a"
 python_version=3
 patch_args="-Np1"
 
