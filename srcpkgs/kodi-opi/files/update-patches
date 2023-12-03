@@ -17,6 +17,8 @@ cp -v $LIBRE_PATH/projects/Allwinner/patches/kodi/*.patch $PATCHES
 #cp -v files/crossguid-0.2.patch $PATCHES
 cp -v files/zzz-001-pause-wake.patch $PATCHES
 cp -v files/skin-reboot.patch $PATCHES
+cp -v files/udfread.patch $PATCHES
+cp -v files/depends_makefile.patch $PATCHES
 
 # delete unneeded patches
 

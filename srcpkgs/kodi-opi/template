@@ -1,11 +1,11 @@
 pkgname=kodi-opi
 version=20.0
-revision=20
-_fullversion="12048c03a762328e2b7d537486155bc50a6fcc80"
+revision=22
+_fullversion="fdb402572451ed58b0d54f7b605cccea1d1d7aac"
 _fmt_version="8.0.1"
 _crossguid_version="ca1bf4b810e2d188d04cb6286f957008ee1b7681"
 _inputstream_version="94833130ecab798cd2a58315a7e31d91c5d27d8d"
-checksum="20ccc20e578e684bf457c0b8f9fc1bb92aacc34bf2d3d19c69a240545bb2606a"
+checksum="8d49efefa8e3968e9fa417982dbf56d477f35754e8d12d0be94c04fe31a7ea3b"
 build_style=cmake
 # build_wrksrc="xbmc-${_fullversion}"
 short_desc="Software media player and entertainment hub for digital media (RPi)"
@@ -28,7 +28,7 @@ archs="armv7l aarch64"
 hostmakedepends="
  automake libtool pkg-config gperf cmake zip unzip nasm yasm
  gettext-devel libltdl-devel libmysqlclient-devel
- lzo-devel flatbuffers openjdk11 swig giflib-devel libpng-devel zlib-devel libjpeg-turbo-devel python3 git"
+ lzo-devel flatbuffers openjdk11 swig giflib-devel libpng-devel zlib-devel libjpeg-turbo-devel python3 git curl which m4 vim"
 makedepends="
  eudev-libudev-devel pcre-devel expat-devel giflib-devel libpng-devel
  libjpeg-turbo-devel avahi-libs-devel alsa-lib-devel samba-devel tiff-devel
@@ -41,24 +41,31 @@ makedepends="
  libxslt-devel libuuid-devel giflib-devel libcec-devel libmicrohttpd-devel
  libcdio-devel libssh-devel dcadec-devel spdlog
  flatbuffers-devel lcms2-devel libfstrcmp-devel rapidjson
- libinput-devel libxkbcommon-devel MesaLib-devel libcdio-paranoia libdrm-devel pulseaudio-devel python3-devel libdrm-devel pipewire"
+ libinput-devel libxkbcommon-devel MesaLib-devel libcdio-paranoia libdrm-devel pulseaudio-devel
+ tinyxml2-devel libdisplay-info-devel python3-devel libdrm-devel pipewire"
 
 configure_args="
+	-DCMAKE_BUILD_TYPE="Release"
 	-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
 	-DENABLE_INTERNAL_CROSSGUID=ON
 	-DENABLE_INTERNAL_FMT=ON
 	-DENABLE_VAAPI=OFF
 	-DENABLE_VDPAU=OFF
 	-DWITH_FFMPEG=/usr
-	-DWITH_TEXTUREPACKER=tools/depends/native/TexturePacker/bin/TexturePacker
-	-DWITH_JSONSCHEMABUILDER=tools/depends/native/JsonSchemaBuilder/bin/JsonSchemaBuilder
 	-DENABLE_OPENGL=OFF
 	-DENABLE_OPENGLES=ON
 	-DENABLE_CEC=ON
   -DCORE_PLATFORM_NAME=gbm
   -DAPP_RENDER_SYSTEM=gles
-  -DENABLE_EVENTCLIENTS=ON
+  -DWITH_TEXTUREPACKER=tools/depends/native/TexturePacker/src/TexturePacker
+	-DWITH_JSONSCHEMABUILDER=tools/depends/native/JsonSchemaBuilder/src/JsonSchemaBuilder
+	-DCROSS_COMPILING=yes
+	-DENABLE_EVENTCLIENTS=OFF
 "
+
+#	-DWITH_TEXTUREPACKER=tools/depends/native/TexturePacker/bin/TexturePacker
+#	-DWITH_JSONSCHEMABUILDER=tools/depends/native/JsonSchemaBuilder/bin/JsonSchemaBuilder
+
 #	-DFMT_URL="$XBPS_SRCDISTDIR/$pkgname/fmt-$_fmt_version.tar.gz"
 #  -DCROSSGUID_URL="$XBPS_SRCDISTDIR/$pkgname/crossguid-$_crossguid_version.tar.gz"
 
@@ -116,13 +123,16 @@ pre_configure() {
 	# cp $FILESDIR/CMakeCache.txt.nojava build/CMakeCache.txt
 
 	# echo "set(FOUND_SWIG Yes)" > cmake/modules/FindSWIG.cmake
+	(CC= LD= CXX= LDFLAGS= CFLAGS= CXXFLAGS=; cd tools/depends; autoconf -f; ./configure --with-toolchain=/usr/aarch64-linux-gnu --prefix=/opt/xbmc-deps --host=x86_64-unknown-linux-gnu --with-rendersystem=gles )
 
 	if [ "$CROSS_BUILD" ]; then
-	        for i in JsonSchemaBuilder TexturePacker; do
-	                CC= LD= CXX= LDFLAGS= CFLAGS= CXXFLAGS= \
-	                        make -C tools/depends/native/$i
-	        done
+	  for i in JsonSchemaBuilder TexturePacker; do
+      # CC= LD= CXX= LDFLAGS= CFLAGS= CXXFLAGS= \
+      #         make -C tools/depends/native/$i
+      (CC= LD= CXX= LDFLAGS= CFLAGS= CXXFLAGS=; cd tools/depends/native/$i/src; ./autogen.sh; ./configure; make )
+	  done
 	fi
+	echo
 }
 
 pre_build() {
@@ -130,19 +140,42 @@ pre_build() {
 	# set | grep ^C
 	# echo "========================"
 	# exit 1
-echo
+	cd build
+	ninja crossguid spdlog libdvdread
 }
 
 post_build() {
+	# echo "====================================================================================================="
+	# echo "CC=\"$CC\" CXX=\"$CXX\" LD=\"$LD\" AR=\"$AR\" RANLIB=\"$RANLIB\" CPP=\"$CPP\" AS=\"$AS\" OBJDUMP=\"$OBJDUMP\" CFLAGS=\"$CFLAGS\" LDFLAGS=\"$LDFLAGS\""
+	# echo "====================================================================================================="
+	# (
+	# 	CC="$CC" CXX="$CXX" LD="$LD" AR="$AR" RANLIB="$RANLIB" \
+	# 	CPP="$CPP" AS="$AS" OBJDUMP="$OBJDUMP" \
+	# 	CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS";
+	# 	cd tools/depends;
+	# 	make distclean;
+	# 	./configure --with-toolchain=/usr/aarch64-linux-gnu --prefix=${DESTDIR}/usr --host=aarch64-linux-gnu --with-rendersystem=gles
+	# )
+
 	# Rebuild for target
 	if [ "$CROSS_BUILD" ]; then
 		for i in JsonSchemaBuilder TexturePacker; do
-			#make -C tools/depends/native/$i clean all \
-				CC="$CC" CXX="$CXX" LD="$LD" AR="$AR" RANLIB="$RANLIB" \
-				CPP="$CPP" AS="$AS" OBJDUMP="$OBJDUMP" \
-				CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS"
+			( cd tools/depends/native/$i/src; \
+				./configure --prefix=${DESTDIR}/usr --host=aarch64-linux-gnu; \
+				make clean; make; make install )
+			# #make -C tools/depends/native/$i clean all \
+			# 	CC="$CC" CXX="$CXX" LD="$LD" AR="$AR" RANLIB="$RANLIB" \
+			# 	CPP="$CPP" AS="$AS" OBJDUMP="$OBJDUMP" \
+			# 	CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS"
 		done
 	fi
+	mkdir -p /usr/x86_64-linux-gnu-native/bin
+	ln -sf /usr/bin/cmake /usr/x86_64-linux-gnu-native/bin/cmake
+	( CC= LD= CXX= LDFLAGS= CFLAGS= CXXFLAGS=;
+		cd tools/depends; \
+		make distclean; \
+		./configure --with-toolchain=x86_64-linux-gnu --prefix=/usr --host=aarch64-linux-gnu --with-rendersystem=gles;
+	)
 	make -j8 -C tools/depends/target/binary-addons PREFIX=${DESTDIR}/usr ADDONS=inputstream.adaptive || exit 1
 }
 
@@ -153,7 +186,7 @@ post_install() {
 	vsv kodi-standalone
 	vinstall ${FILESDIR}/kodi.sudoers 600 etc/sudoers.d kodi
 	vinstall ${FILESDIR}/reboot.py 755 usr/share/kodi/system
-	mkdir -p ${DESTDIR}/usr/lib/python3.8
-	touch ${DESTDIR}/usr/lib/python3.8/.void-python-hack
+	mkdir -p ${DESTDIR}/usr/lib/python3.12
+	touch ${DESTDIR}/usr/lib/python3.12/.void-python-hack
 }
 

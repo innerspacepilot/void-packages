@@ -1,0 +1,11 @@
+--- a/cmake/modules/FindUdfread.cmake	2023-12-03 11:19:48.548242464 +0000
++++ b/cmake/modules/FindUdfread.cmake	2023-12-03 11:20:31.341354050 +0000
+@@ -46,6 +46,7 @@
+ 
+       set(CONFIGURE_COMMAND autoreconf -vif &&
+                             ./configure
++			    --host=aarch64-linux-gnu
+                             --enable-static
+                             --disable-shared
+                             --prefix=${DEPENDS_PATH})
+

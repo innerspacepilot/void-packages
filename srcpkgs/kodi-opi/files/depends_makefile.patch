@@ -1,0 +1,13 @@
+--- a/tools/depends/Makefile.include.in	2023-12-03 12:25:07.265157447 +0000
+--- b/tools/depends/Makefile.include.in	2023-12-03 12:25:07.265157447 +0000
+@@ -42,8 +42,6 @@
+ endif
+ RETRIEVE_TOOL_FLAGS=-LsS --create-dirs --retry 10 --retry-connrefused -o
+ ARCHIVE_TOOL_FLAGS=--strip-components=1 -xf
+-CONFIG_SUB=@prefix@/@tool_dir@/share/automake-1.16/config.sub
+-CONFIG_GUESS=@prefix@/@tool_dir@/share/automake-1.16/config.guess
+ 
+ USE_CCACHE=@use_ccache@
+ 
+
+
