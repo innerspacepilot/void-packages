@@ -1,7 +1,7 @@
 # Template file for 'ffmpeg-opi'
 # audacity also needs to be bumped when a new ffmpeg version bumps libavformat's soname!
 pkgname=ffmpeg-opi
-version=6.0
+version=6.0.1
 _full_version="$version"
 revision=1
 short_desc="Decoding, encoding and streaming software"
@@ -10,7 +10,7 @@ license="GPL-3.0-or-later"
 homepage="https://www.ffmpeg.org"
 changelog="https://raw.githubusercontent.com/FFmpeg/FFmpeg/master/Changelog"
 distfiles="http://ffmpeg.org/releases/ffmpeg-${_full_version}.tar.xz"
-checksum=57be87c22d9b49c112b6d24bc67d42508660e6b718b3db89c44e47e289137082
+checksum=9b16b8731d78e596b4be0d720428ca42df642bb2d78342881ff7f5bc29fc9623
 patch_args="-Np1"
 replaces="ffmpeg>=0"
 provides="ffmpeg-${version}_${revision}"
