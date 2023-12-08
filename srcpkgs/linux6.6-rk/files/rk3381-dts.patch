@@ -1,0 +1,1588 @@
+diff -ruN a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
+--- a/arch/arm64/boot/dts/rockchip/Makefile	2023-12-08 16:19:11.626428572 +0300
++++ b/arch/arm64/boot/dts/rockchip/Makefile	2023-12-08 16:17:36.925927668 +0300
+@@ -8,6 +8,7 @@
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3308-roc-cc.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3308-rock-pi-s.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3318-a95x-z2.dtb
++dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3318-box.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3326-anbernic-rg351m.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3326-odroid-go2.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3326-odroid-go2-v11.dtb
+diff -ruN a/arch/arm64/boot/dts/rockchip/rk3318-box.dts b/arch/arm64/boot/dts/rockchip/rk3318-box.dts
+--- a/arch/arm64/boot/dts/rockchip/rk3318-box.dts	1970-01-01 03:00:00.000000000 +0300
++++ b/arch/arm64/boot/dts/rockchip/rk3318-box.dts	2023-12-08 16:17:36.931927699 +0300
+@@ -0,0 +1,736 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (c) 2020 Paolo Sabatino
++ */
++
++/dts-v1/;
++#include "dt-bindings/pwm/pwm.h"
++#include "dt-bindings/input/input.h"
++#include "rk3328.dtsi"
++#include "rk3318-dram-default-timing.dtsi"
++
++/ {
++	model = "Rockchip RK3318 BOX";
++	compatible = "rockchip,rk3318-box", "rockchip,rk3328-box", "rockchip,rk3328";
++
++	aliases {
++		mmc0 = &sdmmc;
++		mmc1 = &sdio;
++		mmc2 = &emmc;
++		mmc3 = &sdmmc_ext;
++		mmc4 = &sdio_ext;
++	};
++
++	/delete-node/ opp-table-0;
++	/delete-node/ gpu-opp-table;
++
++	cpu0_opp_table: opp_table0 {
++		compatible = "operating-points-v2";
++		opp-shared;
++
++		opp-600000000 {
++			opp-hz = /bits/ 64 <600000000>;
++			opp-microvolt = <950000>;
++			clock-latency-ns = <40000>;
++			opp-suspend;
++		};
++		opp-816000000 {
++			opp-hz = /bits/ 64 <816000000>;
++			opp-microvolt = <1000000>;
++			clock-latency-ns = <40000>;
++		};
++		opp-1008000000 {
++			opp-hz = /bits/ 64 <1008000000>;
++			opp-microvolt = <1100000>;
++			clock-latency-ns = <40000>;
++		};
++		opp-1200000000 {
++			opp-hz = /bits/ 64 <1200000000>;
++			opp-microvolt = <1200000>;
++			clock-latency-ns = <40000>;
++			status = "disabled";
++		};
++		opp-1296000000 {
++			opp-hz = /bits/ 64 <1296000000>;
++			opp-microvolt = <1275000>;
++			clock-latency-ns = <40000>;
++			status = "disabled";
++		};
++	};
++
++	gpu_opp_table: gpu-opp-table {
++		compatible = "operating-points-v2";
++
++		opp-200000000 {
++			opp-hz = /bits/ 64 <200000000>;
++			opp-microvolt = <1000000 950000 1200000>;
++		};
++
++		opp-300000000 {
++			opp-hz = /bits/ 64 <300000000>;
++			opp-microvolt = <1050000 950000 1200000>;
++		};
++
++		opp-400000000 {
++			opp-hz = /bits/ 64 <400000000>;
++			opp-microvolt = <1050000 950000 1200000>;
++		};
++
++		opp-500000000 {
++			opp-hz = /bits/ 64 <500000000>;
++			opp-microvolt = <1100000 950000 1200000>;
++		};
++	};
++
++	chosen {
++		stdout-path = "serial2:1500000n8";
++	};
++
++	adc_keys: adc-keys {
++
++		compatible = "adc-keys";
++		io-channels = <&saradc 0>;
++		io-channel-names = "buttons";
++		keyup-threshold-microvolt = <1800000>;
++		poll-interval = <100>;
++
++		recovery {
++			label = "recovery";
++			linux,code = <KEY_VENDOR>;
++			press-threshold-microvolt = <17000>;
++		};
++
++	};
++
++	xin32k: xin32k {
++		compatible = "fixed-clock";
++		clock-frequency = <32768>;
++		clock-output-names = "xin32k";
++		#clock-cells = <0>;
++	};
++
++	gmac_clkin: gmac-clkin {
++		compatible = "fixed-clock";
++		clock-frequency = <125000000>;
++		clock-output-names = "gmac_clkin";
++		#clock-cells = <0x00>;
++	};
++
++	regulators {
++		compatible = "simple-bus";
++		#address-cells = <0x01>;
++		#size-cells = <0x00>;
++
++		vcc_18: regulator@0 {
++			compatible = "regulator-fixed";
++			regulator-name = "vccio_1v8";
++			regulator-min-microvolt = <1800000>;
++			regulator-max-microvolt = <1800000>;
++			regulator-always-on;
++		};
++
++		vcc_io: regulator@1 {
++			compatible = "regulator-fixed";
++			regulator-name = "vccio_3v3";
++			regulator-min-microvolt = <3300000>;
++			regulator-max-microvolt = <3300000>;
++			regulator-always-on;
++		};
++	};
++
++	vcc_phy: vcc-phy-regulator {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc_phy";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		regulator-always-on;
++		regulator-boot-on;
++	};
++
++	vcc_sys: vcc-sys {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc_sys";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++	};
++
++	vcc_sd: sdmmc-regulator {
++		compatible = "regulator-fixed";
++		gpio = <&gpio0 RK_PD6 GPIO_ACTIVE_LOW>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&sdmmc0m1_pin>;
++		regulator-name = "vcc_sd";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		vin-supply = <&vcc_io>;
++	};
++
++	/*
++	 * USB3 vbus
++	 */
++	vcc_host_vbus: vcc-host-vbus {
++		compatible = "regulator-fixed";
++		enable-active-high;
++		gpio = <&gpio0 RK_PA0 GPIO_ACTIVE_HIGH>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&usb30_host_drv>;
++		regulator-name = "vcc_host_vbus";
++		regulator-always-on;
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++		vin-supply = <&vcc_sys>;
++	};
++
++	/*
++	 * USB2 OTG vbus
++	 */
++	vcc_otg_vbus: vcc-otg-vbus {
++		compatible = "regulator-fixed";
++		enable-active-high;
++		gpio = <&gpio0 RK_PA2 GPIO_ACTIVE_HIGH>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&usb20_host_drv>;
++		regulator-name = "vcc_otg_vbus";
++		regulator-always-on;
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++		vin-supply = <&vcc_sys>;
++	};
++
++	vdd_arm: vdd-arm {
++		compatible = "pwm-regulator";
++		pwms = <&pwm0 0 5000 PWM_POLARITY_INVERTED>;
++		pwm-supply = <&vcc_sys>;
++		regulator-name = "vdd_arm";
++		regulator-min-microvolt = <950000>;
++		regulator-max-microvolt = <1400000>;
++		regulator-ramp-delay = <12500>;
++		regulator-settling-time-up-us = <250>;
++		regulator-always-on;
++		regulator-boot-on;
++	};
++
++	vdd_logic: vdd-log {
++		compatible = "pwm-regulator";
++		pwms = <&pwm1 0 5000 PWM_POLARITY_INVERTED>;
++		pwm-supply = <&vcc_sys>;
++		regulator-name = "vdd_log";
++		regulator-min-microvolt = <900000>;
++		regulator-max-microvolt = <1300000>;
++		regulator-ramp-delay = <12500>;
++		regulator-settling-time-up-us = <250>;
++		regulator-always-on;
++		regulator-boot-on;
++	};
++
++	gpio_led: gpio-leds {
++		compatible = "gpio-leds";
++
++		pinctrl-names = "default";
++		pinctrl-0 = <&working_led>;
++
++		working {
++			gpios = <&gpio2 RK_PC7 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "timer";
++			default-state = "on";
++		};
++
++	};
++
++	ir-receiver {
++		compatible = "gpio-ir-receiver";
++		gpios = <&gpio2 RK_PA2 GPIO_ACTIVE_LOW>;
++		pinctrl-0 = <&ir_int>;
++		pinctrl-names = "default";
++	};
++
++	sdio_pwrseq: sdio-pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		pinctrl-names = "default";
++		pinctrl-0 = <&wifi_enable_h>;
++
++		/*
++		 * On the module itself this is one of these (depending
++		 * on the actual card populated):
++		 * - SDIO_RESET_L_WL_REG_ON
++		 * - PDN (power down when low)
++		 */
++		reset-gpios = <&gpio1 RK_PC2 GPIO_ACTIVE_LOW>;
++	};
++
++	/*
++	wireless-bluetooth {
++		compatible = "bluetooth-platdata";
++		uart_rts_gpios = <&gpio1 RK_PB2 GPIO_ACTIVE_LOW>;
++		pinctrl-names = "default", "rts_gpio";
++		pinctrl-0 = <&uart0_rts>;
++		pinctrl-1 = <&uart0_rts_gpio>;
++		BT,power_gpio = <&gpio1 RK_PC5 GPIO_ACTIVE_HIGH>;
++		BT,wake_host_irq = <&gpio1 RK_PD2 GPIO_ACTIVE_HIGH>;
++	};
++
++	wireless-wlan {
++		compatible = "wlan-platdata";
++		rockchip,grf = <&grf>;
++		wifi_chip_type = "ap6330";
++		sdio_vref = <1800>;
++		WIFI,host_wake_irq = <&gpio1 RK_PC3 GPIO_ACTIVE_HIGH>;
++	};
++	*/
++
++	fd628_dev {
++		compatible = "fd628_dev";
++		fd628_gpio_clk = <&gpio2 RK_PC0 GPIO_ACTIVE_HIGH>;
++		fd628_gpio_dat = <&gpio2 RK_PB7 GPIO_ACTIVE_HIGH>;
++		status = "okay";
++	};
++
++	analog-sound {
++		compatible = "simple-audio-card";
++		simple-audio-card,format = "i2s";
++		simple-audio-card,mclk-fs = <256>;
++		simple-audio-card,name = "ANALOG";
++
++		simple-audio-card,cpu {
++			sound-dai = <&i2s1>;
++		};
++
++		simple-audio-card,codec {
++			sound-dai = <&codec>;
++		};
++	};
++
++	hdmi-sound {
++		compatible = "simple-audio-card";
++		simple-audio-card,format = "i2s";
++		simple-audio-card,mclk-fs = <128>;
++		simple-audio-card,name = "HDMI";
++
++		simple-audio-card,cpu {
++			sound-dai = <&i2s0>;
++		};
++
++		simple-audio-card,codec {
++			sound-dai = <&hdmi>;
++		};
++	};
++
++	/*
++	 * This node is a duplicate of sdmmc_ext: most common board do not use sdmmc_ext
++	 * controller, so it is left unused. Some other boards use it as sdio controller
++	 * for wifi and some others use it as sdcard controller.
++	 * To handle the most critical situation, the controller will be configured as
++	 * sdcard controller by default. An overlay can be set to disable the sdmmc_ext
++	 * node and enable this sdio_ext in case wifi chips are attached to this.
++	 */
++	sdio_ext: mmc@ff5f0000 {
++		compatible = "rockchip,rk3328-dw-mshc", "rockchip,rk3288-dw-mshc";
++		reg = <0x0 0xff5f0000 0x0 0x4000>;
++		interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&cru HCLK_SDMMC_EXT>, <&cru SCLK_SDMMC_EXT>,
++			 <&cru SCLK_SDMMC_EXT_DRV>, <&cru SCLK_SDMMC_EXT_SAMPLE>;
++		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
++		fifo-depth = <0x100>;
++		max-frequency = <150000000>;
++		resets = <&cru SRST_SDMMCEXT>;
++		reset-names = "reset";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		bus-width = <4>;
++		cap-sd-highspeed;
++		cap-sdio-irq;
++		disable-wp;
++		keep-power-in-suspend;
++		mmc-pwrseq = <>;
++		non-removable;
++		num-slots = <1>;
++		pinctrl-0 = <&sdmmc0ext_cmd &sdmmc0ext_clk &sdmmc0ext_bus4>;
++		pinctrl-names = "default";
++		supports-sdio;
++		status = "disabled";
++	};
++
++};
++
++&dfi {
++	status = "okay";
++};
++
++&dmc {
++	center-supply = <&vdd_logic>;
++	ddr_timing = <&ddr_timing>;
++	status = "disabled";
++};
++
++&codec {
++	status = "okay";
++	mute-gpios = <&grf_gpio 0 GPIO_ACTIVE_LOW>;
++};
++
++&cpu0 {
++	cpu-supply = <&vdd_arm>;
++};
++
++&cpu1 {
++	cpu-supply = <&vdd_arm>;
++};
++
++&cpu2 {
++	cpu-supply = <&vdd_arm>;
++};
++
++&cpu3 {
++	cpu-supply = <&vdd_arm>;
++};
++
++&display_subsystem {
++	status = "okay";
++};
++
++&emmc {
++
++	supports-emmc;
++	no-sdio;
++	no-sd;
++	cap-mmc-highspeed;
++	disable-wp;
++	non-removable;
++	bus-width = <8>;
++	num-slots = <0x01>;
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&emmc_clk &emmc_cmd &emmc_bus8>;
++
++	vmmc-supply = <&vcc_io>;
++	vqmmc-supply = <&vcc_18>;
++
++	status = "okay";
++};
++
++&sdmmc {
++	bus-width = <4>;
++	cap-mmc-highspeed;
++	cap-sd-highspeed;
++	card-detect-delay = <500>;
++	cd-gpios = <&gpio1 RK_PA5 GPIO_ACTIVE_LOW>;
++	disable-wp;
++	no-sdio;
++	pinctrl-names = "default";
++	pinctrl-0 = <&sdmmc0_clk &sdmmc0_cmd &sdmmc0_dectn &sdmmc0_bus4>;
++	supports-sd;
++	status = "okay";
++	vmmc-supply = <&vcc_sd>;
++};
++
++&sdio {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	bus-width = <4>;
++	cap-sd-highspeed;
++	cap-sdio-irq;
++	disable-wp;
++	keep-power-in-suspend;
++	mmc-pwrseq = <&sdio_pwrseq>;
++	non-removable;
++	num-slots = <1>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&sdmmc1_bus4 &sdmmc1_cmd &sdmmc1_clk>;
++	supports-sdio;
++	status = "okay";
++};
++
++/*
++ * sdmmc_ext is configured as sdcard controller and enabled by default.
++ * In this way boards which have the sdcard attached to sdmmc_ext will work
++ * by default. In case the controller is not attached to anything, the
++ * kernel will just autodetect and give up.
++ */
++&sdmmc_ext {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	bus-width = <4>;
++	cap-mmc-highspeed;
++	cap-sd-highspeed;
++	card-detect-delay = <500>;
++	cd-gpios = <&gpio3 RK_PA1 GPIO_ACTIVE_LOW>;
++	disable-wp;
++	no-sdio;
++	pinctrl-names = "default";
++	pinctrl-0 = <&sdmmc0ext_clk &sdmmc0ext_cmd &sdmmc0ext_dectn &sdmmc0ext_bus4>;
++	supports-sd;
++	status = "okay";
++	vmmc-supply = <&vcc_sd>;
++};
++
++&gmac2phy {
++	phy-supply = <&vcc_phy>;
++
++	phy-mode = "rmii";
++
++	clock_in_out = "output";
++	assigned-clocks = <&cru SCLK_MAC2PHY>;
++	assigned-clock-rate = <50000000>;
++	assigned-clock-parents = <&cru SCLK_MAC2PHY_SRC>;
++	tx_delay = <0x30>;
++	rx_delay = <0x10>;
++
++	status = "okay";
++
++};
++
++&gpu {
++	status = "okay";
++	mali-supply = <&vdd_logic>;
++};
++
++/*
++&h265e {
++	status = "okay";
++};
++*/
++
++&h265e_mmu {
++	status = "okay";
++};
++
++&hdmi {
++	status = "okay";
++};
++
++&spdif {
++	pinctrl-0 = <&spdifm0_tx>;
++	status = "okay";
++};
++
++&spdif_out {
++	status = "okay";
++};
++
++&spdif_sound {
++	status = "okay";
++};
++
++&hdmiphy {
++	status = "okay";
++};
++
++&i2s0 {
++	status = "okay";
++};
++
++&i2s1 {
++	status = "okay";
++};
++
++&io_domains {
++	status = "okay";
++
++	vccio1-supply = <&vcc_io>;
++	vccio2-supply = <&vcc_18>;
++	vccio3-supply = <&vcc_io>;
++	vccio4-supply = <&vcc_18>;
++	vccio5-supply = <&vcc_io>;
++	vccio6-supply = <&vcc_io>;
++	pmuio-supply = <&vcc_io>;
++};
++
++&pinctrl {
++	pinctrl-names = "default";
++	pinctrl-0 = <&clk_32k_out>;
++
++	clk_32k {
++		clk_32k_out: clk-32k-out {
++			rockchip,pins = <1 RK_PD4 1 &pcfg_pull_none>;
++		};
++	};
++
++	leds {
++		working_led: working-led {
++			rockchip,pins = <2 RK_PC7 RK_FUNC_GPIO &pcfg_pull_none_2ma>;
++		};
++	};
++
++	ir {
++		ir_int: ir-int {
++			rockchip,pins = <2 RK_PA2 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
++
++	pmic {
++		pmic_int_l: pmic-int-l {
++			rockchip,pins = <2 RK_PA6 RK_FUNC_GPIO &pcfg_pull_up>;
++		};
++	};
++
++	sdio-pwrseq {
++		wifi_enable_h: wifi-enable-h {
++			rockchip,pins = <1 RK_PC2 RK_FUNC_GPIO &pcfg_pull_none_4ma>;/*,
++				<1 RK_PC3 RK_FUNC_GPIO &pcfg_pull_none_4ma>;*/
++		};
++	};
++
++	usb2 {
++		usb20_host_drv: usb20-host-drv {
++			rockchip,pins = <0 RK_PA2 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
++
++	usb3 {
++		usb30_host_drv: usb30-host-drv {
++			rockchip,pins = <0 RK_PA0 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
++
++	wireless-wlan {
++
++		/*
++		 * SDIO host wake interrupt on YX_RK3328 board (sdio is attached to
++		 * regular mmc controller mmc@ff510000)
++		 */
++		sdio_host_wake: sdio-host-wake {
++			rockchip,pins = <1 RK_PC3 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++
++		/*
++		 * SDIO host wake interrupt on X88_PRO_B board (sdio is attached to
++		 * alternative mmc controller mmc@ff5f0000)
++		 */
++		sdio_host_wake_ext: sdio-host-wake-ext {
++			rockchip,pins = <3 RK_PA1 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++
++	};
++
++};
++
++/*
++&vdec {
++	status = "okay";
++	vcodec-supply = <&vdd_logic>;
++};
++*/
++
++&vdec_mmu {
++	status = "okay";
++};
++
++&threshold {
++	temperature = <80000>; /* millicelsius */
++};
++
++&target {
++	temperature = <95000>; /* millicelsius */
++};
++
++&soc_crit {
++	temperature = <100000>; /* millicelsius */
++};
++
++&tsadc {
++	rockchip,hw-tshut-mode = <0>;
++	rockchip,hw-tshut-polarity = <0>;
++	status = "okay";
++};
++
++&uart0 {
++
++	status = "okay";
++
++};
++
++&uart2 {
++	/delete-property/ dmas;
++	/delete-property/ dma-names;
++
++	status = "okay";
++};
++
++&u2phy {
++	status = "okay";
++
++	u2phy_host: host-port {
++		status = "okay";
++	};
++
++	u2phy_otg: otg-port {
++		status = "okay";
++	};
++};
++
++&usb20_otg {
++	dr_mode = "host";
++	status = "okay";
++};
++
++&usb_host0_ehci {
++	status = "okay";
++};
++
++&usb_host0_ohci {
++	status = "okay";
++};
++
++&usbdrd3 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	dr_mode = "host";
++	status = "okay";
++};
++
++&vop {
++	status = "okay";
++};
++
++&vop_mmu {
++	status = "okay";
++};
++
++&vpu {
++	status = "okay";
++	vcodec-supply = <&vdd_logic>;
++};
++
++&vpu_mmu {
++	status = "okay";
++};
++
++/*
++&vepu {
++	status = "okay";
++};
++*/
++
++&vepu_mmu {
++	status = "okay";
++};
++
++&saradc {
++	vref-supply = <&vcc_18>;
++	status = "okay";
++};
++
++/*
++&rga {
++	status = "okay";
++};
++*/
++
++&pwm0 {
++	status = "okay";
++};
++
++&pwm1 {
++	status = "okay";
++};
++
++&hdmi_sound {
++	status = "okay";
++};
++
++&analog_sound {
++	status = "okay";
++};
+diff -ruN a/arch/arm64/boot/dts/rockchip/rk3318-dram-default-timing.dtsi b/arch/arm64/boot/dts/rockchip/rk3318-dram-default-timing.dtsi
+--- a/arch/arm64/boot/dts/rockchip/rk3318-dram-default-timing.dtsi	1970-01-01 03:00:00.000000000 +0300
++++ b/arch/arm64/boot/dts/rockchip/rk3318-dram-default-timing.dtsi	2023-12-08 16:17:36.931927699 +0300
+@@ -0,0 +1,311 @@
++/*
++ * Copyright (c) 2017 Fuzhou Rockchip Electronics Co., Ltd
++ *
++ * This file is dual-licensed: you can use it either under the terms
++ * of the GPL or the X11 license, at your option. Note that this dual
++ * licensing only applies to this file, and not this project as a
++ * whole.
++ *
++ *  a) This library is free software; you can redistribute it and/or
++ *     modify it under the terms of the GNU General Public License as
++ *     published by the Free Software Foundation; either version 2 of the
++ *     License, or (at your option) any later version.
++ *
++ *     This library is distributed in the hope that it will be useful,
++ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *     GNU General Public License for more details.
++ *
++ * Or, alternatively,
++ *
++ *  b) Permission is hereby granted, free of charge, to any person
++ *     obtaining a copy of this software and associated documentation
++ *     files (the "Software"), to deal in the Software without
++ *     restriction, including without limitation the rights to use,
++ *     copy, modify, merge, publish, distribute, sublicense, and/or
++ *     sell copies of the Software, and to permit persons to whom the
++ *     Software is furnished to do so, subject to the following
++ *     conditions:
++ *
++ *     The above copyright notice and this permission notice shall be
++ *     included in all copies or substantial portions of the Software.
++ *
++ *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
++ *     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
++ *     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
++ *     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
++ *     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
++ *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
++ *     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
++ *     OTHER DEALINGS IN THE SOFTWARE.
++ */
++#include <dt-bindings/clock/rockchip-ddr.h>
++#include <dt-bindings/memory/rk3328-dram.h>
++
++/ {
++	ddr_timing: ddr_timing {
++		compatible = "rockchip,ddr-timing";
++		ddr3_speed_bin = <DDR3_DEFAULT>;
++		ddr4_speed_bin = <DDR4_DEFAULT>;
++		pd_idle = <0>;
++		sr_idle = <0>;
++		sr_mc_gate_idle = <0>;
++		srpd_lite_idle	= <0>;
++		standby_idle = <0>;
++
++		auto_pd_dis_freq = <1066>;
++		auto_sr_dis_freq = <800>;
++		ddr3_dll_dis_freq = <300>;
++		ddr4_dll_dis_freq = <625>;
++		phy_dll_dis_freq = <400>;
++
++		ddr3_odt_dis_freq = <100>;
++		phy_ddr3_odt_dis_freq = <100>;
++		ddr3_drv = <DDR3_DS_40ohm>;
++		ddr3_odt = <DDR3_ODT_120ohm>;
++		phy_ddr3_ca_drv = <PHY_DDR3_RON_RTT_23ohm>;
++		phy_ddr3_ck_drv = <PHY_DDR3_RON_RTT_34ohm>;
++		phy_ddr3_dq_drv = <PHY_DDR3_RON_RTT_34ohm>;
++		phy_ddr3_odt = <PHY_DDR3_RON_RTT_150ohm>;
++
++		lpddr3_odt_dis_freq = <666>;
++		phy_lpddr3_odt_dis_freq = <666>;
++		lpddr3_drv = <LP3_DS_40ohm>;
++		lpddr3_odt = <LP3_ODT_240ohm>;
++		phy_lpddr3_ca_drv = <PHY_DDR4_LPDDR3_RON_RTT_34ohm>;
++		phy_lpddr3_ck_drv = <PHY_DDR4_LPDDR3_RON_RTT_43ohm>;
++		phy_lpddr3_dq_drv = <PHY_DDR4_LPDDR3_RON_RTT_34ohm>;
++		phy_lpddr3_odt = <PHY_DDR4_LPDDR3_RON_RTT_240ohm>;
++
++		lpddr4_odt_dis_freq = <800>;
++		phy_lpddr4_odt_dis_freq = <800>;
++		lpddr4_drv = <LP4_PDDS_60ohm>;
++		lpddr4_dq_odt = <LP4_DQ_ODT_40ohm>;
++		lpddr4_ca_odt = <LP4_CA_ODT_40ohm>;
++		phy_lpddr4_ca_drv = <PHY_DDR4_LPDDR3_RON_RTT_40ohm>;
++		phy_lpddr4_ck_cs_drv = <PHY_DDR4_LPDDR3_RON_RTT_80ohm>;
++		phy_lpddr4_dq_drv = <PHY_DDR4_LPDDR3_RON_RTT_80ohm>;
++		phy_lpddr4_odt = <PHY_DDR4_LPDDR3_RON_RTT_60ohm>;
++
++		ddr4_odt_dis_freq = <666>;
++		phy_ddr4_odt_dis_freq = <666>;
++		ddr4_drv = <DDR4_DS_34ohm>;
++		ddr4_odt = <DDR4_RTT_NOM_240ohm>;
++		phy_ddr4_ca_drv = <PHY_DDR4_LPDDR3_RON_RTT_34ohm>;
++		phy_ddr4_ck_drv = <PHY_DDR4_LPDDR3_RON_RTT_43ohm>;
++		phy_ddr4_dq_drv = <PHY_DDR4_LPDDR3_RON_RTT_34ohm>;
++		phy_ddr4_odt = <PHY_DDR4_LPDDR3_RON_RTT_240ohm>;
++
++		/* CA de-skew, one step is 47.8ps, range 0-15 */
++		ddr3a1_ddr4a9_de-skew = <2>;
++		ddr3a0_ddr4a10_de-skew = <3>;
++		ddr3a3_ddr4a6_de-skew = <3>;
++		ddr3a2_ddr4a4_de-skew = <2>;
++		ddr3a5_ddr4a8_de-skew = <3>;
++		ddr3a4_ddr4a5_de-skew = <2>;
++		ddr3a7_ddr4a11_de-skew = <3>;
++		ddr3a6_ddr4a7_de-skew = <2>;
++		ddr3a9_ddr4a0_de-skew = <2>;
++		ddr3a8_ddr4a13_de-skew = <1>;
++		ddr3a11_ddr4a3_de-skew = <2>;
++		ddr3a10_ddr4cs0_de-skew = <2>;
++		ddr3a13_ddr4a2_de-skew = <1>;
++		ddr3a12_ddr4ba1_de-skew = <2>;
++		ddr3a15_ddr4odt0_de-skew = <3>;
++		ddr3a14_ddr4a1_de-skew = <2>;
++		ddr3ba1_ddr4a15_de-skew = <2>;
++		ddr3ba0_ddr4bg0_de-skew = <4>;
++		ddr3ras_ddr4cke_de-skew = <4>;
++		ddr3ba2_ddr4ba0_de-skew = <3>;
++		ddr3we_ddr4bg1_de-skew = <2>;
++		ddr3cas_ddr4a12_de-skew = <2>;
++		ddr3ckn_ddr4ckn_de-skew = <11>;
++		ddr3ckp_ddr4ckp_de-skew = <11>;
++		ddr3cke_ddr4a16_de-skew = <2>;
++		ddr3odt0_ddr4a14_de-skew = <4>;
++		ddr3cs0_ddr4act_de-skew = <4>;
++		ddr3reset_ddr4reset_de-skew = <7>;
++		ddr3cs1_ddr4cs1_de-skew = <7>;
++		ddr3odt1_ddr4odt1_de-skew = <7>;
++
++		/* DATA de-skew
++		 * RX one step is 25.1ps, range 0-15
++		 * TX one step is 47.8ps, range 0-15
++		 */
++		cs0_dm0_rx_de-skew = <12>;
++		cs0_dm0_tx_de-skew = <10>;
++		cs0_dq0_rx_de-skew = <12>;
++		cs0_dq0_tx_de-skew = <10>;
++		cs0_dq1_rx_de-skew = <12>;
++		cs0_dq1_tx_de-skew = <10>;
++		cs0_dq2_rx_de-skew = <12>;
++		cs0_dq2_tx_de-skew = <10>;
++		cs0_dq3_rx_de-skew = <12>;
++		cs0_dq3_tx_de-skew = <10>;
++		cs0_dq4_rx_de-skew = <12>;
++		cs0_dq4_tx_de-skew = <10>;
++		cs0_dq5_rx_de-skew = <12>;
++		cs0_dq5_tx_de-skew = <10>;
++		cs0_dq6_rx_de-skew = <12>;
++		cs0_dq6_tx_de-skew = <10>;
++		cs0_dq7_rx_de-skew = <12>;
++		cs0_dq7_tx_de-skew = <10>;
++		cs0_dqs0_rx_de-skew = <10>;
++		cs0_dqs0p_tx_de-skew = <12>;
++		cs0_dqs0n_tx_de-skew = <12>;
++
++		cs0_dm1_rx_de-skew = <10>;
++		cs0_dm1_tx_de-skew = <8>;
++		cs0_dq8_rx_de-skew = <10>;
++		cs0_dq8_tx_de-skew = <8>;
++		cs0_dq9_rx_de-skew = <10>;
++		cs0_dq9_tx_de-skew = <8>;
++		cs0_dq10_rx_de-skew = <10>;
++		cs0_dq10_tx_de-skew = <8>;
++		cs0_dq11_rx_de-skew = <10>;
++		cs0_dq11_tx_de-skew = <8>;
++		cs0_dq12_rx_de-skew = <10>;
++		cs0_dq12_tx_de-skew = <8>;
++		cs0_dq13_rx_de-skew = <10>;
++		cs0_dq13_tx_de-skew = <8>;
++		cs0_dq14_rx_de-skew = <10>;
++		cs0_dq14_tx_de-skew = <8>;
++		cs0_dq15_rx_de-skew = <10>;
++		cs0_dq15_tx_de-skew = <8>;
++		cs0_dqs1_rx_de-skew = <9>;
++		cs0_dqs1p_tx_de-skew = <10>;
++		cs0_dqs1n_tx_de-skew = <10>;
++
++		cs0_dm2_rx_de-skew = <10>;
++		cs0_dm2_tx_de-skew = <9>;
++		cs0_dq16_rx_de-skew = <10>;
++		cs0_dq16_tx_de-skew = <9>;
++		cs0_dq17_rx_de-skew = <10>;
++		cs0_dq17_tx_de-skew = <9>;
++		cs0_dq18_rx_de-skew = <10>;
++		cs0_dq18_tx_de-skew = <9>;
++		cs0_dq19_rx_de-skew = <10>;
++		cs0_dq19_tx_de-skew = <9>;
++		cs0_dq20_rx_de-skew = <10>;
++		cs0_dq20_tx_de-skew = <9>;
++		cs0_dq21_rx_de-skew = <10>;
++		cs0_dq21_tx_de-skew = <9>;
++		cs0_dq22_rx_de-skew = <10>;
++		cs0_dq22_tx_de-skew = <9>;
++		cs0_dq23_rx_de-skew = <10>;
++		cs0_dq23_tx_de-skew = <9>;
++		cs0_dqs2_rx_de-skew = <9>;
++		cs0_dqs2p_tx_de-skew = <11>;
++		cs0_dqs2n_tx_de-skew = <11>;
++
++		cs0_dm3_rx_de-skew = <7>;
++		cs0_dm3_tx_de-skew = <7>;
++		cs0_dq24_rx_de-skew = <7>;
++		cs0_dq24_tx_de-skew = <7>;
++		cs0_dq25_rx_de-skew = <7>;
++		cs0_dq25_tx_de-skew = <7>;
++		cs0_dq26_rx_de-skew = <7>;
++		cs0_dq26_tx_de-skew = <7>;
++		cs0_dq27_rx_de-skew = <7>;
++		cs0_dq27_tx_de-skew = <7>;
++		cs0_dq28_rx_de-skew = <7>;
++		cs0_dq28_tx_de-skew = <7>;
++		cs0_dq29_rx_de-skew = <7>;
++		cs0_dq29_tx_de-skew = <7>;
++		cs0_dq30_rx_de-skew = <7>;
++		cs0_dq30_tx_de-skew = <7>;
++		cs0_dq31_rx_de-skew = <7>;
++		cs0_dq31_tx_de-skew = <7>;
++		cs0_dqs3_rx_de-skew = <7>;
++		cs0_dqs3p_tx_de-skew = <10>;
++		cs0_dqs3n_tx_de-skew = <10>;
++
++		cs1_dm0_rx_de-skew = <7>;
++		cs1_dm0_tx_de-skew = <8>;
++		cs1_dq0_rx_de-skew = <7>;
++		cs1_dq0_tx_de-skew = <8>;
++		cs1_dq1_rx_de-skew = <7>;
++		cs1_dq1_tx_de-skew = <8>;
++		cs1_dq2_rx_de-skew = <7>;
++		cs1_dq2_tx_de-skew = <8>;
++		cs1_dq3_rx_de-skew = <7>;
++		cs1_dq3_tx_de-skew = <8>;
++		cs1_dq4_rx_de-skew = <7>;
++		cs1_dq4_tx_de-skew = <8>;
++		cs1_dq5_rx_de-skew = <7>;
++		cs1_dq5_tx_de-skew = <8>;
++		cs1_dq6_rx_de-skew = <7>;
++		cs1_dq6_tx_de-skew = <8>;
++		cs1_dq7_rx_de-skew = <7>;
++		cs1_dq7_tx_de-skew = <8>;
++		cs1_dqs0_rx_de-skew = <6>;
++		cs1_dqs0p_tx_de-skew = <9>;
++		cs1_dqs0n_tx_de-skew = <9>;
++
++		cs1_dm1_rx_de-skew = <7>;
++		cs1_dm1_tx_de-skew = <7>;
++		cs1_dq8_rx_de-skew = <7>;
++		cs1_dq8_tx_de-skew = <8>;
++		cs1_dq9_rx_de-skew = <7>;
++		cs1_dq9_tx_de-skew = <7>;
++		cs1_dq10_rx_de-skew = <7>;
++		cs1_dq10_tx_de-skew = <8>;
++		cs1_dq11_rx_de-skew = <7>;
++		cs1_dq11_tx_de-skew = <7>;
++		cs1_dq12_rx_de-skew = <7>;
++		cs1_dq12_tx_de-skew = <8>;
++		cs1_dq13_rx_de-skew = <7>;
++		cs1_dq13_tx_de-skew = <7>;
++		cs1_dq14_rx_de-skew = <7>;
++		cs1_dq14_tx_de-skew = <8>;
++		cs1_dq15_rx_de-skew = <7>;
++		cs1_dq15_tx_de-skew = <7>;
++		cs1_dqs1_rx_de-skew = <7>;
++		cs1_dqs1p_tx_de-skew = <9>;
++		cs1_dqs1n_tx_de-skew = <9>;
++
++		cs1_dm2_rx_de-skew = <7>;
++		cs1_dm2_tx_de-skew = <8>;
++		cs1_dq16_rx_de-skew = <7>;
++		cs1_dq16_tx_de-skew = <8>;
++		cs1_dq17_rx_de-skew = <7>;
++		cs1_dq17_tx_de-skew = <8>;
++		cs1_dq18_rx_de-skew = <7>;
++		cs1_dq18_tx_de-skew = <8>;
++		cs1_dq19_rx_de-skew = <7>;
++		cs1_dq19_tx_de-skew = <8>;
++		cs1_dq20_rx_de-skew = <7>;
++		cs1_dq20_tx_de-skew = <8>;
++		cs1_dq21_rx_de-skew = <7>;
++		cs1_dq21_tx_de-skew = <8>;
++		cs1_dq22_rx_de-skew = <7>;
++		cs1_dq22_tx_de-skew = <8>;
++		cs1_dq23_rx_de-skew = <7>;
++		cs1_dq23_tx_de-skew = <8>;
++		cs1_dqs2_rx_de-skew = <6>;
++		cs1_dqs2p_tx_de-skew = <9>;
++		cs1_dqs2n_tx_de-skew = <9>;
++
++		cs1_dm3_rx_de-skew = <7>;
++		cs1_dm3_tx_de-skew = <7>;
++		cs1_dq24_rx_de-skew = <7>;
++		cs1_dq24_tx_de-skew = <8>;
++		cs1_dq25_rx_de-skew = <7>;
++		cs1_dq25_tx_de-skew = <7>;
++		cs1_dq26_rx_de-skew = <7>;
++		cs1_dq26_tx_de-skew = <7>;
++		cs1_dq27_rx_de-skew = <7>;
++		cs1_dq27_tx_de-skew = <7>;
++		cs1_dq28_rx_de-skew = <7>;
++		cs1_dq28_tx_de-skew = <7>;
++		cs1_dq29_rx_de-skew = <7>;
++		cs1_dq29_tx_de-skew = <7>;
++		cs1_dq30_rx_de-skew = <7>;
++		cs1_dq30_tx_de-skew = <7>;
++		cs1_dq31_rx_de-skew = <7>;
++		cs1_dq31_tx_de-skew = <7>;
++		cs1_dqs3_rx_de-skew = <7>;
++		cs1_dqs3p_tx_de-skew = <9>;
++		cs1_dqs3n_tx_de-skew = <9>;
++	};
++};
+diff -ruN a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+--- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi	2023-12-08 16:19:11.632428604 +0300
++++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi	2023-12-08 16:17:36.931927699 +0300
+@@ -195,6 +195,26 @@
+ 		method = "smc";
+ 	};
+ 
++	spdif_out: spdif-out {
++		compatible = "linux,spdif-dit";
++		#sound-dai-cells = <0>;
++		status = "disabled";
++	};
++
++	spdif_sound: spdif-sound {
++		compatible = "simple-audio-card";
++		simple-audio-card,name = "SPDIF";
++		status = "disabled";
++
++		simple-audio-card,cpu {
++			sound-dai = <&spdif>;
++		};
++
++		simple-audio-card,codec {
++			sound-dai = <&spdif_out>;
++		};
++	};
++
+ 	timer {
+ 		compatible = "arm,armv8-timer";
+ 		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
+@@ -305,7 +325,6 @@
+ 			power-domain@RK3328_PD_GPU {
+ 				reg = <RK3328_PD_GPU>;
+ 				clocks = <&cru ACLK_GPU>;
+-				#power-domain-cells = <0>;
+ 			};
+ 			power-domain@RK3328_PD_HEVC {
+ 				reg = <RK3328_PD_HEVC>;
+@@ -576,6 +595,67 @@
+ 		status = "disabled";
+ 	};
+ 
++	dfi: dfi@ff790000 {
++		reg = <0x00 0xff790000 0x00 0x400>;
++		compatible = "rockchip,rk3328-dfi";
++		rockchip,grf = <&grf>;
++		status = "okay";
++	};
++
++	dmc: dmc@ff780000 {
++		reg = <0x00 0xff780000 0x00 0x400>;
++		compatible = "rockchip,rk3328-dmc";
++		devfreq-events = <&dfi>;
++		clocks = <&cru SCLK_DDRCLK>;
++		clock-names = "dmc_clk";
++		operating-points-v2 = <&dmc_opp_table>;
++		#cooling-cells = <2>;
++		status = "disabled";
++	};
++
++	dmc_opp_table: dmc-opp-table {
++		compatible = "operating-points-v2";
++
++		opp-600000000 {
++			opp-hz = /bits/ 64 <600000000>;
++			opp-microvolt = <1000000 1000000 1200000>;
++		};
++
++		opp-666000000 {
++			opp-hz = /bits/ 64 <666000000>;
++			opp-microvolt = <1025000 1025000 1200000>;
++		};
++
++		opp-786000000 {
++			opp-hz = /bits/ 64 <786000000>;
++			opp-microvolt = <1050000 1050000 1200000>;
++		};
++
++		opp-800000000 {
++			opp-hz = /bits/ 64 <800000000>;
++			opp-microvolt = <1050000 1050000 1200000>;
++			status = "disabled";
++		};
++
++		opp-850000000 {
++			opp-hz = /bits/ 64 <850000000>;
++			opp-microvolt = <1050000 1050000 1200000>; // Untested
++			status = "disabled";
++		};
++
++		opp-933000000 {
++			opp-hz = /bits/ 64 <933000000>;
++			opp-microvolt = <1100000 1100000 1200000>; // Untested
++			status = "disabled";
++		};
++
++		opp-1066000000 {
++			opp-hz = /bits/ 64 <1066000000>;
++			opp-microvolt = <1150000 1150000 1200000>; // Untested
++			status = "disabled";
++		};
++	};
++
+ 	efuse: efuse@ff260000 {
+ 		compatible = "rockchip,rk3328-efuse";
+ 		reg = <0x0 0xff260000 0x0 0x50>;
+@@ -632,9 +712,9 @@
+ 				  "ppmmu1";
+ 		clocks = <&cru ACLK_GPU>, <&cru ACLK_GPU>;
+ 		clock-names = "bus", "core";
+-		operating-points-v2 = <&gpu_opp_table>;
+ 		power-domains = <&power RK3328_PD_GPU>;
+ 		resets = <&cru SRST_GPU_A>;
++		operating-points-v2 = <&gpu_opp_table>;
+ 		#cooling-cells = <2>;
+ 	};
+ 
+@@ -643,20 +723,22 @@
+ 
+ 		opp-200000000 {
+ 			opp-hz = /bits/ 64 <200000000>;
+-			opp-microvolt = <1075000>;
++			opp-microvolt = <1050000 950000 1200000>;
+ 		};
++
+ 		opp-300000000 {
+ 			opp-hz = /bits/ 64 <300000000>;
+-			opp-microvolt = <1075000>;
++			opp-microvolt = <1050000 950000 1200000>;
+ 		};
++
+ 		opp-400000000 {
+ 			opp-hz = /bits/ 64 <400000000>;
+-			opp-microvolt = <1075000>;
++			opp-microvolt = <1050000 950000 1200000>;
+ 		};
++
+ 		opp-500000000 {
+ 			opp-hz = /bits/ 64 <500000000>;
+-			opp-microvolt = <1150000>;
+-			status = "disabled";
++			opp-microvolt = <1150000 950000 1200000>;
+ 		};
+ 	};
+ 
+@@ -711,11 +793,6 @@
+ 		assigned-clocks = <&cru ACLK_RKVDEC>, <&cru SCLK_VDEC_CABAC>,
+ 				  <&cru SCLK_VDEC_CORE>;
+ 		assigned-clock-rates = <400000000>, <400000000>, <300000000>;
+-		resets = <&cru SRST_VDEC_H>, <&cru SRST_VDEC_A>,
+-			 <&cru SRST_VDEC_CORE>, <&cru SRST_VDEC_CABAC>,
+-			 <&cru SRST_VDEC_NIU_A>, <&cru SRST_VDEC_NIU_H>;
+-		reset-names = "video_h", "video_a", "video_core", "video_cabac",
+-			       "niu_a", "niu_h";
+ 		iommus = <&vdec_mmu>;
+ 		power-domains = <&power RK3328_PD_VIDEO>;
+ 	};
+@@ -762,6 +839,20 @@
+ 		status = "disabled";
+ 	};
+ 
++	rga: rga@ff390000 {
++		compatible = "rockchip,rk3328-rga", "rockchip,rk3399-rga";
++		reg = <0x0 0xff390000 0x0 0x1000>;
++		interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&cru ACLK_RGA>,
++			<&cru HCLK_RGA>,
++			<&cru SCLK_RGA>;
++		clock-names = "aclk", "hclk", "sclk";
++		resets = <&cru SRST_RGA>,
++			<&cru SRST_RGA_A>,
++			<&cru SRST_RGA_H>;
++		reset-names = "core", "axi", "ahb";
++	};
++
+ 	iep: iep@ff3a0000 {
+ 		compatible = "rockchip,rk3328-iep", "rockchip,rk3228-iep";
+ 		reg = <0x0 0xff3a0000 0x0 0x800>;
+@@ -865,6 +956,7 @@
+ 			<&cru ACLK_BUS_PRE>, <&cru HCLK_BUS_PRE>,
+ 			<&cru PCLK_BUS_PRE>, <&cru ACLK_PERI_PRE>,
+ 			<&cru HCLK_PERI>, <&cru PCLK_PERI>,
++			<&cru ACLK_GPU>,
+ 			<&cru SCLK_RTC32K>;
+ 		assigned-clock-parents =
+ 			<&cru HDMIPHY>, <&cru PLL_APLL>,
+@@ -875,8 +967,8 @@
+ 			<0>, <24000000>,
+ 			<24000000>, <24000000>,
+ 			<15000000>, <15000000>,
+-			<300000000>, <100000000>,
+-			<400000000>, <100000000>,
++			<100000000>, <100000000>,
++			<100000000>, <100000000>,
+ 			<50000000>, <100000000>,
+ 			<100000000>, <100000000>,
+ 			<50000000>, <50000000>,
+@@ -886,6 +978,7 @@
+ 			<150000000>, <75000000>,
+ 			<75000000>, <150000000>,
+ 			<75000000>, <75000000>,
++			<500000000>,
+ 			<32768>;
+ 	};
+ 
+@@ -933,10 +1026,10 @@
+ 		clocks = <&cru HCLK_SDMMC>, <&cru SCLK_SDMMC>,
+ 			 <&cru SCLK_SDMMC_DRV>, <&cru SCLK_SDMMC_SAMPLE>;
+ 		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
+-		fifo-depth = <0x100>;
+-		max-frequency = <150000000>;
+ 		resets = <&cru SRST_MMC0>;
+ 		reset-names = "reset";
++		fifo-depth = <0x100>;
++		max-frequency = <150000000>;
+ 		status = "disabled";
+ 	};
+ 
+@@ -947,10 +1040,10 @@
+ 		clocks = <&cru HCLK_SDIO>, <&cru SCLK_SDIO>,
+ 			 <&cru SCLK_SDIO_DRV>, <&cru SCLK_SDIO_SAMPLE>;
+ 		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
+-		fifo-depth = <0x100>;
+-		max-frequency = <150000000>;
+ 		resets = <&cru SRST_SDIO>;
+ 		reset-names = "reset";
++		fifo-depth = <0x100>;
++		max-frequency = <150000000>;
+ 		status = "disabled";
+ 	};
+ 
+@@ -961,9 +1054,23 @@
+ 		clocks = <&cru HCLK_EMMC>, <&cru SCLK_EMMC>,
+ 			 <&cru SCLK_EMMC_DRV>, <&cru SCLK_EMMC_SAMPLE>;
+ 		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
++		resets = <&cru SRST_EMMC>;
++		reset-names = "reset";
+ 		fifo-depth = <0x100>;
+ 		max-frequency = <150000000>;
+-		resets = <&cru SRST_EMMC>;
++		status = "disabled";
++	};
++
++	sdmmc_ext: dwmmc@ff5f0000 {
++		compatible = "rockchip,rk3328-dw-mshc", "rockchip,rk3288-dw-mshc";
++		reg = <0x0 0xff5f0000 0x0 0x4000>;
++		interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&cru HCLK_SDMMC_EXT>, <&cru SCLK_SDMMC_EXT>,
++			 <&cru SCLK_SDMMC_EXT_DRV>, <&cru SCLK_SDMMC_EXT_SAMPLE>;
++		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
++		fifo-depth = <0x100>;
++		max-frequency = <150000000>;
++		resets = <&cru SRST_SDMMCEXT>;
+ 		reset-names = "reset";
+ 		status = "disabled";
+ 	};
+@@ -1063,20 +1170,6 @@
+ 		status = "disabled";
+ 	};
+ 
+-	sdmmc_ext: mmc@ff5f0000 {
+-		compatible = "rockchip,rk3328-dw-mshc", "rockchip,rk3288-dw-mshc";
+-		reg = <0x0 0xff5f0000 0x0 0x4000>;
+-		interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
+-		clocks = <&cru HCLK_SDMMC_EXT>, <&cru SCLK_SDMMC_EXT>,
+-			 <&cru SCLK_SDMMC_EXT_DRV>, <&cru SCLK_SDMMC_EXT_SAMPLE>;
+-		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
+-		fifo-depth = <0x100>;
+-		max-frequency = <150000000>;
+-		resets = <&cru SRST_SDMMCEXT>;
+-		reset-names = "reset";
+-		status = "disabled";
+-	};
+-
+ 	usbdrd3: usb@ff600000 {
+ 		compatible = "rockchip,rk3328-dwc3", "snps,dwc3";
+ 		reg = <0x0 0xff600000 0x0 0x100000>;
+@@ -1085,11 +1178,14 @@
+ 			 <&cru ACLK_USB3OTG>;
+ 		clock-names = "ref_clk", "suspend_clk",
+ 			      "bus_clk";
++		resets = <&cru SRST_USB3OTG>;
++		reset-names = "usb3-otg";
+ 		dr_mode = "otg";
+ 		phy_type = "utmi_wide";
+ 		snps,dis-del-phy-power-chg-quirk;
+ 		snps,dis_enblslpm_quirk;
+ 		snps,dis-tx-ipgap-linecheck-quirk;
++        snps,xhci-trb-ent-quirk;
+ 		snps,dis-u2-freeclk-exists-quirk;
+ 		snps,dis_u2_susphy_quirk;
+ 		snps,dis_u3_susphy_quirk;
+diff -ruN a/include/dt-bindings/clock/rockchip-ddr.h b/include/dt-bindings/clock/rockchip-ddr.h
+--- a/include/dt-bindings/clock/rockchip-ddr.h	1970-01-01 03:00:00.000000000 +0300
++++ b/include/dt-bindings/clock/rockchip-ddr.h	2023-12-08 16:17:38.933938289 +0300
+@@ -0,0 +1,63 @@
++/*
++ *
++ * Copyright (C) 2017 ROCKCHIP, Inc.
++ *
++ * This software is licensed under the terms of the GNU General Public
++ * License version 2, as published by the Free Software Foundation, and
++ * may be copied, distributed, and modified under those terms.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ */
++
++#ifndef _DT_BINDINGS_CLOCK_ROCKCHIP_DDR_H
++#define _DT_BINDINGS_CLOCK_ROCKCHIP_DDR_H
++
++#define DDR2_DEFAULT	(0)
++
++#define DDR3_800D	(0)	/* 5-5-5 */
++#define DDR3_800E	(1)	/* 6-6-6 */
++#define DDR3_1066E	(2)	/* 6-6-6 */
++#define DDR3_1066F	(3)	/* 7-7-7 */
++#define DDR3_1066G	(4)	/* 8-8-8 */
++#define DDR3_1333F	(5)	/* 7-7-7 */
++#define DDR3_1333G	(6)	/* 8-8-8 */
++#define DDR3_1333H	(7)	/* 9-9-9 */
++#define DDR3_1333J	(8)	/* 10-10-10 */
++#define DDR3_1600G	(9)	/* 8-8-8 */
++#define DDR3_1600H	(10)	/* 9-9-9 */
++#define DDR3_1600J	(11)	/* 10-10-10 */
++#define DDR3_1600K	(12)	/* 11-11-11 */
++#define DDR3_1866J	(13)	/* 10-10-10 */
++#define DDR3_1866K	(14)	/* 11-11-11 */
++#define DDR3_1866L	(15)	/* 12-12-12 */
++#define DDR3_1866M	(16)	/* 13-13-13 */
++#define DDR3_2133K	(17)	/* 11-11-11 */
++#define DDR3_2133L	(18)	/* 12-12-12 */
++#define DDR3_2133M	(19)	/* 13-13-13 */
++#define DDR3_2133N	(20)	/* 14-14-14 */
++#define DDR3_DEFAULT	(21)
++#define DDR_DDR2	(22)
++#define DDR_LPDDR	(23)
++#define DDR_LPDDR2	(24)
++
++#define DDR4_1600J	(0)	/* 10-10-10 */
++#define DDR4_1600K	(1)	/* 11-11-11 */
++#define DDR4_1600L	(2)	/* 12-12-12 */
++#define DDR4_1866L	(3)	/* 12-12-12 */
++#define DDR4_1866M	(4)	/* 13-13-13 */
++#define DDR4_1866N	(5)	/* 14-14-14 */
++#define DDR4_2133N	(6)	/* 14-14-14 */
++#define DDR4_2133P	(7)	/* 15-15-15 */
++#define DDR4_2133R	(8)	/* 16-16-16 */
++#define DDR4_2400P	(9)	/* 15-15-15 */
++#define DDR4_2400R	(10)	/* 16-16-16 */
++#define DDR4_2400U	(11)	/* 18-18-18 */
++#define DDR4_DEFAULT	(12)
++
++#define PAUSE_CPU_STACK_SIZE	16
++
++#endif
+diff -ruN a/include/dt-bindings/memory/rk3328-dram.h b/include/dt-bindings/memory/rk3328-dram.h
+--- a/include/dt-bindings/memory/rk3328-dram.h	1970-01-01 03:00:00.000000000 +0300
++++ b/include/dt-bindings/memory/rk3328-dram.h	2023-12-08 16:17:38.939938321 +0300
+@@ -0,0 +1,159 @@
++/*
++ * Copyright (c) 2017 Fuzhou Rockchip Electronics Co., Ltd
++ *
++ * This file is dual-licensed: you can use it either under the terms
++ * of the GPL or the X11 license, at your option. Note that this dual
++ * licensing only applies to this file, and not this project as a
++ * whole.
++ *
++ *  a) This library is free software; you can redistribute it and/or
++ *     modify it under the terms of the GNU General Public License as
++ *     published by the Free Software Foundation; either version 2 of the
++ *     License, or (at your option) any later version.
++ *
++ *     This library is distributed in the hope that it will be useful,
++ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *     GNU General Public License for more details.
++ *
++ * Or, alternatively,
++ *
++ *  b) Permission is hereby granted, free of charge, to any person
++ *     obtaining a copy of this software and associated documentation
++ *     files (the "Software"), to deal in the Software without
++ *     restriction, including without limitation the rights to use,
++ *     copy, modify, merge, publish, distribute, sublicense, and/or
++ *     sell copies of the Software, and to permit persons to whom the
++ *     Software is furnished to do so, subject to the following
++ *     conditions:
++ *
++ *     The above copyright notice and this permission notice shall be
++ *     included in all copies or substantial portions of the Software.
++ *
++ *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
++ *     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
++ *     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
++ *     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
++ *     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
++ *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
++ *     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
++ *     OTHER DEALINGS IN THE SOFTWARE.
++ */
++#ifndef _DT_BINDINGS_DRAM_ROCKCHIP_RK3328_H
++#define _DT_BINDINGS_DRAM_ROCKCHIP_RK3328_H
++
++#define DDR3_DS_34ohm			(34)
++#define DDR3_DS_40ohm			(40)
++
++#define DDR3_ODT_DIS			(0)
++#define DDR3_ODT_40ohm			(40)
++#define DDR3_ODT_60ohm			(60)
++#define DDR3_ODT_120ohm			(120)
++
++#define LP2_DS_34ohm			(34)
++#define LP2_DS_40ohm			(40)
++#define LP2_DS_48ohm			(48)
++#define LP2_DS_60ohm			(60)
++#define LP2_DS_68_6ohm			(68)	/* optional */
++#define LP2_DS_80ohm			(80)
++#define LP2_DS_120ohm			(120)	/* optional */
++
++#define LP3_DS_34ohm			(34)
++#define LP3_DS_40ohm			(40)
++#define LP3_DS_48ohm			(48)
++#define LP3_DS_60ohm			(60)
++#define LP3_DS_80ohm			(80)
++#define LP3_DS_34D_40U			(3440)
++#define LP3_DS_40D_48U			(4048)
++#define LP3_DS_34D_48U			(3448)
++
++#define LP3_ODT_DIS			(0)
++#define LP3_ODT_60ohm			(60)
++#define LP3_ODT_120ohm			(120)
++#define LP3_ODT_240ohm			(240)
++
++#define LP4_PDDS_40ohm			(40)
++#define LP4_PDDS_48ohm			(48)
++#define LP4_PDDS_60ohm			(60)
++#define LP4_PDDS_80ohm			(80)
++#define LP4_PDDS_120ohm			(120)
++#define LP4_PDDS_240ohm			(240)
++
++#define LP4_DQ_ODT_40ohm		(40)
++#define LP4_DQ_ODT_48ohm		(48)
++#define LP4_DQ_ODT_60ohm		(60)
++#define LP4_DQ_ODT_80ohm		(80)
++#define LP4_DQ_ODT_120ohm		(120)
++#define LP4_DQ_ODT_240ohm		(240)
++#define LP4_DQ_ODT_DIS			(0)
++
++#define LP4_CA_ODT_40ohm		(40)
++#define LP4_CA_ODT_48ohm		(48)
++#define LP4_CA_ODT_60ohm		(60)
++#define LP4_CA_ODT_80ohm		(80)
++#define LP4_CA_ODT_120ohm		(120)
++#define LP4_CA_ODT_240ohm		(240)
++#define LP4_CA_ODT_DIS			(0)
++
++#define DDR4_DS_34ohm			(34)
++#define DDR4_DS_48ohm			(48)
++#define DDR4_RTT_NOM_DIS		(0)
++#define DDR4_RTT_NOM_60ohm		(60)
++#define DDR4_RTT_NOM_120ohm		(120)
++#define DDR4_RTT_NOM_40ohm		(40)
++#define DDR4_RTT_NOM_240ohm		(240)
++#define DDR4_RTT_NOM_48ohm		(48)
++#define DDR4_RTT_NOM_80ohm		(80)
++#define DDR4_RTT_NOM_34ohm		(34)
++
++#define PHY_DDR3_RON_RTT_DISABLE	(0)
++#define PHY_DDR3_RON_RTT_451ohm		(1)
++#define PHY_DDR3_RON_RTT_225ohm		(2)
++#define PHY_DDR3_RON_RTT_150ohm		(3)
++#define PHY_DDR3_RON_RTT_112ohm		(4)
++#define PHY_DDR3_RON_RTT_90ohm		(5)
++#define PHY_DDR3_RON_RTT_75ohm		(6)
++#define PHY_DDR3_RON_RTT_64ohm		(7)
++#define PHY_DDR3_RON_RTT_56ohm		(16)
++#define PHY_DDR3_RON_RTT_50ohm		(17)
++#define PHY_DDR3_RON_RTT_45ohm		(18)
++#define PHY_DDR3_RON_RTT_41ohm		(19)
++#define PHY_DDR3_RON_RTT_37ohm		(20)
++#define PHY_DDR3_RON_RTT_34ohm		(21)
++#define PHY_DDR3_RON_RTT_33ohm		(22)
++#define PHY_DDR3_RON_RTT_30ohm		(23)
++#define PHY_DDR3_RON_RTT_28ohm		(24)
++#define PHY_DDR3_RON_RTT_26ohm		(25)
++#define PHY_DDR3_RON_RTT_25ohm		(26)
++#define PHY_DDR3_RON_RTT_23ohm		(27)
++#define PHY_DDR3_RON_RTT_22ohm		(28)
++#define PHY_DDR3_RON_RTT_21ohm		(29)
++#define PHY_DDR3_RON_RTT_20ohm		(30)
++#define PHY_DDR3_RON_RTT_19ohm		(31)
++
++#define PHY_DDR4_LPDDR3_RON_RTT_DISABLE (0)
++#define PHY_DDR4_LPDDR3_RON_RTT_480ohm	(1)
++#define PHY_DDR4_LPDDR3_RON_RTT_240ohm	(2)
++#define PHY_DDR4_LPDDR3_RON_RTT_160ohm	(3)
++#define PHY_DDR4_LPDDR3_RON_RTT_120ohm	(4)
++#define PHY_DDR4_LPDDR3_RON_RTT_96ohm	(5)
++#define PHY_DDR4_LPDDR3_RON_RTT_80ohm	(6)
++#define PHY_DDR4_LPDDR3_RON_RTT_68ohm	(7)
++#define PHY_DDR4_LPDDR3_RON_RTT_60ohm	(16)
++#define PHY_DDR4_LPDDR3_RON_RTT_53ohm	(17)
++#define PHY_DDR4_LPDDR3_RON_RTT_48ohm	(18)
++#define PHY_DDR4_LPDDR3_RON_RTT_43ohm	(19)
++#define PHY_DDR4_LPDDR3_RON_RTT_40ohm	(20)
++#define PHY_DDR4_LPDDR3_RON_RTT_37ohm	(21)
++#define PHY_DDR4_LPDDR3_RON_RTT_34ohm	(22)
++#define PHY_DDR4_LPDDR3_RON_RTT_32ohm	(23)
++#define PHY_DDR4_LPDDR3_RON_RTT_30ohm	(24)
++#define PHY_DDR4_LPDDR3_RON_RTT_28ohm	(25)
++#define PHY_DDR4_LPDDR3_RON_RTT_26ohm	(26)
++#define PHY_DDR4_LPDDR3_RON_RTT_25ohm	(27)
++#define PHY_DDR4_LPDDR3_RON_RTT_24ohm	(28)
++#define PHY_DDR4_LPDDR3_RON_RTT_22ohm	(29)
++#define PHY_DDR4_LPDDR3_RON_RTT_21ohm	(30)
++#define PHY_DDR4_LPDDR3_RON_RTT_20ohm	(31)
++
++#endif /*_DT_BINDINGS_DRAM_ROCKCHIP_RK3328_H*/

@@ -13,3 +13,4 @@ linux-1002-for-libreelec.patch
 linux-1003-temp-dw_hdmi-rockchip.patch
 linux-2000-v4l2-wip-rkvdec-hevc.patch
 linux-2001-v4l2-wip-iep-driver.patch
+rk3381-dts.patch
