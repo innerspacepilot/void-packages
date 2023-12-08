@@ -1,0 +1,15 @@
+linux-051-ouya_controller_support.patch
+linux-058.05-hid_sony-add_autorepeat_for_PS3_remotes.patch
+linux-062-imon_pad_ignore_diagonal.patch
+linux-111-rtw88-from-next.patch
+linux-999.02-0001-pm-disable-async-suspend-resume-by-default.patch
+linux-999-no-lzma-in-x86-perf-build.patch
+linux-0002-rockchip-from-list.patch
+linux-0011-v4l2-from-list.patch
+linux-0020-drm-from-list.patch
+linux-1000-drm-rockchip.patch
+linux-1001-v4l2-rockchip.patch
+linux-1002-for-libreelec.patch
+linux-1003-temp-dw_hdmi-rockchip.patch
+linux-2000-v4l2-wip-rkvdec-hevc.patch
+linux-2001-v4l2-wip-iep-driver.patch
