@@ -3,7 +3,7 @@
 pkgname=ffmpeg-opi
 version=6.0.1
 _full_version="$version"
-revision=1
+revision=2
 short_desc="Decoding, encoding and streaming software"
 maintainer="Johannes <johannes.brechtmann@gmail.com>"
 license="GPL-3.0-or-later"
@@ -30,7 +30,7 @@ makedepends="zlib-devel bzip2-devel freetype-devel alsa-lib-devel
  libvidstab-devel $(vopt_if faac faac-devel) $(vopt_if fdk_aac fdk-aac-devel)
  $(vopt_if vpx libvpx-devel) $(vopt_if aom libaom-devel)
  $(vopt_if nvenc nv-codec-headers) $(vopt_if sndio sndio-devel)
- $(vopt_if dav1d libdav1d-devel) libdrm-devel eudev-libudev-devel v4l-utils-devel SDL2-devel pkg-config linux5.15-opi-headers"
+ $(vopt_if dav1d libdav1d-devel) libdrm-devel eudev-libudev-devel v4l-utils-devel SDL2-devel pkg-config"
 
 build_options="x265 v4l2 vpx faac fdk_aac aom nvenc sndio pulseaudio dav1d"
 build_options_default="x265 v4l2 vpx sndio pulseaudio dav1d"
