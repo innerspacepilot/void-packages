@@ -1,17 +1,22 @@
 # Template file for 'ksmtp'
+# group=kde-gear
 pkgname=ksmtp
-version=23.08.3
+version=26.08.1
 revision=1
 build_style=cmake
-hostmakedepends="extra-cmake-modules qt5-qmake qt5-host-tools python3
- gettext kcoreaddons"
-makedepends="kmime-devel kio-devel"
+configure_args="-DBUILD_TESTING=OFF
+ -DKDE_INSTALL_QTPLUGINDIR=lib/qt6/plugins
+ -DKDE_INSTALL_QMLDIR=lib/qt6/qml
+ -DECM_MKSPECS_INSTALL_DIR=/usr/lib/qt6/mkspecs/modules"
+hostmakedepends="extra-cmake-modules qt6-base qt6-tools kf6-kconfig
+ gettext kf6-kcoreaddons"
+makedepends="kf6-kmime-devel kf6-kio-devel"
 short_desc="Job-based library to send email through an SMTP server"
 maintainer="John <me@johnnynator.dev>"
 license="LGPL-2.1-or-later"
 homepage="https://community.kde.org/KDE_PIM"
 distfiles="${KDE_SITE}/release-service/${version}/src/ksmtp-${version}.tar.xz"
-checksum=4b98a406d2ad278b43f57ec48cc7d53b981fe37758806ef90780fb7573f37f49
+checksum=227c0578def79612a4cae9745445e5dff023458ffffabf305e06d953248f72a0
 make_check=no # XXX: requires smtp server?
 
 ksmtp-devel_package() {
@@ -20,7 +25,6 @@ ksmtp-devel_package() {
 	pkg_install() {
 		vmove usr/include
 		vmove usr/lib/cmake
-		vmove usr/lib/qt5/mkspecs
 		vmove "usr/lib/*.so"
 	}
 }

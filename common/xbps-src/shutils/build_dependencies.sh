@@ -79,7 +79,11 @@ install_pkg_from_repos() {
 
     cmd=$XBPS_INSTALL_CMD
     [[ $cross ]] && cmd=$XBPS_INSTALL_XCMD
-    $cmd -Ay "$@" >$tmplogf 2>&1
+    if [ -n "$XBPS_VERBOSE" ]; then
+        $cmd -Ay "$@" 2>&1 | tee "$tmplogf"
+    else
+        $cmd -Ay "$@" >"$tmplogf" 2>&1
+    fi
     rval=$?
 
     case "$rval" in
@@ -125,6 +129,17 @@ check_installed_pkg() {
 }
 
 #
+# Return 0 if we will skip the check step
+#
+skip_check_step() {
+    [ -z "$XBPS_CHECK_PKGS" ] ||
+        [ "$XBPS_CROSS_BUILD" ] ||
+        [ "$make_check" = ci-skip  -a "$XBPS_BUILD_ENVIRONMENT" = void-packages-ci ] ||
+        [ "$make_check" = extended -a "$XBPS_CHECK_PKGS" != full ] ||
+        [ "$make_check" = no ]
+}
+
+#
 # Build all dependencies required to build and run.
 #
 install_pkg_deps() {
@@ -137,7 +152,7 @@ install_pkg_deps() {
     local -a host_missing_deps missing_deps missing_rdeps
 
     [ -z "$pkgname" ] && return 2
-    [ -z "$XBPS_CHECK_PKGS" ] && unset checkdepends
+    skip_check_step && unset checkdepends
 
     if [[ $build_style ]] || [[ $build_helper ]]; then
         style=" with"
@@ -208,7 +223,7 @@ install_pkg_deps() {
     #
     # Host check dependencies.
     #
-    if [[ ${checkdepends} ]] && [[ $XBPS_CHECK_PKGS ]] && [ -z "$XBPS_CROSS_BUILD" ]; then
+    if [[ ${checkdepends} ]]; then
         templates=""
         # check validity
         for f in ${checkdepends}; do
@@ -373,6 +388,8 @@ install_pkg_deps() {
         (
         curpkgdepname=$($XBPS_UHELPER_CMD getpkgname "$i" 2>/dev/null)
         setup_pkg $curpkgdepname
+        # do not check when building dependencies, except for "full" (-K)
+        [ "$XBPS_CHECK_PKGS" == full ] || unset XBPS_CHECK_PKGS
         exec env XBPS_DEPENDENCY=1 XBPS_BINPKG_EXISTS=1 XBPS_DEPENDS_CHAIN="$XBPS_DEPENDS_CHAIN, $sourcepkg(host)" \
             $XBPS_LIBEXECDIR/build.sh $sourcepkg $pkg $target $cross_prepare || exit $?
         ) || exit $?
@@ -386,6 +403,8 @@ install_pkg_deps() {
 
         curpkgdepname=$($XBPS_UHELPER_CMD getpkgname "$i" 2>/dev/null)
         setup_pkg $curpkgdepname $cross
+        # do not check when building dependencies, except for "full" (-K)
+        [ "$XBPS_CHECK_PKGS" == full ] || unset XBPS_CHECK_PKGS
         exec env XBPS_DEPENDENCY=1 XBPS_BINPKG_EXISTS=1 XBPS_DEPENDS_CHAIN="$XBPS_DEPENDS_CHAIN, $sourcepkg(${cross:-host})" \
             $XBPS_LIBEXECDIR/build.sh $sourcepkg $pkg $target $cross $cross_prepare || exit $?
         ) || exit $?
@@ -404,28 +423,20 @@ install_pkg_deps() {
             fi
         fi
         setup_pkg $curpkgdepname $cross
+        # do not check when building dependencies, except for "full" (-K)
+        [ "$XBPS_CHECK_PKGS" == full ] || unset XBPS_CHECK_PKGS
         exec env XBPS_DEPENDENCY=1 XBPS_BINPKG_EXISTS=1 XBPS_DEPENDS_CHAIN="$XBPS_DEPENDS_CHAIN, $sourcepkg(${cross:-host})" \
             $XBPS_LIBEXECDIR/build.sh $sourcepkg $pkg $target $cross $cross_prepare || exit $?
         ) || exit $?
     done
 
     if [[ ${host_binpkg_deps} ]]; then
-        if [ -z "$XBPS_QUIET" ]; then
-            # normal messages in bold
-            [[ $NOCOLORS ]] || printf "\033[1m"
-            echo "=> $pkgver: installing host dependencies: ${host_binpkg_deps[@]} ..."
-            [[ $NOCOLORS ]] || printf "\033[m"
-        fi
+        msg_normal "$pkgver: installing host dependencies: ${host_binpkg_deps[*]} ...\n"
         install_pkg_from_repos "" host "${host_binpkg_deps[@]}"
     fi
 
     if [[ ${binpkg_deps} ]]; then
-        if [ -z "$XBPS_QUIET" ]; then
-            # normal messages in bold
-            [[ $NOCOLORS ]] || printf "\033[1m"
-            echo "=> $pkgver: installing target dependencies: ${binpkg_deps[@]} ..."
-            [[ $NOCOLORS ]] || printf "\033[m"
-        fi
+        msg_normal "$pkgver: installing target dependencies: ${binpkg_deps[*]} ...\n"
         install_pkg_from_repos "$cross" target "${binpkg_deps[@]}"
     fi
 

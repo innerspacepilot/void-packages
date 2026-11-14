@@ -1,0 +1,21 @@
+# Template file for 'payload-dumper-go'
+pkgname=payload-dumper-go
+version=2.1.0
+revision=1
+build_style=go
+go_import_path=github.com/ssut/payload-dumper-go
+makedepends="liblzma-devel libzstd-devel"
+short_desc="Android OTA payload dumper written in Go"
+maintainer="Fabian Constantinescu <fabian.constantinescu@protonmail.com>"
+license="Apache-2.0"
+homepage="https://github.com/ssut/payload-dumper-go"
+distfiles="https://github.com/ssut/${pkgname}/archive/refs/tags/${version}.tar.gz"
+checksum=a08b778cab580d3e30b4867f9598ffa99b85d63cab2b4dab7a4c29694f04112c
+
+pre_build() {
+	go mod vendor
+	vsed -i 's/#cgo LDFLAGS:.*/#cgo LDFLAGS: -lzstd/' \
+		vendor/github.com/valyala/gozstd/libzstd_*.go
+	cp vendor/github.com/valyala/gozstd/libzstd_linux_amd64.go \
+		vendor/github.com/valyala/gozstd/libzstd.go
+}

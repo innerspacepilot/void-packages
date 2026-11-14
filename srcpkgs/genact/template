@@ -1,0 +1,16 @@
+# Template file for 'genact'
+pkgname=genact
+version=1.6.0
+revision=1
+build_style=cargo
+short_desc="Nonsense activity generator"
+maintainer="Kirilla39 <kirill39.pesin@ya.ru>"
+license="MIT"
+homepage="https://github.com/svenstaro/genact/"
+changelog="https://raw.githubusercontent.com/svenstaro/genact/master/CHANGELOG.md"
+distfiles="https://github.com/svenstaro/genact/archive/v${version}.tar.gz"
+checksum=bff905d0717cd8d5567cca3a81b718b64e0c965b6a49b119bb83b6726858e31d
+
+post_install() {
+	vlicense LICENSE
+}

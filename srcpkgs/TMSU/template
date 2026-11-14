@@ -1,7 +1,7 @@
 # Template file for 'TMSU'
 pkgname=TMSU
 version=0.7.5
-revision=3
+revision=4
 build_style=go
 go_import_path=github.com/oniony/TMSU
 hostmakedepends="git"
@@ -12,6 +12,7 @@ license="GPL-3.0-or-later"
 homepage="https://tmsu.org"
 distfiles="https://github.com/oniony/TMSU/archive/v${version}.tar.gz"
 checksum=0ac7f09336aaedf73623c4f486c05137c024a726c16dd32525463aee9d70b46a
+broken="missing go.mod"
 
 pre_build() {
 	export GOPATH=$PWD

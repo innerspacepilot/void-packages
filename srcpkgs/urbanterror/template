@@ -1,12 +1,12 @@
 # Template file for 'urbanterror'
 pkgname=urbanterror
 version=4.3.4
-revision=2
-makedepends="SDL-devel libopenal-devel libcurl-devel libvorbis-devel
+revision=3
+makedepends="sdl12-compat-devel libopenal-devel libcurl-devel libvorbis-devel
  libXxf86vm-devel"
 depends="urbanterror-data>=${version}"
 short_desc="Team tactical shooter based on ioquake"
-maintainer="Andrea Brancaleoni <abc@pompel.me>"
+maintainer="Orphaned <orphan@voidlinux.org>"
 license="GPL-2.0-or-later"
 homepage="https://github.com/Barbatos/ioq3-for-UrbanTerror-4"
 distfiles="https://github.com/Barbatos/ioq3-for-UrbanTerror-4/archive/release-${version}.tar.gz"

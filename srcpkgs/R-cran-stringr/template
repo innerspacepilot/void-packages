@@ -1,12 +1,18 @@
 # Template file for 'R-cran-stringr'
 pkgname=R-cran-stringr
-version=1.4.0
-revision=2
+version=1.6.0
+revision=1
 build_style=R-cran
-makedepends="R-cran-stringi R-cran-magrittr R-cran-glue"
-depends="R-cran-stringi>=1.1.7 R-cran-magrittr R-cran-glue>=1.2.0"
+makedepends="R-cran-stringi R-cran-magrittr R-cran-glue R-cran-cli
+ R-cran-lifecycle R-cran-rlang R-cran-vctrs"
+depends="R-cran-stringi>=1.1.7 R-cran-magrittr R-cran-glue>=1.2.0 R-cran-cli
+ R-cran-lifecycle R-cran-rlang R-cran-vctrs"
 short_desc="Simple, Consistent Wrappers for Common String Operations"
-maintainer="Florian Wagner <florian@wagner-flo.net>"
-license="GPL-2.0-or-later"
+maintainer="Orphaned <orphan@voidlinux.org>"
+license="MIT"
 homepage="https://stringr.tidyverse.org"
-checksum=87604d2d3a9ad8fd68444ce0865b59e2ffbdb548a38d6634796bbd83eeb931dd
+checksum=24f2fc5df980a7eb888659e22b9744d2316c558624015c7a7cd8c3ce3e370064
+
+post_install() {
+	vlicense LICENSE
+}

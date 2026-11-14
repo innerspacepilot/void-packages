@@ -1,0 +1,44 @@
+# Template file for 'zxcvbn-c'
+pkgname=zxcvbn-c
+version=2.7
+revision=1
+short_desc="C/C++ version of the zxcvbn password strength estimator"
+maintainer="Đoàn Trần Công Danh <congdanhqx@gmail.com>"
+license="MIT"
+homepage="https://github.com/tsyrogit/zxcvbn-c"
+distfiles="https://github.com/tsyrogit/zxcvbn-c/archive/refs/tags/v${version}.tar.gz"
+distfiles="http://dev-www.libreoffice.org/src/${pkgname}-${version}.tar.gz"
+checksum=0548647d8cda5c0d52e6e00cd6896005f2813869f9ed93c245536129e3bd3f4b
+
+do_build() {
+	make ${makejobs} dictgen
+	mv dictgen zxcvbn-dictgen
+	make clean
+	make ${makejobs} dictgen \
+		CXX="$CXX_FOR_BUILD" CXXFLAGS="$CXXFLAGS_FOR_BUILD" \
+		LDFLAGS="${LDFLAGS_FOR_BUILD}"
+	make ${makejobs}
+}
+
+do_check() {
+	make test
+}
+
+do_install() {
+	vmkdir usr/lib
+	vmkdir usr/share/zxcvbn
+	vcopy "libzxcvbn.so.*" usr/lib
+	vinstall zxcvbn.dict 0644 usr/share/zxcvbn
+}
+
+zxcvbn-c-devel_package() {
+	depends="${sourcepkg}>=${version}_${revision}"
+	short_desc+=" - development files"
+	pkg_install() {
+		vbin zxcvbn-dictgen
+		vmkdir usr/include
+		vinstall zxcvbn.h 0644 usr/include
+		vmkdir usr/lib
+		vinstall libzxcvbn.so 0644 usr/lib
+	}
+}

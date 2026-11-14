@@ -1,28 +1,26 @@
 # Template file for 'NetworkManager'
 pkgname=NetworkManager
-version=1.44.2
-revision=1
+version=1.58.1
+revision=2
 build_style=meson
 build_helper="gir qemu"
-configure_args="-Dsystemd_journal=false
- -Dlibaudit=no -Dovs=false -Dselinux=false
- -Dmodify_system=true -Dsystemdsystemunitdir=no
+configure_args="-Dsystemd_journal=false -Dsystemdsystemgeneratordir=no
+ -Dlibaudit=no -Dovs=false -Dselinux=false -Dsystemdsystemunitdir=no
  -Dpppd=/usr/bin/pppd -Dqt=false
  -Dsession_tracking_consolekit=false
- -Dpppd_plugin_dir=/usr/lib/pppd/2.4.9 -Dresolvconf=/usr/bin/resolvconf
- -Ddhclient=/usr/bin/dhclient -Dkernel_firmware_dir=/usr/lib/firmware
+ -Dresolvconf=/usr/bin/resolvconf -Dkernel_firmware_dir=/usr/lib/firmware
  -Ddnsmasq=/usr/bin/dnsmasq -Ddbus_conf_dir=/etc/dbus-1/system.d
  -Ddhcpcd=/usr/bin/dhcpcd -Diptables=/usr/bin/iptables -Dnft=/usr/bin/nft
- -Diwd=true -Dudev_dir=/usr/lib/udev -Ddocs=true
+ -Diwd=true -Dudev_dir=/usr/lib/udev -Ddocs=false -Dman=true
  $(vopt_bool gir introspection) $(vopt_bool gir vapi)
  -Dsession_tracking=$(vopt_if elogind elogind no)
  -Dsuspend_resume=$(vopt_if elogind elogind upower)
- -Dconfig_dhcp_default=internal"
-hostmakedepends="gettext-devel glib-devel libxslt-devel pkg-config
- dbus-glib-devel docbook-xsl gtk-doc polkit-devel perl
+ -Dconfig_dhcp_default=internal -Dtests=no"
+hostmakedepends="bpftool clang gettext glib-devel libxslt pkg-config docbook-xsl
+ polkit perl
  $(vopt_if gir 'vala python3-gobject')"
-makedepends="libuuid-devel nss-devel dbus-glib-devel libgudev-devel
- libnl3-devel polkit-devel ppp-devel libcurl-devel
+makedepends="libbpf-devel libuuid-devel nss-devel dbus-glib-devel libgudev-devel
+ libnl3-devel polkit-devel ppp-devel libcurl-devel libnvme-devel
  ModemManager-devel readline-devel libndp-devel newt-devel jansson-devel
  libpsl-devel eudev-libudev-devel mobile-broadband-provider-info gnutls-devel
  $(vopt_if gir 'libgirepository-devel python3-gobject')
@@ -32,14 +30,15 @@ checkdepends="python3-dbus"
 short_desc="Network Management daemon"
 maintainer="Enno Boland <gottox@voidlinux.org>"
 license="GPL-2.0-or-later"
-homepage="https://wiki.gnome.org/Projects/NetworkManager"
-changelog="https://gitlab.freedesktop.org/NetworkManager/NetworkManager/-/raw/nm-1-44/NEWS"
-distfiles="${GNOME_SITE}/NetworkManager/${version%.*}/NetworkManager-${version}.tar.xz"
-checksum=4b58bf3ac57e2cefb5652efd0945eb0b4bc36a63d92a61ab471d8bb2c9a420e1
+homepage="https://networkmanager.dev"
+changelog="https://gitlab.freedesktop.org/NetworkManager/NetworkManager/-/raw/nm-1-58/NEWS"
+distfiles="https://gitlab.freedesktop.org/NetworkManager/NetworkManager/-/releases/${version}/downloads/NetworkManager-${version}.tar.xz"
+checksum=262864cfd198123d3e5dbe91937441b97ee9059d6d712e1a5bfbb1c54668d14d
+
 # TODO: Some tests require network namespaces to run.
 make_check=extended
 lib32disabled=yes
-conf_files="/etc/${pkgname}/${pkgname}.conf"
+conf_files="/etc/NetworkManager/NetworkManager.conf"
 make_dirs="
  /etc/NetworkManager/system-connections 0755 root root
  /etc/NetworkManager/dispatcher.d/pre-up.d 0750 root root
@@ -60,8 +59,11 @@ post_patch() {
 			-e "s|@XBPS_TARGET_QEMU_MACHINE@|${XBPS_TARGET_QEMU_MACHINE}|" \
 			src/libnm-client-impl/meson.build
 		# https://gitlab.freedesktop.org/NetworkManager/NetworkManager/-/issues/955
-		vsed -e "s#jansson_dep.get_pkgconfig_variable('libdir')#'${XBPS_CROSS_BASE}/usr/lib'#" \
+		vsed -e "s#jansson_dep.get_variable(pkgconfig: 'libdir')#'${XBPS_CROSS_BASE}/usr/lib'#" \
 			-i meson.build
+		# https://gitlab.freedesktop.org/NetworkManager/NetworkManager/-/issues/2012
+		vsed -e "s#dependency('libbpf').get_variable(pkgconfig : 'includedir')#'${XBPS_CROSS_BASE}/usr/include'#" \
+			-i src/core/bpf/meson.build
 	fi
 }
 
@@ -75,10 +77,10 @@ post_check() {
 }
 
 post_install() {
-	vinstall ${FILESDIR}/${pkgname}.conf 644 etc/${pkgname}
+	vinstall ${FILESDIR}/NetworkManager.conf 644 etc/NetworkManager
 	vinstall ${FILESDIR}/50-org.freedesktop.NetworkManager.rules 644 \
 		/usr/share/polkit-1/rules.d
-	vsv ${pkgname}
+	vsv NetworkManager
 }
 
 libnm_package() {
@@ -90,8 +92,9 @@ libnm_package() {
 		fi
 	}
 }
+
 NetworkManager-devel_package() {
-	depends="dbus-glib-devel libnm-${version}_${revision}"
+	depends="dbus-glib-devel libnm>=${version}_${revision}"
 	short_desc+=" - development files"
 	pkg_install() {
 		vmove usr/include

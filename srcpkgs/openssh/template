@@ -1,6 +1,6 @@
 # Template file for 'openssh'
 pkgname=openssh
-version=9.5p1
+version=10.6p2
 revision=1
 build_style=gnu-configure
 configure_args="--datadir=/usr/share/openssh
@@ -24,12 +24,17 @@ short_desc="OpenSSH free Secure Shell (SSH) client and server implementation"
 maintainer="Leah Neukirchen <leah@vuxu.org>"
 license="BSD-2-Clause, ISC"
 homepage="https://www.openssh.com"
+changelog="https://www.openssh.com/releasenotes.html"
 distfiles="https://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/${pkgname}-${version}.tar.gz"
-checksum=f026e7b79ba7fb540f75182af96dc8a8f1db395f922bbc9f6ca603672686086b
+checksum=9ae44872090cf2f06b3cf9ff147e7f16f309671340763ed2f99248398ae29d5b
 conf_files="/etc/ssh/moduli /etc/ssh/ssh_config /etc/ssh/sshd_config /etc/pam.d/sshd"
 make_dirs="
  /var/chroot/ssh 0755 root root
  /etc/ssh/sshd_config.d 0755 root root"
+
+if [ "$XBPS_TARGET_LIBC" = "glibc" ]; then
+	makedepends+=" libxcrypt-devel"
+fi
 
 # Package build options
 build_options="fido2 gssapi ldns ssl"
@@ -44,7 +49,7 @@ if [ "$build_option_ldns" -a -z "$build_option_ssl" ]; then
 	broken="option 'ldns' requires option 'ssl'"
 fi
 
-CFLAGS="-Wno-format-truncation -Wno-stringop-truncation -Wno-maybe-uninitialized -Wno-deprecated-declarations"
+CFLAGS="-Wno-format-truncation -Wno-stringop-truncation -Wno-maybe-uninitialized -Wno-deprecated-declarations -Wno-error=use-after-free -Wno-error=unused-variable -Wno-error=discarded-qualifiers"
 
 case $XBPS_TARGET_MACHINE in
 	i686-musl)
@@ -53,6 +58,16 @@ case $XBPS_TARGET_MACHINE in
 		;;
 	*-musl)
 		configure_args+=" --disable-wtmp --disable-utmp"
+		;;
+esac
+
+case $XBPS_TARGET_MACHINE in
+	armv*)
+		# The prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER) fails
+		# with ENOTSUPP errno 524 on this platform with
+		# rpi-kernel<6.12.95, remove after 2026-12-22
+		# (= six months after commit 715c710a557).
+		configure_args+=" --with-sandbox=no"
 		;;
 esac
 

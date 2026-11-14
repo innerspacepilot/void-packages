@@ -1,0 +1,25 @@
+# Template file for 'supersonic-desktop'
+pkgname=supersonic-desktop
+version=0.22.1
+revision=1
+build_style=go
+go_import_path="github.com/supersonic-app/supersonic"
+hostmakedepends="pkg-config"
+makedepends="mpv-devel libXcursor-devel libXxf86vm-devel"
+short_desc="Lightweight cross-platform desktop client for self-hosted music servers"
+maintainer="Hendrik Boll <fanyx@posteo.net>"
+license="GPL-3.0-or-later"
+homepage="https://github.com/supersonic-app/supersonic"
+changelog="https://raw.githubusercontent.com/supersonic-app/supersonic/refs/heads/main/CHANGELOG.md"
+distfiles="https://github.com/supersonic-app/supersonic/archive/v${version}.tar.gz"
+checksum=7d4d6012d7354373b69609ce55acd7933406363ba13802f756a2713b19f9c599
+
+post_install() {
+	mv "${DESTDIR}/usr/bin/supersonic" "${DESTDIR}/usr/bin/supersonic-desktop"
+
+	for i in 128 256 512; do
+		vinstall res/appicon-$i.png 644 usr/share/icons/hicolor/${i}x${i}/apps supersonic-desktop.png
+	done
+
+	vinstall res/supersonic-desktop.desktop 644 usr/share/applications
+}

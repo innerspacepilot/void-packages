@@ -1,15 +1,15 @@
 # Template file for 'vivid'
 pkgname=vivid
-version=0.9.0
+version=0.11.1
 revision=1
 build_style=cargo
 short_desc="LS_COLORS with support for multiple color themes"
 maintainer="Orphaned <orphan@voidlinux.org>"
-license="Apache-2.0, MIT"
+license="Apache-2.0 OR MIT"
 homepage="https://github.com/sharkdp/vivid"
 changelog="https://raw.githubusercontent.com/sharkdp/vivid/master/CHANGELOG.md"
 distfiles="https://github.com/sharkdp/vivid/archive/refs/tags/v${version}.tar.gz"
-checksum=325f16df916e4192d56d589839be474801ffd3d6a105f4a1a033221570ff6b56
+checksum=a43ccfbc6554055181a08f2740664f9280fa2d0e57c4641850c60dd0e5323720
 
 post_install() {
 	vlicense LICENSE-MIT

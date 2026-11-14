@@ -1,11 +1,11 @@
 # Template file for 'CSFML'
 pkgname=CSFML
 version=2.5
-revision=1
+revision=2
 build_style=cmake
 makedepends="SFML-devel"
 short_desc="Official binding of SFML for C"
-maintainer="SolitudeSF <solitudesf@protonmail.com>"
+maintainer="Orphaned <orphan@voidlinux.org>"
 license="GPL-3.0-or-later"
 homepage="https://www.sfml-dev.org/download/csfml/"
 distfiles="https://github.com/SFML/CSFML/archive/${version}.tar.gz"

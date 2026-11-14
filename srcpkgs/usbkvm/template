@@ -1,0 +1,14 @@
+# Template file for 'usbkvm'
+pkgname=usbkvm
+version=0.3.2
+revision=1
+build_style=meson
+build_helper="go"
+hostmakedepends="glib-devel go pkg-config"
+makedepends="gstreamer1-devel gtkmm-devel hidapi-devel"
+short_desc="USBKVM client app"
+maintainer="Leah Neukirchen <leah@vuxu.org>"
+license="GPL-3.0-or-later"
+homepage="https://github.com/carrotIndustries/usbkvm"
+distfiles="https://github.com/carrotIndustries/usbkvm/releases/download/v${version}/usbkvm-v${version}.tar.gz"
+checksum=66ba6895bf4d80064b33c484553e7d8c69eb57b9ffd49a8b119119f273aa7b0b

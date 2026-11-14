@@ -1,25 +1,30 @@
 # Template file for 'google-fonts-ttf'
 pkgname=google-fonts-ttf
-version=20230317
-revision=2
-_githash=e49bba3794b8c48d3cc706577d7aa3f31388e82f
+version=20261102
+revision=1
+_githash=2fe1e8c6b137fb13041a7cfca6fdcd8a910ea4dc
 # Those fonts were provided by google-fonts-ttf
 depends="font-util cantarell-fonts noto-fonts-ttf noto-fonts-emoji
  amiri-font fonts-croscore-ttf font-b612 font-fira-ttf
  font-ibm-plex-ttf font-manjari font-material-design-icons-ttf
- ttf-opensans source-sans-pro font-adobe-source-sans-pro-v2
- font-adobe-source-serif-pro font-sil-alkalami font-sil-tai-heritage-pro
+ ttf-opensans font-source-sans-3 font-sil-annapurna font-inter
+ font-sil-alkalami font-sil-tai-heritage-pro font-sil-namdhinggo
  font-sil-charis font-sil-padauk font-sil-abyssinica font-sil-mingzat
  font-sil-harmattan font-libre-hebrew font-alef font-reem-kufi-ttf
  font-crosextra-caladea-ttf font-adobe-source-code-pro
- fonts-roboto-ttf font-vollkorn-ttf ttf-ubuntu-font-family"
+ fonts-roboto-ttf font-vollkorn-ttf ttf-ubuntu-font-family
+ font-atkinson-hyperlegible-ttf
+ font-sil-andika font-crosextra-caladea-ttf font-crosextra-carlito-ttf
+ font-sil-kedebideri font-sil-lateef fonts-nanum-ttf-extra font-sil-gentium
+ font-inconsolata-otf font-inter font-sil-nuosu font-libre-hebrew"
 short_desc="Google's Collection of Fonts"
 maintainer="Orphaned <orphan@voidlinux.org>"
 license="Apache-2.0, OFL-1.1"
-homepage="https://www.google.com/fonts"
+homepage="https://fonts.google.com/"
 distfiles="https://github.com/google/fonts/archive/${_githash}.tar.gz"
-checksum=b32a5c20ff642ef1fb5f8361e5881ee8b75a37fde02e43638903e7429c1fad71
+checksum=e8509fa4812b2567c664c23db1af8ceca956b9c2a76055308b0c03d26c91626e
 font_dirs="/usr/share/fonts/TTF"
+provides="font:serif-0_1 font:sans-serif-0_1 font:monospace-0_1"
 
 post_extract() {
 	# https://github.com/google/fonts/issues/2106#issuecomment-520067314
@@ -30,7 +35,6 @@ post_extract() {
 	# noto-fonts-ttf
 	rm -r ofl/noto*
 }
-
 
 do_install() {
 	vmkdir usr/share/fonts/TTF

@@ -1,15 +1,16 @@
 # Template file for 'libsodium'
 pkgname=libsodium
-version=1.0.18
+version=1.0.22
 revision=1
 build_style=gnu-configure
 configure_args="lt_cv_prog_compiler_static_works=yes"
 short_desc="Modern and easy-to-use crypto library"
-maintainer="Orphaned <orphan@voidlinux.org>"
+maintainer="Duncaen <duncaen@voidlinux.org>"
 license="ISC"
 homepage="https://libsodium.org/"
+changelog="https://raw.githubusercontent.com/jedisct1/libsodium/master/ChangeLog"
 distfiles="https://download.libsodium.org/libsodium/releases/libsodium-${version}.tar.gz"
-checksum=6f504490b342a4f8a4c4a02fc9b866cbef8622d5df4e5452b46be121e46636c1
+checksum=adbdd8f16149e81ac6078a03aca6fc03b592b89ef7b5ed83841c086191be3349
 
 post_install() {
 	vlicense LICENSE

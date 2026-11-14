@@ -1,0 +1,14 @@
+# Template file for 'mergiraf'
+pkgname=mergiraf
+version=0.20.0
+revision=1
+build_style=cargo
+configure_args="--bin mergiraf"
+short_desc="Syntax-aware git merge driver"
+maintainer="classabbyamp <void@placeviolette.net>"
+license="GPL-3.0-only"
+homepage="https://mergiraf.org"
+changelog="https://codeberg.org/mergiraf/mergiraf/releases"
+distfiles="https://codeberg.org/mergiraf/mergiraf/archive/v${version}.tar.gz"
+checksum=85a1dc9e60e8ebc22ffe161cc08cb998f18f5e27b7e23319f35328a69a95fd10
+make_check_pre="env PATH=/usr/libexec/chroot-git:$PATH"

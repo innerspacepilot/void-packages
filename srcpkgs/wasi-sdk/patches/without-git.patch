@@ -1,0 +1,64 @@
+--- a/cmake/wasi-sdk-sysroot.cmake
++++ b/cmake/wasi-sdk-sysroot.cmake
+@@ -339,7 +339,15 @@
+     ${CMAKE_SOURCE_DIR}/src/llvm-pr-186054.patch
+     ${CMAKE_SOURCE_DIR}/src/llvm-undo-part-of-194317.patch
+   )
+-  list(JOIN patches " " patches)
++
++  set(patch_commands)
++  foreach(patch IN LISTS patches)
++    list(APPEND patch_commands
++      COMMAND
++        ${CMAKE_COMMAND} -E chdir ..
++        patch -Np1 -i "${patch}" || :
++    )
++  endforeach()
+ 
+   ExternalProject_Add(libcxx-${target}${target_suffix}-build
+     SOURCE_DIR ${llvm_proj_dir}/runtimes
+@@ -398,8 +406,8 @@
+     USES_TERMINAL_INSTALL ON
+     USES_TERMINAL_PATCH ON
+     PATCH_COMMAND
+-      ${CMAKE_COMMAND} -E chdir .. bash -c
+-        "git apply ${patches} || git apply ${patches} -R --check"
++      ${CMAKE_COMMAND} -E true
++      ${patch_commands}
+   )
+   add_dependencies(libcxx-${target} libcxx-${target}${target_suffix}-build)
+ endfunction()
+@@ -488,16 +488,7 @@
+   add_dependencies(build build-${target})
+ endforeach()
+ 
+-# Install a `VERSION` file in the output prefix with a dump of version
+-# information.
+-execute_process(
+-  COMMAND ${PYTHON} ${version_script} dump
+-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+-  OUTPUT_VARIABLE version_dump)
+-set(version_file_tmp ${wasi_sysroot}/VERSION)
+-file(GENERATE OUTPUT ${version_file_tmp} CONTENT ${version_dump})
+-add_custom_target(version-file DEPENDS ${version_file_tmp})
+-add_dependencies(build version-file)
++add_dependencies(build)
+ 
+ if(WASI_SDK_INCLUDE_TESTS)
+   add_subdirectory(tests)
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -23,11 +23,8 @@
+ find_program(PYTHON python3 python REQUIRED)
+ 
+ # Set some variables based on the `version.py` script
+-set(version_script ${CMAKE_CURRENT_SOURCE_DIR}/version.py)
+-execute_process(
+-  COMMAND ${PYTHON} ${version_script}
+-  OUTPUT_VARIABLE wasi_sdk_version
+-  OUTPUT_STRIP_TRAILING_WHITESPACE)
++option(WASI_SDK_VERSION "version")
++set(wasi_sdk_version ${WASI_SDK_VERSION})
+ 
+ message(STATUS "wasi-sdk version is ${wasi_sdk_version}")
+ 

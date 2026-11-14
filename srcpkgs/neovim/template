@@ -1,27 +1,25 @@
 # Template file for 'neovim'
 pkgname=neovim
-version=0.9.4
+version=0.12.6
 revision=1
 build_style=cmake
 build_helper="qemu"
-configure_args="-DCOMPILE_LUA=OFF -DPREFER_LUA=$(vopt_if luajit OFF ON)"
-hostmakedepends="gettext lua51-lpeg lua51-mpack lua51-BitOp
- $(vopt_if luajit LuaJIT lua51)"
-makedepends="libtermkey-devel libuv-devel libvterm-devel msgpack-devel
- libluv-devel tree-sitter-devel $(vopt_if luajit LuaJIT-devel lua51-devel)"
+configure_args="-DCOMPILE_LUA=OFF -DENABLE_TRANSLATIONS=ON -DPREFER_LUA=$(vopt_if luajit OFF ON)"
+hostmakedepends="gettext patchelf"
+makedepends="libuv-devel libluv-devel libutf8proc-devel tree-sitter-devel unibilium-devel
+ lua51-lpeg $(vopt_if luajit LuaJIT-devel lua51-devel)"
+depends="tree-sitter-c tree-sitter-lua tree-sitter-markdown tree-sitter-query
+ tree-sitter-vim tree-sitter-vimdoc"
 short_desc="Fork of Vim aiming to improve user experience, plugins and GUIs"
-maintainer="Marcin Puc <tranzystorek.io@protonmail.com>"
-license="Apache-2.0, Vim"
+maintainer="tranzystorekk <tranzystorek.io@protonmail.com>"
+license="Apache-2.0 AND Vim"
 homepage="https://neovim.io"
+changelog="https://github.com/neovim/neovim/releases"
 distfiles="https://github.com/neovim/neovim/archive/refs/tags/v${version}.tar.gz"
-checksum=148356027ee8d586adebb6513a94d76accc79da9597109ace5c445b09d383093
+checksum=8629fdc5eb951daf89a76f68cad12f2f1e03fab0d539150ba3fe6d177d254b7f
 
-build_options=luajit
-
-case "$XBPS_TARGET_MACHINE" in
-	riscv64*) build_options_default="" ;;
-	*) build_options_default="luajit" ;;
-esac
+build_options="luajit"
+build_options_default="luajit"
 
 alternatives="
  vi:vi:/usr/bin/nvim
@@ -34,13 +32,15 @@ alternatives="
 # They want assertion
 CFLAGS=-UNDEBUG
 
-pre_configure() {
-	vsed -i runtime/CMakeLists.txt \
-		-e "s|\".*/bin/nvim|\${CMAKE_CROSSCOMPILING_EMULATOR} &|g"
-	vsed -i src/nvim/po/CMakeLists.txt \
-		-e "s|\$<TARGET_FILE:nvim|\${CMAKE_CROSSCOMPILING_EMULATOR} &|g"
-}
-
 post_install() {
 	vlicense LICENSE.txt
+
+	if [ "${CROSS_BUILD}" ]; then
+		patchelf --replace-needed \
+			${XBPS_CROSS_BASE}/usr/lib/lua/5.1/lpeg.so /usr/lib/lua/5.1/lpeg.so \
+			${DESTDIR}/usr/bin/nvim
+	fi
+
+	# put system-provided tree-sitter grammars on runtimepath
+	ln -s "../../../lib/tree-sitter" "${DESTDIR}/usr/share/nvim/runtime/parser"
 }

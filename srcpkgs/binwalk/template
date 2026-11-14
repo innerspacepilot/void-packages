@@ -1,30 +1,18 @@
 # Template file for 'binwalk'
 pkgname=binwalk
-version=2.3.4
-revision=3
-build_style=python3-module
-hostmakedepends="python3-setuptools"
-depends="python3"
+version=3.1.0
+revision=1
+archs="~i686* ~armv*"
+build_style=cargo
+make_check_args="--lib --bins"
+hostmakedepends="pkg-config"
+makedepends="fontconfig-devel"
 short_desc="Easy tool for analyzing/reversing/extracting firmware images"
 maintainer="Duncaen <duncaen@voidlinux.org>"
 license="MIT"
 homepage="https://github.com/ReFirmLabs/binwalk"
-distfiles="https://github.com/ReFirmLabs/binwalk/archive/v${version}.tar.gz"
-checksum=60416bfec2390cec76742ce942737df3e6585c933c2467932f59c21e002ba7a9
-
-post_extract() {
-	vsed -i -e 's;/etc/bash_completion.d/%s;%s.bash;' setup.py
-
-	if [ $(id -u) -eq 0 ]; then
-		# CI container has different privileges than expected in tests.
-		# Append " **{'run-as' : 'root'}," to "binwalk.scan(input_vector_file,".
-		vsed -i -e "/binwalk.scan(input_vector_file,/ s/$/ **{'run-as' : 'root'},/" testing/tests/test_*.py
-	fi
-}
-
-do_check() {
-	: nose is broken
-}
+distfiles="https://github.com/ReFirmLabs/binwalk/archive/refs/tags/v${version}.tar.gz"
+checksum=06f595719417b70a592580258ed980237892eadc198e02363201abe6ca59e49a
 
 post_install() {
 	vlicense LICENSE

@@ -1,22 +1,25 @@
 # Template file for 'stockfish'
 pkgname=stockfish
-version=16
+version=18
 revision=1
-_net_file=nn-5af11540bbfe.nnue
+_net_file_big=nn-c288c895ea92.nnue
+_net_file_small=nn-37f18f62d772.nnue
 build_wrksrc=src
 build_style=gnu-makefile
 make_build_target=build
 make_use_env=yes
 hostmakedepends="tar"
 short_desc="Free UCI chess engine derived from Glaurung"
-maintainer="shtayerc <david.murko@mailbox.org>"
+maintainer="Orphaned <orphan@voidlinux.org>"
 license="GPL-3.0-or-later"
 homepage="http://stockfishchess.org/"
 distfiles="https://github.com/official-stockfish/Stockfish/archive/sf_${version}.tar.gz
- https://tests.stockfishchess.org/api/nn/${_net_file}"
-checksum="a1600ebdaf4e324ba3e10cec2e0c9a810dc64c6f0db5cc955b2fd5e1eefa1cc6
- 5af11540bbfefcb54e38c5dd000cab4b469dfa7599a1d55be5d2722c20a8929b"
-skip_extraction="${_net_file}"
+ https://tests.stockfishchess.org/api/nn/${_net_file_big}
+ https://tests.stockfishchess.org/api/nn/${_net_file_small}"
+checksum="22a195567e3493e7c9ca8bf8fa2339f4ffc876384849ac8a417ff4b919607e7b
+ c288c895ea924429ea9092e3f36b2b3c1f00f2a3a4c759ff7e57e79e3b43e4a7
+ 37f18f62d772f3107e1d6aaca3898c130c3c86f2ab63e6555fbbca20635a899d"
+skip_extraction="${_net_file_big} ${_net_file_small}"
 
 LDFLAGS+="-lpthread -Wl,-z,stack-size=2097152"
 
@@ -35,7 +38,8 @@ case $XBPS_TARGET_MACHINE in
 esac
 
 post_extract() {
-	cp $XBPS_SRCDISTDIR/${pkgname}-${version}/${_net_file} ./src
+	cp $XBPS_SRCDISTDIR/${pkgname}-${version}/${_net_file_big} ./src
+	cp $XBPS_SRCDISTDIR/${pkgname}-${version}/${_net_file_small} ./src
 }
 
 do_install() {

@@ -1,14 +1,15 @@
 # Template file for 'sidplayfp'
 # the version is usually in sync with libsidplayfp, keep in sync!
 pkgname=sidplayfp
-version=2.2.3
-revision=2
+version=3.2.3
+revision=1
 build_style=gnu-configure
 hostmakedepends="pkg-config"
 makedepends="libsidplayfp-devel alsa-lib-devel pulseaudio-devel jack-devel"
 short_desc="Library to play Commodore 64 SID music - commandline interface"
-maintainer="Zeinok <zeinok@protonmail.com>"
+maintainer="Orphaned <orphan@voidlinux.org>"
 license="GPL-2.0-or-later"
-homepage="https://sourceforge.net/projects/sidplay-residfp/"
-distfiles="${SOURCEFORGE_SITE}/sidplay-residfp/${pkgname}/${version%.*}/${pkgname}-${version}.tar.gz"
-checksum=2941857ea01a51430620e8841ba9a4ef9752633710a4fe495474985af42eafff
+homepage="https://github.com/libsidplayfp/sidplayfp"
+changelog="https://raw.githubusercontent.com/libsidplayfp/sidplayfp/refs/heads/master/NEWS.md"
+distfiles="https://github.com/libsidplayfp/sidplayfp/releases/download/v${version}/sidplayfp-${version}.tar.gz"
+checksum=083a21a80e5da57a0cef15451f326ea3dbb4c28e0b453daefad0814070a1a440

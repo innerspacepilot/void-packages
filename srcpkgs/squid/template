@@ -1,7 +1,7 @@
 # Template file for 'squid'
 pkgname=squid
-version=5.7
-revision=3
+version=7.6
+revision=1
 build_style=gnu-configure
 configure_args="
  --sysconfdir=/etc/squid
@@ -39,7 +39,6 @@ configure_args="
  --with-build-environment=default"
 conf_files="/etc/squid/squid.conf
  /etc/squid/errorpage.css
- /etc/squid/cachemgr.conf
  /etc/squid/mime.conf"
 make_dirs="/var/log/squid 750 squid squid
  /var/cache/squid 750 squid squid"
@@ -52,12 +51,16 @@ short_desc="Caching proxy for the Web"
 maintainer="Toyam Cox <Vaelatern@voidlinux.org>"
 license="GPL-2.0-or-later"
 homepage="http://www.squid-cache.org/"
-changelog="http://www.squid-cache.org/Versions/v5/changesets/"
-distfiles="http://www.squid-cache.org/Versions/v5/squid-${version}.tar.xz"
-checksum=6b0753aaba4c9c4efd333e67124caecf7ad6cc2d38581f19d2f0321f5b7ecd81
+changelog="https://github.com/squid-cache/squid/releases"
+distfiles="https://github.com/squid-cache/squid/releases/download/SQUID_7_6/squid-${version}.tar.gz"
+checksum=57a385d0435768da1f6a469a251f3c951bb79f0ea6d3f04c569d5a50c20e678a
 system_accounts="squid"
 # squid-conf-tests requires a squid user in the system
 make_check=no
+
+if [ "$XBPS_TARGET_LIBC" = "glibc" ]; then
+	makedepends+=" libxcrypt-devel"
+fi
 
 pre_configure() {
 	export BUILDCXX="${CXX_host}"

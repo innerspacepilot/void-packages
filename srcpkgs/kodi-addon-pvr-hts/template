@@ -1,8 +1,8 @@
 # Template file for 'kodi-addon-pvr-hts'
 pkgname=kodi-addon-pvr-hts
-version=19.0.6
+version=21.2.6
 revision=1
-_kodi_release=Matrix
+_kodi_release=Omega
 build_style=cmake
 makedepends="kodi-devel kodi-platform-devel p8-platform-devel"
 short_desc="Tvheadend HTSP client addon for Kodi"
@@ -10,7 +10,7 @@ maintainer="Orphaned <orphan@voidlinux.org>"
 license="GPL-2.0-or-later"
 homepage="https://github.com/kodi-pvr/pvr.hts"
 distfiles="https://github.com/kodi-pvr/pvr.hts/archive/${version}-${_kodi_release}.tar.gz"
-checksum=990e5fd0757d48b86675aa124b77629e7fb2de6b27dcfd6f6ccc7ce181d04aeb
+checksum=c98e29433bf4a007662b20279748dccd95da7817ab73b7e78c0b45fbe31c22b1
 
 if [ "$XBPS_TARGET_LIBC" = "musl" ]; then
 	makedepends+=" musl-legacy-compat"

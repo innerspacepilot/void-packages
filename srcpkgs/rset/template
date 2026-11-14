@@ -1,25 +1,28 @@
 # Template file for 'rset'
 pkgname=rset
-version=2.8
+version=3.5
 revision=1
 build_style=gnu-makefile
 make_build_args="-f Makefile.linux"
-make_check_args="${make_build_args}"
 make_install_args="${make_build_args}"
-make_check_target="test"
-checkdepends="ruby ruby-webrick wget"
+depends="curl"
+checkdepends="ruby ruby-webrick ${depends}"
 short_desc="Remote Staging Execution Tool"
 maintainer="Leah Neukirchen <leah@vuxu.org>"
 license="ISC"
 homepage="https://scriptedconfiguration.org/"
 changelog="https://github.com/eradman/rset/blob/master/NEWS"
 distfiles="https://scriptedconfiguration.org/code/rset-${version}.tar.gz"
-checksum=370c23b65d569a1eec2cc43ade638acc740c34be7a1600e1024507e9dcb2aa19
+checksum=3e28a29f55bb9e4e215181bb285cc61d91d6d260039e76d803c2101f7c815709
 
-post_patch() {
-	vsed -i -e 's/hostname -s/hostname/' tests/input/local_exec_out_01.pln
-}
+if [ "$XBPS_TARGET_LIBC" = "musl" ]; then
+	make_build_args="-f Makefile.linux-compat"
+fi
 
 post_install() {
 	vlicense LICENSE
+}
+
+do_check() {
+	make -C tests -f Makefile.linux LD=${CC}
 }

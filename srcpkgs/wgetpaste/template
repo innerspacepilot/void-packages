@@ -1,6 +1,6 @@
 # Template file for 'wgetpaste'
 pkgname=wgetpaste
-version=2.32
+version=2.34
 revision=1
 depends="bash wget"
 short_desc="Script that automates pasting to a number of pastebin services"
@@ -8,11 +8,11 @@ maintainer="Orphaned <orphan@voidlinux.org>"
 license="MIT"
 homepage="http://wgetpaste.zlin.dk/"
 distfiles="https://github.com/zlin/wgetpaste/releases/download/${version}/wgetpaste-${version}.tar.xz"
-checksum=621dbafbc7bcf5438f11447a325d8974069e3df03ef0c8bb2a2cc3de2c0cdb13
+checksum=bd6d06ed901a3d63c9c8c57126084ff0994f09901bfb1638b87953eac1e9433f
 
 do_install() {
-	vbin ${pkgname}
-	vinstall _${pkgname} 644 usr/share/zsh/site-functions
-	vsconf ${FILESDIR}/${pkgname}.example
+	vbin wgetpaste
+	vinstall _wgetpaste 644 usr/share/zsh/site-functions
+	vsconf ${FILESDIR}/wgetpaste.example
 	vlicense LICENSE
 }

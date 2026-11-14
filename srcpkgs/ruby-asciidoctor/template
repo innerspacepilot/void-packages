@@ -1,13 +1,19 @@
 # Template file for 'ruby-asciidoctor'
 pkgname=ruby-asciidoctor
-version=2.0.15
-revision=4
-build_style=gem
+version=2.0.26
+revision=2
+build_style=gemspec
 short_desc="Ruby implementation of AsciiDoc"
 maintainer="Orphaned <orphan@voidlinux.org>"
 license="MIT"
 homepage="https://asciidoctor.org"
-checksum=c4120b16f7c054ee39e755b5b8cee6b248facaa4ec56b7ce493fd646aa8c744c
+changelog="https://raw.githubusercontent.com/asciidoctor/asciidoctor/tags/v${version}/CHANGELOG.adoc"
+distfiles="https://github.com/asciidoctor/asciidoctor/archive/refs/tags/v${version}.tar.gz"
+checksum=25c22b934bc0ae2448f2d73d4b2eba0c59e0521cf5e893fb0b0ad54a461bf066
+
+pre_configure() {
+	vsed -i bin/asciidoctor -e '1s|#!/usr/bin/env ruby|#!/usr/bin/ruby|'
+}
 
 post_install() {
 	vlicense LICENSE

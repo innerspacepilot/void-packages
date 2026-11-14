@@ -1,25 +1,32 @@
 # Template file for 'kdeconnect'
+# group=kde-gear
 pkgname=kdeconnect
-version=23.08.3
+version=26.08.1
 revision=1
 build_style=cmake
 configure_args="-DWaylandScanner_EXECUTABLE=/usr/bin/wayland-scanner
- -DKF5_HOST_TOOLING=/usr/lib/cmake"
-hostmakedepends="extra-cmake-modules qt5-host-tools
- pkg-config wayland-devel qt5-qmake python3 kdoctools-devel
- kpackage-devel qt5-wayland kcoreaddons-devel gettext
- kcmutils-devel"
-makedepends="kcmutils-devel qca-qt5-devel frameworkintegration-devel
- qt5-declarative-devel libfakekey-devel kwayland-devel
- qt5-multimedia-devel kpeoplevcard-devel kirigami2-devel
- qqc2-desktop-style-devel pulseaudio-qt-devel modemmanager-qt5-devel"
-depends="kde-cli-tools qca-qt5-ossl fuse-sshfs kirigami2 qt5-quickcontrols
- breeze-icons kpeoplevcard kirigami-addons"
-checkdepends="qca-qt5-ossl"
+ -DKDE_INSTALL_QMLDIR=lib/qt6/qml -DBLUETOOTH_ENABLED=ON
+ -DKDE_INSTALL_QTPLUGINDIR=lib/qt6/plugins"
+hostmakedepends="extra-cmake-modules qt6-tools
+ pkg-config wayland-devel qt6-base python3 kf6-kdoctools kf6-kpackage kf6-kconfig
+ kf6-kpackage kf6-kcoreaddons gettext qt6-declarative-host-tools
+ kf6-kwindowsystem kf6-kcmutils"
+makedepends="kf6-kcmutils-devel kf6-kconfigwidgets-devel kf6-kdbusaddons-devel
+ kf6-kdoctools-devel kf6-ki18n-devel kf6-kiconthemes-devel kf6-kio-devel
+ kf6-kirigami-devel kf6-knotifications-devel kf6-kstatusnotifieritem-devel
+ kf6-kservice-devel kf6-qqc2-desktop-style-devel kf6-modemmanager-qt-devel
+ kf6-kpackage-devel kf6-kpeople-devel kf6-kwayland-devel kf6-kitemmodels-devel
+ kf6-kcrash-devel libei-devel libevdev-devel libfakekey-devel qca-qt6-devel
+ pulseaudio-qt-devel qt6-base-private-devel qt6-connectivity-devel
+ qt6-multimedia-devel kirigami-addons-devel"
+depends="kde-cli-tools qca-qt6 fuse-sshfs kf6-kirigami kf6-qqc2-desktop-style
+ breeze-icons kirigami-addons qt6-plugin-tls-openssl kf6-sonnet
+ kf6-kitemmodels"
+#checkdepends="qca-qt5-ossl"
 short_desc="Multi-platform app that allows your devices to communicate"
 maintainer="John <me@johnnynator.dev>"
 license="GPL-2.0-or-later"
 homepage="https://kdeconnect.kde.org"
 distfiles="${KDE_SITE}/release-service/${version}/src/${pkgname}-kde-${version}.tar.xz"
-checksum=b98f5e15b2e0e0e069f9f407183a3cf70c46cd8c20f2eb997040e90fa9ba2906
+checksum=2aed54ecd6b88a91d047714b384d7bd20d0a8d8bf399923c73cf3509372b36e0
 python_version=3

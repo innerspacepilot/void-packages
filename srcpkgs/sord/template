@@ -1,17 +1,17 @@
 # Template file for 'sord'
 pkgname=sord
-version=0.16.14
+version=0.16.22
 revision=1
 build_style=meson
 hostmakedepends="pkg-config"
-makedepends="serd-devel pcre-devel"
+makedepends="serd-devel pcre-devel zix-devel"
 short_desc="Lightweight C library for storing RDF data in memory"
 maintainer="Orphaned <orphan@voidlinux.org>"
 license="ISC"
 homepage="https://drobilla.net/software/sord.html"
-changelog="https://drobilla.net/category/sord/"
-distfiles="https://download.drobilla.net/sord-${version}.tar.xz"
-checksum=220fd97d5fcb216e7b85db66f685bfdaad7dc58a50d1f96dfb2558dbc6c4731b
+changelog="https://gitlab.com/drobilla/sord/-/raw/master/NEWS"
+distfiles="https://gitlab.com/drobilla/sord/-/archive/v${version}/sord-v${version}.tar.gz"
+checksum=040fb3f369dd49a7717eb28ca0a66766352e25e760729903fc8a01e117122901
 
 if [ "$XBPS_CHECK_PKGS" ]; then
 	configure_args="-Dtests=enabled"
@@ -24,7 +24,7 @@ post_install() {
 }
 
 sord-devel_package() {
-	depends="serd-devel libsord>=${version}_${revision}"
+	depends="serd-devel zix-devel libsord>=${version}_${revision}"
 	short_desc+=" - Development files"
 	pkg_install() {
 		vmove usr/include

@@ -1,16 +1,17 @@
 # Template file for 'libsidplayfp'
-# the version is usually in sync with libsidplayfp, keep in sync!
+# the version is usually in sync with sidplayfp, keep in sync!
 pkgname=libsidplayfp
-version=2.3.1
+version=3.1.2
 revision=1
 build_style=gnu-configure
 hostmakedepends="autoconf"
 short_desc="Library to play Commodore 64 SID music"
 maintainer="Orphaned <orphan@voidlinux.org>"
 license="GPL-2.0-or-later"
-homepage="https://sourceforge.net/p/sidplay-residfp/wiki/Home/"
-distfiles="${SOURCEFORGE_SITE}/sidplay-residfp/${pkgname}/${version%.*}/${pkgname}-${version}.tar.gz"
-checksum=aef70cc30648eb89d32f56c691a5a40cdffc7421f43b4aa242f4d123eb9258a2
+homepage="https://github.com/libsidplayfp/libsidplayfp"
+changelog="https://raw.githubusercontent.com/libsidplayfp/libsidplayfp/refs/heads/master/NEWS.md"
+distfiles="https://github.com/libsidplayfp/libsidplayfp/releases/download/v${version}/libsidplayfp-${version}.tar.gz"
+checksum=6d16c20e523ac4d3e385531dafe247a830b59bcb4eb73a557f15cf4e7ae6da84
 
 libsidplayfp-devel_package() {
 	short_desc+=" - development files"

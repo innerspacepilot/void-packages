@@ -1,15 +1,15 @@
 # Template file for 'serd'
 pkgname=serd
-version=0.30.16
+version=0.32.10
 revision=1
 build_style=meson
 short_desc="Lightweight C library for RDF syntax"
 maintainer="Orphaned <orphan@voidlinux.org>"
 license="ISC"
 homepage="http://drobilla.net/software/serd.html"
-changelog="https://drobilla.net/category/serd/"
-distfiles="https://download.drobilla.net/serd-${version}.tar.xz"
-checksum=f50f486da519cdd8d03b20c9e42414e459133f5a244411d8e63caef8d9ac9146
+changelog="https://gitlab.com/drobilla/serd/-/raw/main/NEWS"
+distfiles="https://gitlab.com/drobilla/serd/-/archive/v${version}/serd-v${version}.tar.gz"
+checksum=d17b99ef250e4dffcdd08c8eaad2459a1519c1ff2553fa91176ce71ac0dd0739
 
 if [ "${XBPS_CHECK_PKGS}" ]; then
 	configure_args="-Dtests=enabled"

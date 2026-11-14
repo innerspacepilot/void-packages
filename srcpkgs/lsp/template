@@ -1,7 +1,7 @@
 # Template file for 'lsp'
 pkgname=lsp
 version=0.2.0.20160318
-revision=3
+revision=4
 _githash=83465c0199da613c3f2e76f1308213fef4e52a75
 build_style=go
 go_import_path="github.com/dborzov/lsp"
@@ -12,6 +12,7 @@ license="MIT"
 homepage="https://github.com/dborzov/lsp"
 distfiles="https://github.com/dborzov/lsp/archive/${_githash}.tar.gz"
 checksum=2921c705d4d5c4eb6d3b02e498b8f7d23db5ec3f451574f7ed9ad1769c8a2d07
+broken="missing go.mod"
 
 post_install() {
 	vlicense LICENSE

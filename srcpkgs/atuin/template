@@ -1,0 +1,55 @@
+# Template file for 'atuin'
+pkgname=atuin
+version=18.24.8
+revision=1
+build_style=cargo
+build_helper=qemu
+# atuin-server: integration tests need a running PostgreSQL
+# piped_input_*: hangs when using bash, see https://github.com/atuinsh/atuin/issues/4729
+make_check_args="--workspace --exclude atuin-server --
+ --test-threads=1
+ --skip piped_input_runs_through_the_shell_and_then_ends_it"
+make_install_args="--path crates/atuin"
+hostmakedepends="pkg-config sqlite-devel openssl-devel"
+makedepends="sqlite-devel openssl-devel libzstd-devel"
+checkdepends="python3 git"
+short_desc="Magical shell history"
+maintainer="Alex March <alex@hosaka.cc>"
+license="MIT"
+homepage="https://atuin.sh"
+changelog="https://raw.githubusercontent.com/atuinsh/atuin/main/CHANGELOG.md"
+distfiles="https://github.com/atuinsh/atuin/archive/refs/tags/v${version}.tar.gz"
+checksum=af0741ac5b7cc7207e794036b0a19db0ad5b9838f80768436664ee3c1c5a1bb2
+
+# tests open SQLite with a 2s timeout, too tight for CI builders
+make_check_pre="env ATUIN_TEST_LOCAL_TIMEOUT=10"
+
+_setup_env() {
+	# workaround the cc-rs mixing CFLAGS for host and target.
+	# https://github.com/rust-lang/cc-rs/issues/1469
+	export CFLAGS_${RUST_BUILD//-/_}="${CFLAGS_host}" \
+			CXXFLAGS_${RUST_BUILD//-/_}="${CXXFLAGS_host}" \
+			LDFLAGS_${RUST_BUILD//-/_}="${LDFLAGS_host}" \
+			CFLAGS_${RUST_TARGET//-/_}="${CFLAGS}" \
+			CXXFLAGS_${RUST_TARGET//-/_}="${CXXFLAGS}" \
+			LDFLAGS_${RUST_TARGET//-/_}="${LDFLAGS}" \
+			CFLAGS="" CXXFLAGS="" LDFLAGS=""
+}
+
+pre_build() {
+	_setup_env
+}
+
+pre_install() {
+	_setup_env
+}
+
+post_install() {
+	vlicense LICENSE
+	vsconf crates/atuin-client/config.toml
+
+	for shell in bash fish zsh; do
+		vtargetrun "${DESTDIR}/usr/bin/atuin" gen-completion --shell ${shell} > atuin.${shell}
+		vcompletion atuin.${shell} ${shell}
+	done
+}

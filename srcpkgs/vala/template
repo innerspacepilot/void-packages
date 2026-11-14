@@ -1,10 +1,10 @@
 # Template file for 'vala'
 pkgname=vala
 # Should be kept in sync with 'valadoc' (shared distfiles)
-version=0.56.13
+version=0.56.19
 revision=1
 build_style=gnu-configure
-configure_args="--disable-valadoc"
+configure_args="--disable-valadoc GI_GIRDIR=/usr/share/gir-1.0"
 hostmakedepends="flex libxslt pkg-config automake libtool"
 makedepends="libfl-devel libglib-devel"
 checkdepends="dbus libgirepository-devel"
@@ -14,7 +14,7 @@ license="LGPL-2.1-or-later"
 homepage="https://wiki.gnome.org/Projects/Vala"
 changelog="https://gitlab.gnome.org/GNOME/vala/raw/master/NEWS"
 distfiles="${GNOME_SITE}/vala/${version%.*}/vala-${version}.tar.xz"
-checksum=4988223036c7e1e4874c476d0de8bd9cbe500ee25ef19a76e560dc0b6d56ae07
+checksum=5ad7cbbfcc0de61b403d6797c9ef60455bfbebd8e162aec33b5b0b097adfb9d5
 shlib_provides="libvalaccodegen.so"
 make_check=extended # take a lot of time
 

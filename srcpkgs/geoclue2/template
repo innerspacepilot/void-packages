@@ -1,22 +1,23 @@
 # Template file for 'geoclue2'
 pkgname=geoclue2
-version=2.6.0
+version=2.8.1
 revision=1
 build_style=meson
 build_helper="gir"
 configure_args="-Ddbus-srv-user=_geoclue2 -Dgtk-doc=false
  $(vopt_bool gir introspection)"
+make_dirs="/etc/geoclue/conf.d 0755 root root"
 conf_files="/etc/geoclue/geoclue.conf"
-hostmakedepends="glib-devel intltool pkg-config vala"
+hostmakedepends="glib-devel gettext pkg-config vala"
 makedepends="ModemManager-devel avahi-glib-libs-devel
- json-glib-devel libsoup-gnome-devel libnotify-devel"
+ json-glib-devel libsoup3-devel libnotify-devel"
 short_desc="Geoinformation Service (2.x series)"
 maintainer="Orphaned <orphan@voidlinux.org>"
 license="LGPL-2.1-or-later"
 homepage="https://gitlab.freedesktop.org/geoclue/geoclue/wikis/home"
 changelog="https://gitlab.freedesktop.org/geoclue/geoclue/-/raw/master/NEWS"
 distfiles="https://gitlab.freedesktop.org/geoclue/geoclue/-/archive/${version}/geoclue-${version}.tar.bz2"
-checksum=cdc9efcb98ce81284d7a6c3c899330481ffdca44bba3c18b9e530618298aa4a0
+checksum=1b5de03936bd8c031a1f6207c1857fa25a9aa1453ffe742f32a0a4a3281f2629
 system_accounts="_geoclue2"
 lib32disabled=yes
 

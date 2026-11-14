@@ -1,6 +1,6 @@
 # Template file for 'libisofs'
 pkgname=libisofs
-version=1.5.4
+version=1.5.8.pl02
 revision=1
 build_style=gnu-configure
 configure_args="--enable-libacl --enable-xattr"
@@ -10,8 +10,8 @@ maintainer="Orphaned <orphan@voidlinux.org>"
 license="GPL-2.0-or-later"
 homepage="https://dev.lovelyhq.com/libburnia/web/wiki/Libisofs"
 changelog="https://dev.lovelyhq.com/libburnia/libisofs/raw/branch/master/ChangeLog"
-distfiles="https://files.libburnia-project.org/releases/${pkgname}-${version}.tar.gz"
-checksum=aaa0ed80a7501979316f505b0b017f29cba0ea5463b751143bad2c360215a88e
+distfiles="https://files.libburnia-project.org/releases/libisofs-${version}.tar.gz"
+checksum=10bd584d8f00d8091e814902b9f0a3e209f16e938f510fc23ba05f3fa469db5a
 
 libisofs-devel_package() {
 	depends="${makedepends} libisofs>=${version}_${revision}"

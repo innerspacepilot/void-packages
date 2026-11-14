@@ -1,14 +1,15 @@
 # Template file for 'gitolite'
 pkgname=gitolite
-version=3.6.12
-revision=2
+version=3.6.15
+revision=1
 depends="git perl"
 short_desc="Access control layer on top of git"
 maintainer="Orphaned <orphan@voidlinux.org>"
 license="GPL-2.0-only"
-homepage="http://gitolite.com/gitolite"
-distfiles="https://github.com/sitaramc/gitolite/archive/v${version}.tar.gz"
-checksum=8c55976ed561b8eabf39097b7fcb9c6e8741c2ceea85ef4529a06b1adff850b6
+homepage="https://gitolite.com/gitolite"
+changelog="https://codeberg.org/sitaramc/gitolite/raw/branch/master/CHANGELOG"
+distfiles="https://codeberg.org/sitaramc/gitolite/archive/v${version}.tar.gz"
+checksum=e145de8761804658593ca443295e4c21b822c77de295fdfed6d9e93183b61095
 
 system_accounts="gitolite"
 gitolite_homedir="/var/lib/gitolite"

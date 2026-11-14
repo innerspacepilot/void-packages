@@ -1,6 +1,6 @@
 # Template file for 'iptables'
 pkgname=iptables
-version=1.8.10
+version=1.8.13
 revision=1
 build_style=gnu-configure
 configure_args="--enable-libipq --enable-shared --enable-devel --enable-bpf-compiler"
@@ -13,7 +13,7 @@ maintainer="Orphaned <orphan@voidlinux.org>"
 license="GPL-2.0-or-later"
 homepage="https://www.netfilter.org/"
 distfiles="https://www.netfilter.org/projects/iptables/files/iptables-${version}.tar.xz"
-checksum=5cc255c189356e317d070755ce9371eb63a1b783c34498fb8c30264f3cc59c9c
+checksum=1afcd33da9e8f913ace6a2126788162e207e26f5d5e29c6573c0e581ffc58b99
 alternatives="
  iptables:ip6tables:/usr/bin/xtables-legacy-multi
  iptables:ip6tables-restore:/usr/bin/xtables-legacy-multi
@@ -57,7 +57,7 @@ iptables-devel_package() {
 }
 
 iptables-nft_package() {
-	build_style=meta
+	metapackage=yes
 	depends="${sourcepkg}>=${version}_${revision}"
 	short_desc="Iptables-compatible wrapper commands for nftables"
 	alternatives="

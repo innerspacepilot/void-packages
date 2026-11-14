@@ -1,6 +1,6 @@
 # Template file for 'nvimpager'
 pkgname=nvimpager
-version=0.12.0
+version=0.14.0
 revision=1
 build_style=gnu-makefile
 hostmakedepends="scdoc"
@@ -10,11 +10,7 @@ maintainer="Orphaned <orphan@voidlinux.org>"
 license="BSD-2-Clause"
 homepage="https://github.com/lucc/nvimpager"
 distfiles="https://github.com/lucc/nvimpager/archive/refs/tags/v${version}.tar.gz"
-checksum=57c8e15b24c07d462c05268a5a7d6c4eb4ebdc6a83af00d4fdc634836ba45d74
-
-do_build() {
-	: # nothing to build
-}
+checksum=001c49098690e4baa6857557b9edc564433825a1947ec368a1e52d63aa1715a3
 
 post_install() {
 	vlicense LICENSE

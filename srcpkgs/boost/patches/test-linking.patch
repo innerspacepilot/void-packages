@@ -1,0 +1,22 @@
+--- a/libs/graph_parallel/example/Jamfile.v2
++++ b/libs/graph_parallel/example/Jamfile.v2
+@@ -8,7 +8,6 @@
+ using python ;
+ 
+ project : requirements <library>/boost/graph_parallel//boost_graph_parallel
+-    <library>/boost/system//boost_system
+     <library>/boost/mpi//boost_mpi
+     <library>/python//python
+     ;
+--- a/libs/phoenix/test/Jamfile
++++ b/libs/phoenix/test/Jamfile
+@@ -163,7 +163,8 @@ test-suite phoenix_scope :
+     [ run scope/bug3289.cpp ]
+     [ run scope/bug8298.cpp ]
+     [ compile-fail scope/bug8298f.cpp ]
+-    [ run scope/bug_000008.cpp : : : $(multi-threading) ]
++# missing libboost_thread in linking
++# [ run scope/bug_000008.cpp : : : $(multi-threading) ]
+     ;
+ 
+ test-suite phoenix_algorithm :

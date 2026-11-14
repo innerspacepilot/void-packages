@@ -1,7 +1,11 @@
 [Desktop Entry]
+Version=1.0
 Type=Application
 Name=Android Studio
-Exec=android-studio
-Icon=/opt/android-studio/bin/studio.png
+Icon=/opt/android-studio/bin/studio.svg
+Exec=android-studio %f
+Comment=The Drive to Develop
+Categories=Development;IDE;
 Terminal=false
-Categories=Development
+StartupWMClass=jetbrains-studio
+StartupNotify=true

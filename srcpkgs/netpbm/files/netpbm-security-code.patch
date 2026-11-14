@@ -10,25 +10,6 @@ diff -up netpbm-10.58.01/converter/other/jpegtopnm.c.security-code netpbm-10.58.
      /* Start decompressor */
      jpeg_start_decompress(cinfoP);
  
-diff -up netpbm-10.58.01/converter/other/pnmtoddif.c.security-code netpbm-10.58.01/converter/other/pnmtoddif.c
---- netpbm-10.58.01/converter/other/pnmtoddif.c.security-code	2012-04-09 15:31:42.000000000 +0200
-+++ netpbm-10.58.01/converter/other/pnmtoddif.c	2012-04-09 15:40:03.185620015 +0200
-@@ -632,6 +632,7 @@ main(int argc, char *argv[]) {
-     switch (PNM_FORMAT_TYPE(format)) {
-     case PBM_TYPE:
-         ip.bits_per_pixel = 1;
-+        overflow_add(cols, 7);
-         ip.bytes_per_line = (cols + 7) / 8;
-         ip.spectral = 2;
-         ip.components = 1;
-@@ -647,6 +648,7 @@ main(int argc, char *argv[]) {
-         ip.polarity = 2;
-         break;
-     case PPM_TYPE:
-+        overflow2(cols, 3);
-         ip.bytes_per_line = 3 * cols;
-         ip.bits_per_pixel = 24;
-         ip.spectral = 5;
 diff -up netpbm-10.58.01/converter/other/pnmtorle.c.security-code netpbm-10.58.01/converter/other/pnmtorle.c
 --- netpbm-10.58.01/converter/other/pnmtorle.c.security-code	2012-04-09 15:31:42.000000000 +0200
 +++ netpbm-10.58.01/converter/other/pnmtorle.c	2012-04-09 15:40:03.188619976 +0200
@@ -90,17 +71,6 @@ diff -up netpbm-10.58.01/converter/pbm/pbmtolj.c.security-code netpbm-10.58.01/c
      packBufferSize = rowBufferSize + (rowBufferSize + 127) / 128 + 1;
      deltaBufferSize = rowBufferSize + rowBufferSize / 8 + 10;
  
-diff -up netpbm-10.58.01/converter/pbm/pbmtomda.c.security-code netpbm-10.58.01/converter/pbm/pbmtomda.c
---- netpbm-10.58.01/converter/pbm/pbmtomda.c.security-code	2012-04-09 15:31:45.000000000 +0200
-+++ netpbm-10.58.01/converter/pbm/pbmtomda.c	2012-04-09 15:40:03.195619889 +0200
-@@ -179,6 +179,7 @@ int main(int argc, char **argv)
-     
-     nOutRowsUnrounded = bScale ? nInRows/2 : nInRows;
- 
-+    overflow_add(nOutRowsUnrounded, 3);
-     nOutRows = ((nOutRowsUnrounded + 3) / 4) * 4;
-         /* MDA wants rows a multiple of 4 */   
-     nOutCols = nInCols / 8;
 diff -up netpbm-10.58.01/converter/pbm/pbmtoxbm.c.security-code netpbm-10.58.01/converter/pbm/pbmtoxbm.c
 --- netpbm-10.58.01/converter/pbm/pbmtoxbm.c.security-code	2012-04-09 15:31:45.000000000 +0200
 +++ netpbm-10.58.01/converter/pbm/pbmtoxbm.c	2012-04-09 15:40:03.196619876 +0200
@@ -176,141 +146,6 @@ diff -up netpbm-10.58.01/converter/ppm/ppmtomitsu.c.security-code netpbm-10.58.0
          medias.maxcols *= 2;
          medias.maxrows *= 2;
      }
-diff -up netpbm-10.58.01/converter/ppm/ppmtopj.c.security-code netpbm-10.58.01/converter/ppm/ppmtopj.c
---- netpbm-10.58.01/converter/ppm/ppmtopj.c.security-code	2012-04-09 15:31:44.000000000 +0200
-+++ netpbm-10.58.01/converter/ppm/ppmtopj.c	2012-04-09 15:40:03.212619677 +0200
-@@ -179,6 +179,7 @@ char *argv[];
- 	pixels = ppm_readppm( ifp, &cols, &rows, &maxval );
- 
- 	pm_close( ifp );
-+	overflow2(cols,2);
- 	obuf = (unsigned char *) pm_allocrow(cols, sizeof(unsigned char));
- 	cbuf = (unsigned char *) pm_allocrow(cols * 2, sizeof(unsigned char));
- 
-diff -up netpbm-10.58.01/converter/ppm/ppmtopjxl.c.security-code netpbm-10.58.01/converter/ppm/ppmtopjxl.c
---- netpbm-10.58.01/converter/ppm/ppmtopjxl.c.security-code	2012-04-09 15:31:44.000000000 +0200
-+++ netpbm-10.58.01/converter/ppm/ppmtopjxl.c	2012-04-09 15:40:03.212619677 +0200
-@@ -276,6 +276,8 @@ main(int argc, const char * argv[]) {
-         pm_error("image too large; reduce with ppmscale");
-     if (maxval > PCL_MAXVAL)
-         pm_error("color range too large; reduce with ppmcscale");
-+    if (cols < 0 || rows < 0)
-+        pm_error("negative size is not possible");
- 
-     /* Figure out the colormap. */
-     pm_message("Computing colormap...");
-@@ -296,6 +298,8 @@ main(int argc, const char * argv[]) {
-         case 0: /* direct mode (no palette) */
-             bpp = bitsperpixel(maxval); /* bits per pixel */
-             bpg = bpp; bpb = bpp;
-+	    overflow2(bpp, 3);
-+	    overflow_add(bpp*3, 7);
-             bpp = (bpp*3+7)>>3;     /* bytes per pixel now */
-             bpr = (bpp<<3)-bpg-bpb; 
-             bpp *= cols;            /* bytes per row now */
-@@ -305,9 +309,13 @@ main(int argc, const char * argv[]) {
-         case 3: case 7: pclindex++;
-         default:
-             bpp = 8/pclindex;
-+	    overflow_add(cols, bpp);
-+	    if(bpp == 0)
-+		pm_error("assert: no bpp");
-             bpp = (cols+bpp-1)/bpp;      /* bytes per row */
-         }
-     }
-+    overflow2(bpp,2);
-     inrow = (char *)malloc((unsigned)bpp);
-     outrow = (char *)malloc((unsigned)bpp*2);
-     runcnt = (signed char *)malloc((unsigned)bpp);
-diff -up netpbm-10.58.01/converter/ppm/ppmtowinicon.c.security-code netpbm-10.58.01/converter/ppm/ppmtowinicon.c
---- netpbm-10.58.01/converter/ppm/ppmtowinicon.c.security-code	2012-04-09 15:31:44.000000000 +0200
-+++ netpbm-10.58.01/converter/ppm/ppmtowinicon.c	2012-04-09 15:40:03.213619664 +0200
-@@ -12,6 +12,7 @@
- 
- #include <math.h>
- #include <string.h>
-+#include <stdlib.h>
- 
- #include "pm_c_util.h"
- #include "winico.h"
-@@ -219,6 +220,7 @@ createAndBitmap (gray ** const ba, int c
-    MALLOCARRAY_NOFAIL(rowData, rows);
-    icBitmap->xBytes = xBytes;
-    icBitmap->data   = rowData;
-+   overflow2(xBytes, rows);
-    icBitmap->size   = xBytes * rows;
-    for (y=0;y<rows;y++) {
-       u1 * row;
-@@ -347,6 +349,7 @@ create4Bitmap (pixel ** const pa, int co
-    MALLOCARRAY_NOFAIL(rowData, rows);
-    icBitmap->xBytes = xBytes;
-    icBitmap->data   = rowData;
-+   overflow2(xBytes, rows);
-    icBitmap->size   = xBytes * rows;
- 
-    for (y=0;y<rows;y++) {
-@@ -407,6 +410,7 @@ create8Bitmap (pixel ** const pa, int co
-    MALLOCARRAY_NOFAIL(rowData, rows);
-    icBitmap->xBytes = xBytes;
-    icBitmap->data   = rowData;
-+   overflow2(xBytes, rows);
-    icBitmap->size   = xBytes * rows;
- 
-    for (y=0;y<rows;y++) {
-@@ -714,6 +718,10 @@ addEntryToIcon(MS_Ico       const MSIcon
-     entry->bitcount      = bpp;
-     entry->ih            = createInfoHeader(entry, xorBitmap, andBitmap);
-     entry->colors        = palette->colors;
-+    overflow2(4, entry->color_count);
-+    overflow_add(xorBitmap->size, andBitmap->size);
-+    overflow_add(xorBitmap->size + andBitmap->size, 40);
-+    overflow_add(xorBitmap->size + andBitmap->size + 40, 4 * entry->color_count);
-     entry->size_in_bytes = 
-         xorBitmap->size + andBitmap->size + 40 + (4 * entry->color_count);
-     if (verbose) 
-diff -up netpbm-10.58.01/converter/ppm/ppmtoxpm.c.security-code netpbm-10.58.01/converter/ppm/ppmtoxpm.c
---- netpbm-10.58.01/converter/ppm/ppmtoxpm.c.security-code	2012-04-09 15:31:44.000000000 +0200
-+++ netpbm-10.58.01/converter/ppm/ppmtoxpm.c	2012-04-09 15:40:03.214619651 +0200
-@@ -197,6 +197,7 @@ genNumstr(unsigned int const input, int
-     unsigned int i;
- 
-     /* Allocate memory for printed number.  Abort if error. */
-+    overflow_add(digits, 1);
-     if (!(str = (char *) malloc(digits + 1)))
-         pm_error("out of memory");
- 
-@@ -314,6 +315,7 @@ genCmap(colorhist_vector const chv,
-     unsigned int charsPerPixel;
-     unsigned int xpmMaxval;
-     
-+    if (includeTransparent) overflow_add(ncolors, 1);
-     MALLOCARRAY(cmap, cmapSize);
-     if (cmapP == NULL)
-         pm_error("Out of memory allocating %u bytes for a color map.",
-diff -up netpbm-10.58.01/converter/ppm/qrttoppm.c.security-code netpbm-10.58.01/converter/ppm/qrttoppm.c
---- netpbm-10.58.01/converter/ppm/qrttoppm.c.security-code	2012-04-09 15:31:42.000000000 +0200
-+++ netpbm-10.58.01/converter/ppm/qrttoppm.c	2012-04-09 15:40:03.215619638 +0200
-@@ -46,7 +46,7 @@ main( argc, argv )
- 
-     ppm_writeppminit( stdout, cols, rows, maxval, 0 );
-     pixelrow = ppm_allocrow( cols );
--    buf = (unsigned char *) malloc( 3 * cols );
-+    buf = (unsigned char *) malloc2( 3 , cols );
-     if ( buf == (unsigned char *) 0 )
- 	pm_error( "out of memory" );
- 
-diff -up netpbm-10.58.01/editor/pamcut.c.security-code netpbm-10.58.01/editor/pamcut.c
---- netpbm-10.58.01/editor/pamcut.c.security-code	2012-04-09 15:31:33.000000000 +0200
-+++ netpbm-10.58.01/editor/pamcut.c	2012-04-09 15:40:03.218619602 +0200
-@@ -655,6 +655,8 @@ cutOneImage(FILE *             const ifP
- 
-     outpam = inpam;    /* Initial value -- most fields should be same */
-     outpam.file   = ofP;
-+    overflow_add(rightcol, 1);
-+    overflow_add(bottomrow, 1);
-     outpam.width  = rightcol - leftcol + 1;
-     outpam.height = bottomrow - toprow + 1;
- 
 diff -up netpbm-10.58.01/editor/pnmgamma.c.security-code netpbm-10.58.01/editor/pnmgamma.c
 --- netpbm-10.58.01/editor/pnmgamma.c.security-code	2012-04-09 15:31:34.000000000 +0200
 +++ netpbm-10.58.01/editor/pnmgamma.c	2012-04-09 15:40:03.220619577 +0200
@@ -470,34 +305,6 @@ diff -up netpbm-10.58.01/urt/rle.h.security-code netpbm-10.58.01/urt/rle.h
  
  /* Declare RLE library routines. */
  
-diff -up netpbm-9.58.01/urt/rle_putcom.c.security-code netpbm-10.58.01/urt/rle_putcom.c
---- netpbm-10.58.01/urt/rle_putcom.c.security-code	2012-04-09 15:31:45.000000000 +0200
-+++ netpbm-10.58.01/urt/rle_putcom.c	2012-04-09 15:40:03.234619402 +0200
-@@ -14,6 +14,8 @@
-  * If you modify this software, you should include a notice giving the
-  * name of the person performing the modification, the date of modification,
-  * and the reason for such modification.
-+ *
-+ *  2002-12-19: Fix maths wrapping bugs. Alan Cox <alan@redhat.com>
-  */
- /* 
-  * rle_putcom.c - Add a picture comment to the header struct.
-@@ -98,12 +100,14 @@ rle_putcom(const char * const value,
-         const char * v;
-         const char ** old_comments;
-         int i;
--        for (i = 2, cp = the_hdr->comments; *cp != NULL; ++i, ++cp)
-+        for (i = 2, cp = the_hdr->comments; *cp != NULL; ++i, ++cp) {
-+	    overflow_add(i, 1);
-             if (match(value, *cp) != NULL) {
-                 v = *cp;
-                 *cp = value;
-                 return v;
-             }
-+	}
-         /* Not found */
-         /* Can't realloc because somebody else might be pointing to this
-          * comments block.  Of course, if this were true, then the
 --- netpbm-10.58.01/lib/libpbm1.c.orig	2014-06-16 21:12:28.499230631 -0400
 +++ netpbm-10.58.01/lib/libpbm1.c	2014-06-16 21:12:55.932519324 -0400
 @@ -78,6 +78,7 @@
@@ -518,21 +325,3 @@ diff -up netpbm-9.58.01/urt/rle_putcom.c.security-code netpbm-10.58.01/urt/rle_p
      MALLOCARRAY_NOFAIL(table, oldmaxval + 1);
      for (i = 0; i <= oldmaxval; ++i)
          table[i] = ROUNDDIV(i * newmaxval, oldmaxval);
---- netpbm-10.58.01/converter/other/sgitopnm.c.orig	2014-07-08 16:57:30.878754976 -0400
-+++ netpbm-10.58.01/converter/other/sgitopnm.c	2014-07-08 17:07:52.727745725 -0400
-@@ -372,10 +372,14 @@
-         MALLOCARRAY_NOFAIL(image, head->ysize);
-     } else {
-         maxchannel = 3;
-+	overflow2(head->ysize, maxchannel);
-         MALLOCARRAY_NOFAIL(image, head->ysize * maxchannel);
-     }
--    if (table)
-+    if (table) {
-+        overflow2(head->xsize, 2);
-+        overflow_add(head->xsize*2, 2);
-         MALLOCARRAY_NOFAIL(temp, WORSTCOMPR(head->xsize));
-+    }
- 
-     for (channel = 0; channel < maxchannel; ++channel) {
-         unsigned int row;

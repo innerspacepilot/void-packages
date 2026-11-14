@@ -1,6 +1,6 @@
 # Template file for 'syncthing'
 pkgname=syncthing
-version=1.26.1
+version=2.1.7
 revision=1
 build_style=go
 go_import_path="github.com/syncthing/syncthing"
@@ -10,24 +10,28 @@ go_package="
  ${go_import_path}/cmd/syncthing"
 go_build_tags="noupgrade"
 go_ldflags="-X github.com/syncthing/syncthing/lib/build.Version=v${version}"
+make_check_target="
+ ./lib/...
+ ./cmd/stdiscosrv
+ ./cmd/strelaysrv
+ ./cmd/syncthing"
 short_desc="Open Source Continuous File Synchronization"
 maintainer="Duncaen <duncaen@voidlinux.org>"
 license="MPL-2.0"
 homepage="https://syncthing.net/"
 changelog="https://github.com/syncthing/syncthing/releases"
-distfiles="https://github.com/syncthing/${pkgname}/archive/v${version}.tar.gz"
-checksum=fcb6933f0e6cd3825f40f59986ab19a1a9fdd3f1a65c0fad935c71a32bc441d5
+distfiles="https://github.com/syncthing/syncthing/archive/v${version}.tar.gz"
+checksum=e9794cab0adf5b0a59d9b631e994dce055c57cb805228555bdfa68118be4bd0a
 
 pre_build() {
-	GOARCH= go generate \
-		github.com/syncthing/syncthing/lib/api/auto \
-		github.com/syncthing/syncthing/cmd/strelaypoolsrv/auto
+	GOARCH= go generate github.com/syncthing/syncthing/lib/api/auto
 }
 
 post_install() {
 	vinstall etc/firewall-ufw/syncthing 644 etc/ufw/applications.d
 	vinstall etc/linux-desktop/syncthing-start.desktop 664 usr/share/applications
 	vinstall etc/linux-desktop/syncthing-ui.desktop 644 usr/share/applications
+	vinstall etc/linux-sysctl/30-syncthing.conf 644 usr/lib/sysctl.d
 	vlicense LICENSE
 	vdoc README.md
 	for f in man/syncthing*; do vman $f; done
@@ -75,7 +79,7 @@ syncthing-discosrv_package() {
 }
 
 syncthing-inotify_package() {
-	build_style=meta
+	metapackage=yes
 	short_desc="Inotify file watcher for Syncthing (transitional dummy package)"
 	depends="${sourcepkg}>=${version}_${revision}"
 }

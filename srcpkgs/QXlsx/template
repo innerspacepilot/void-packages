@@ -1,7 +1,7 @@
 # Template file for 'QXlsx'
 pkgname=QXlsx
-version=1.4.6
-revision=2
+version=1.5.1.1
+revision=1
 build_style=cmake
 build_wrksrc="QXlsx"
 hostmakedepends="qt5-qmake qt5-host-tools"
@@ -11,4 +11,4 @@ maintainer="Andrew Benson <abenson+void@gmail.com>"
 license="MIT"
 homepage="https://qtexcel.github.io/QXlsx"
 distfiles="https://github.com/QtExcel/QXlsx/archive/v${version}.tar.gz"
-checksum=969a947af6a78dad9f2418dfc84e528d212ceb98e6392edf859dbff4f8828a77
+checksum=70e424ad47529e16cd8ad1bad2ccc561af1eb50ef8ee45f1b50cb277f9a12730

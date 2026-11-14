@@ -1,0 +1,27 @@
+# Template file for 'jaq'
+pkgname=jaq
+version=3.1.2
+revision=1
+build_style=cargo
+build_wrksrc="jaq"
+configure_args="--no-default-features"
+short_desc="Clone of jq, focussed on correctness, speed, and simplicity"
+maintainer="tranzystorekk <tranzystorek.io@protonmail.com>"
+license="MIT"
+homepage="https://github.com/01mf02/jaq"
+changelog="https://github.com/01mf02/jaq/releases"
+distfiles="https://github.com/01mf02/jaq/archive/refs/tags/v${version}.tar.gz
+ https://github.com/01mf02/jaq/releases/download/v${version}/jaq.1>${version}_man"
+checksum="54ac66fac30a1d28c54f19716215cf4256877c69964c1c0150c3976bde618b93
+ 897aa15830beae6a357b4ff6f576dc5c76aa6ca79ad05cc16b47c809c58a9572"
+skip_extraction="${version}_man"
+
+post_extract() {
+	vsrccopy ${version}_man .
+	mv ${version}_man jaq.1
+}
+
+post_install() {
+	vlicense ../LICENSE-MIT
+	vman ../jaq.1
+}

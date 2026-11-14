@@ -1,0 +1,51 @@
+# Template file for 'yazi'
+pkgname=yazi
+version=26.9.1
+revision=1
+build_style=cargo
+hostmakedepends="pkg-config lua55-devel"
+makedepends="oniguruma-devel lua55-devel"
+depends="nerd-fonts-symbols-ttf"
+short_desc="Blazing fast terminal file manager, based on async I/O"
+maintainer="Bnyro <bnyro@tutanota.com>"
+license="MIT"
+homepage="https://yazi-rs.github.io"
+changelog="https://raw.githubusercontent.com/sxyazi/yazi/refs/heads/main/CHANGELOG.md"
+distfiles="https://github.com/sxyazi/yazi/archive/refs/tags/v${version}.tar.gz"
+checksum=66857f1b670469daf258edd0bb2ea51d9ad3e2cab4eea9684028c80059fd6862
+
+export VERGEN_GIT_SHA="${version}_${revision}"
+# enable the generation of shell auto completions
+export YAZI_GEN_COMPLETIONS=true
+
+_build_env() {
+	export CFLAGS_${RUST_TARGET//-/_}="${CFLAGS}" \
+		HOST_CFLAGS="-fstack-clash-protection ${CFLAGS_host}" \
+		CFLAGS_${RUST_BUILD//-/_}="${HOST_CFLAGS}" \
+	# unset CFLAGS to work around cc-rs adding CFLAGS to host and target CFLAGS_*.
+	# https://github.com/rust-lang/cc-rs/issues/1469
+	unset CFLAGS
+}
+
+pre_build() {
+	_build_env
+}
+
+pre_check() {
+	_build_env
+}
+
+pre_install() {
+	_build_env
+}
+
+do_install() {
+	vbin target/${RUST_TARGET}/release/yazi
+	vbin target/${RUST_TARGET}/release/ya
+	vcompletion yazi-boot/completions/yazi.bash bash
+	vcompletion yazi-boot/completions/yazi.fish fish
+	vcompletion yazi-boot/completions/_yazi zsh
+	vinstall assets/yazi.desktop 644 /usr/share/applications
+	vinstall assets/logo.png 644 /usr/share/pixmaps yazi.png
+	vlicense LICENSE
+}

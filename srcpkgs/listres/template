@@ -1,16 +1,16 @@
-# Template build file for 'listres'.
+# Template file for 'listres'
 pkgname=listres
-version=1.0.5
+version=1.0.7
 revision=1
 build_style=gnu-configure
 hostmakedepends="pkg-config"
 makedepends="libXaw-devel"
 short_desc="List resources in Xaw widgets"
-homepage="http://xorg.freedesktop.org"
-license="MIT"
 maintainer="Leah Neukirchen <leah@vuxu.org>"
-distfiles="${XORG_SITE}/app/$pkgname-$version.tar.xz"
-checksum=ce2a00bbe7d2eb8d75177006f343c80443a22d52570c48a43c6fe70ea074dc9d
+license="MIT"
+homepage="https://xorg.freedesktop.org"
+distfiles="${XORG_SITE}/app/${pkgname}-${version}.tar.xz"
+checksum=d7bdc7354a53f3786487399b6d5ea8169fac9ddac2c751c530383c777d1af139
 
 post_install() {
 	vlicense COPYING

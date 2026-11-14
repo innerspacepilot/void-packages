@@ -1,0 +1,19 @@
+# Template file for 'triforce'
+pkgname=triforce
+version=0.4.0
+revision=1
+archs="aarch64*"
+build_style=cargo
+depends="lv2"
+short_desc="Beamformer for Apple mic arrays"
+maintainer="dkwo <npiazza@disroot.org>"
+license="GPL-2.0-only"
+homepage="https://crates.io/crates/triforce-lv2"
+distfiles="https://github.com/chadmed/triforce/archive/refs/tags/${version}.tar.gz"
+checksum=c5b777a3c87bda5a88aeab2bd862324b27f49528455ec81c5fd5220c0c7a4861
+
+do_install() {
+	vinstall target/${RUST_TARGET}/release/libtriforce.so 0755 usr/lib/lv2/triforce.lv2 triforce.so
+	vinstall triforce.ttl 0644 usr/lib/lv2/triforce.lv2
+	vinstall manifest.ttl 0644 usr/lib/lv2/triforce.lv2
+}

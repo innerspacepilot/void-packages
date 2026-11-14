@@ -1,8 +1,9 @@
 # Template file for 'libxkbfile'
 pkgname=libxkbfile
-version=1.1.2
+version=1.2.0
 revision=1
-build_style=gnu-configure
+build_style=meson
+configure_args="-Ddefault_library=both"
 hostmakedepends="pkg-config"
 makedepends="xorgproto libX11-devel"
 short_desc="Xkbfile Library from X.org"
@@ -10,7 +11,7 @@ maintainer="Orphaned <orphan@voidlinux.org>"
 license="MIT"
 homepage="https://www.x.org/"
 distfiles="${XORG_SITE}/lib/libxkbfile-${version}.tar.xz"
-checksum=b8a3784fac420b201718047cfb6c2d5ee7e8b9481564c2667b4215f6616644b1
+checksum=7f71884e5faf56fb0e823f3848599cf9b5a9afce51c90982baeb64f635233ebf
 
 post_install() {
 	vlicense COPYING

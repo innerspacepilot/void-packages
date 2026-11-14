@@ -1,6 +1,6 @@
 # Template file for 'libglibutil'
 pkgname=libglibutil
-version=1.0.74
+version=1.0.83
 revision=1
 build_style=gnu-makefile
 make_use_env=1
@@ -11,12 +11,12 @@ make_install_target="install-dev"
 hostmakedepends="pkg-config"
 makedepends="glib-devel"
 short_desc="Library of glib utilities"
-maintainer="Jami Kettunen <jami.kettunen@protonmail.com>"
+maintainer="Rutpiv <roger_freitas@live.com>"
 license="BSD-3-Clause"
 homepage="https://github.com/sailfishos/libglibutil"
 changelog="https://raw.githubusercontent.com/sailfishos/libglibutil/master/debian/changelog"
 distfiles="https://github.com/sailfishos/libglibutil/archive/refs/tags/${version}.tar.gz"
-checksum=4d8ae1bed701613cd053c5ee073ecd3123537782eaaddebd47fe1e43ab27d825
+checksum=c9f8fda41c7b5eacd30d261b90e2993e4e0179b473444cc647d0730d2d2fa723
 
 post_install() {
 	vlicense LICENSE

@@ -1,6 +1,6 @@
 # Template file for 'libsecret'
 pkgname=libsecret
-version=0.21.1
+version=0.21.7
 revision=1
 build_style=meson
 build_helper="gir"
@@ -14,7 +14,7 @@ license="LGPL-2.1-or-later"
 homepage="https://wiki.gnome.org/Projects/Libsecret"
 changelog="https://gitlab.gnome.org/GNOME/libsecret/-/raw/master/NEWS"
 distfiles="${GNOME_SITE}/libsecret/${version%.*}/libsecret-${version}.tar.xz"
-checksum=674f51323a5f74e4cb7e3277da68b5afddd333eca25bc9fd2d820a92972f90b1
+checksum=6b452e4750590a2b5617adc40026f28d2f4903de15f1250e1d1c40bfd68ed55e
 make_check_pre="dbus-run-session"
 
 libsecret-devel_package() {

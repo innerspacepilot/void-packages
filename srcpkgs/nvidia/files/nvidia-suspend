@@ -1,0 +1,5 @@
+#!/bin/sh
+case "$ZZZ_MODE" in
+	hibernate) exec /usr/bin/nvidia-sleep.sh "hibernate" ;;
+	suspend|standby) exec /usr/bin/nvidia-sleep.sh "suspend" ;;
+esac

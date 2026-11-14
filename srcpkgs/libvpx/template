@@ -2,15 +2,19 @@
 # updates generally break abi, so if you update this,
 # have fun rebuilding everything
 pkgname=libvpx
-version=1.13.0
+version=1.16.0
 revision=1
-hostmakedepends="perl yasm"
+hostmakedepends="perl"
 short_desc="VP8 and VP9 video codec"
 maintainer="Orphaned <orphan@voidlinux.org>"
 license="BSD-3-Clause-Clear"
 homepage="http://www.webmproject.org"
 distfiles="https://github.com/webmproject/libvpx/archive/v${version}.tar.gz"
-checksum=cb2a393c9c1fae7aba76b950bb0ad393ba105409fe1a147ccd61b0aaa1501066
+checksum=7a479a3c66b9f5d5542a4c6a1b7d3768a983b1e5c14c60a9396edc9b649e015c
+
+case "$XBPS_TARGET_MACHINE" in
+	x86_64* | i686*) hostmakedepends+=" yasm" ;;
+esac
 
 do_configure() {
 	export LD="$CC"
@@ -26,7 +30,7 @@ do_configure() {
 	CFLAGS+=" -fPIC"
 
 	./configure --enable-vp8 --enable-vp9 \
-		--enable-experimental \
+		--enable-experimental --disable-unit-tests \
 		--enable-runtime-cpu-detect --enable-shared \
 		--enable-postproc --enable-pic --disable-install-docs \
 		--disable-install-srcs --as=yasm ${args} --target=${target}

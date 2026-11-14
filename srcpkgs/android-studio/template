@@ -1,16 +1,18 @@
 # Template file for 'android-studio'
 pkgname=android-studio
-version=2022.3.1.18
+version=2026.2.1.8
 revision=1
+_version_description="rabbit1"
 archs="x86_64"
 hostmakedepends="tar"
+depends="libbsd"
 short_desc="Official Android IDE"
-maintainer="Orphaned <orphan@voidlinux.org>"
+maintainer="Bnyro <bnyro@tutanota.com>"
 license="Apache-2.0"
-homepage="http://tools.android.com"
-# changelog="https://developer.android.com/studio/releases/index.html"
-distfiles="https://dl.google.com/dl/android/studio/ide-zips/${version}/android-studio-${version}-linux.tar.gz"
-checksum=24215e1324a6ac911810b2cc1afb2d735cf745dfbc06918a42b8d6fbc6bf7433
+homepage="https://developer.android.com/studio/"
+changelog="https://developer.android.com/studio/releases/"
+distfiles="https://edgedl.me.gvt1.com/android/studio/ide-zips/${version}/android-studio-${_version_description}-linux.tar.gz"
+checksum=f8775c67cf899d9133712a2d7ee3ef7231e07fb16dbe0544c47e5f5babd5931b
 repository=nonfree
 restricted=yes
 python_version=3
@@ -54,8 +56,8 @@ skiprdeps="/opt/android-studio/plugins/android/resources/process-tracker-agent/n
  /opt/android-studio/plugins/android/resources/perfetto/x86/traced_probes
  /opt/android-studio/plugins/android/resources/perfetto/x86/traced
  /opt/android-studio/plugins/android/resources/perfetto/x86/perfetto
- /opt/android-studio/plugins/android-ndk/resources/lldb/lib/python3.10/lib-dynload/_curses.cpython-310-x86_64-linux-gnu.so
- /opt/android-studio/plugins/android-ndk/resources/lldb/lib/python3.10/lib-dynload/_curses_panel.cpython-310-x86_64-linux-gnu.so"
+ /opt/android-studio/plugins/android-ndk/resources/lldb/lib/python3.11/lib-dynload/_curses.cpython-311-x86_64-linux-gnu.so
+ /opt/android-studio/plugins/android-ndk/resources/lldb/lib/python3.11/lib-dynload/_curses_panel.cpython-311-x86_64-linux-gnu.so"
 
 do_install() {
 	vmkdir opt/${pkgname}
@@ -66,8 +68,8 @@ do_install() {
 	vcopy build.txt opt/${pkgname}/ # read as IDE version information
 	vcopy product-info.json opt/${pkgname}/
 	vmkdir usr/bin
-	ln -s /opt/android-studio/bin/studio.sh ${DESTDIR}/usr/bin/android-studio
+	ln -s /opt/android-studio/bin/studio ${DESTDIR}/usr/bin/android-studio
 
-	vinstall "${FILESDIR}/android-studio.desktop" 644 usr/share/applications/
+	vinstall ${FILESDIR}/android-studio.desktop 644 usr/share/applications
 	chmod -R ugo+rX ${DESTDIR}/opt
 }

@@ -1,17 +1,17 @@
 # Template file for 'gsasl'
 pkgname=gsasl
-version=1.10.0
+version=2.2.4
 revision=1
 build_style=gnu-configure
 configure_args="--with-gssapi-impl=mit"
-hostmakedepends="pkg-config"
+hostmakedepends="pkg-config texinfo"
 makedepends="readline-devel gnutls-devel libidn-devel mit-krb5-devel"
 short_desc="GNU SASL framework and a few common SASL mechanisms"
 maintainer="Orphaned <orphan@voidlinux.org>"
 license="GPL-3.0-or-later"
 homepage="https://www.gnu.org/software/gsasl/"
 distfiles="${GNU_SITE}/${pkgname}/${pkgname}-${version}.tar.gz"
-checksum=85bcbd8ee6095ade7870263a28ebcb8832f541ea7393975494926015c07568d3
+checksum=d32be15efd3a04cb19b232f721bdca02cc6ad7ab415df7d79fb2dd2c0da3e0be
 
 libgsasl_package() {
 	short_desc+=" - Runtime library"

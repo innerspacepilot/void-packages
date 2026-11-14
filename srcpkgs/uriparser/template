@@ -1,8 +1,9 @@
 # Template file for 'uriparser'
 pkgname=uriparser
-version=0.9.7
+version=1.0.2
 revision=1
 build_style=cmake
+configure_args="-DURIPARSER_BUILD_TESTS=ON"
 make_check_target=test
 hostmakedepends="pkg-config doxygen graphviz qt5-tools qt5-plugin-sqlite"
 makedepends="gtest-devel"
@@ -10,11 +11,11 @@ short_desc="RFC 3986 compliant URI parsing and handling library"
 maintainer="mobinmob <mobinmob@disroot.org>"
 license="BSD-3-Clause"
 homepage="https://uriparser.github.io/"
-distfiles="https://github.com/${pkgname}/${pkgname}/releases/download/${pkgname}-${version}/${pkgname}-${version}.tar.bz2"
-checksum=d27dea0c8b6f6fb9798f07caedef1cd96a6e3fc5c6189596774e19afa7ddded7
+distfiles="https://github.com/uriparser/uriparser/releases/download/uriparser-${version}/uriparser-${version}.tar.bz2"
+checksum=dd2e4843f43de6f5aedf430e530f1e2d159eba8ca4d64c2787af1c20f707a9e4
 
 post_install() {
-	vlicense COPYING
+	vlicense COPYING.BSD-3-Clause
 }
 
 uriparser-devel_package() {

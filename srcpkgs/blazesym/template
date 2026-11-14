@@ -1,0 +1,26 @@
+# Template file for 'blazesym'
+pkgname=blazesym
+version=0.2.7
+revision=1
+build_wrksrc="capi"
+build_style=cargo
+hostmakedepends="pkg-config"
+makedepends="libbpf-devel elfutils-devel zlib-devel"
+short_desc="Library for address symbolization and related tasks"
+maintainer="Leah Neukirchen <leah@vuxu.org>"
+license="BSD-3-Clause"
+homepage="https://github.com/libbpf/blazesym"
+distfiles="https://github.com/libbpf/blazesym/archive/refs/tags/v${version}.tar.gz"
+checksum=ee4ef2ee1a6ada99a759d710f4d533886c7115e57ada3aa8cf29bd78f252f74d
+
+do_install() {
+	cd ${wrksrc}
+	vcopy target/*/release/*.a usr/lib
+	vcopy capi/include usr
+	vlicense LICENSE
+}
+
+do_check() {
+	# needs multilib, x86_64 only
+	:
+}

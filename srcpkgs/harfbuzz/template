@@ -1,6 +1,6 @@
 # Template file for 'harfbuzz'
 pkgname=harfbuzz
-version=8.3.0
+version=15.1.0
 revision=1
 build_style=meson
 build_helper="gir qemu"
@@ -18,16 +18,21 @@ makedepends="cairo-devel graphite-devel icu-devel libxml2"
 short_desc="OpenType text shaping engine"
 maintainer="Duncaen <duncaen@voidlinux.org>"
 license="MIT"
-homepage="http://www.freedesktop.org/wiki/Software/HarfBuzz/"
+homepage="https://harfbuzz.github.io/"
 changelog="https://github.com/harfbuzz/harfbuzz/raw/main/NEWS"
 distfiles="https://github.com/harfbuzz/harfbuzz/releases/download/${version}/harfbuzz-${version}.tar.xz"
-checksum=109501eaeb8bde3eadb25fab4164e993fbace29c3d775bcaa1c1e58e2f15f847
+checksum=0fc7c565443a5f4be7da65ac5ee5bd737d9b158dc908708b7689a0a5796b0c8d
 
 if [ "$XBPS_CHECK_PKGS" ]; then
 	configure_args+=" -Dtests=enabled"
 else
 	configure_args+=" -Dtests=disabled"
 fi
+
+do_install() {
+	# avoid ninja install rebuilding some things
+	meson install -C build --destdir "${DESTDIR}" --no-rebuild
+}
 
 libharfbuzz_package() {
 	short_desc+=" - runtime library"

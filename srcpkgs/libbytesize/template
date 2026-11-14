@@ -1,7 +1,7 @@
 # Template file for 'libbytesize'
 pkgname=libbytesize
-version=2.8
-revision=3
+version=2.12
+revision=1
 build_style=gnu-configure
 hostmakedepends="pkg-config gettext python3"
 makedepends="mpfr-devel pcre2-devel"
@@ -12,7 +12,7 @@ license="LGPL-2.1-or-later"
 homepage="https://github.com/storaged-project/libbytesize"
 changelog="https://raw.githubusercontent.com/storaged-project/libbytesize/master/NEWS.rst"
 distfiles="https://github.com/storaged-project/libbytesize/releases/download/${version}/libbytesize-${version}.tar.gz"
-checksum=d87aef5a37e189b1cc827530e0feafa6529331fcbe2aabf330a01ad8ec95e1a0
+checksum=8356bac2cafd2f31f39bf1ad373cef8448cab08b817aeaee5c526d54e81c3c5a
 
 pre_check() {
 	# Requires python3-pocketlint, which is not packaged yet.

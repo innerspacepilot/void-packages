@@ -1,18 +1,22 @@
 # Template file for 'rebar3'
 pkgname=rebar3
-version=3.19.0
-revision=3
+version=3.27.1
+revision=1
 hostmakedepends=erlang
-depends="erlang>=22"
+depends="erlang>=26"
 short_desc="Erlang build tool to compile, test, and release applications"
-maintainer="Noel Cower <ncower@nil.dev>"
+maintainer="Orphaned <orphan@voidlinux.org>"
 license="Apache-2.0"
 homepage="https://www.rebar3.org/"
-distfiles="https://github.com/erlang/rebar3/archive/${version}.tar.gz"
-checksum=ff9ef42c737480477ebdf0dd9d95ece534a14c96f05edafbf32e9af973280bc3
+distfiles="https://github.com/erlang/rebar3/archive/refs/tags/${version}.tar.gz"
+checksum=e34cf5e8f25fc7e59b2ff5c56fed507cf1378d4eef2a4aa7957b3c7e80812d64
 
 do_build() {
 	./bootstrap
+}
+
+do_check() {
+	./rebar3 ct
 }
 
 do_install() {

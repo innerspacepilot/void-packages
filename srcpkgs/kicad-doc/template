@@ -1,23 +1,105 @@
 # Template file for 'kicad-doc'
+# XXX: keep in sync with kicad
 pkgname=kicad-doc
-version=7.0.8
+version=10.0.8
 revision=1
-short_desc="KiCad documentation"
-maintainer="Érico Nogueira <ericonr@disroot.org>"
+build_wrksrc="${pkgname}-${version}"
+build_style=cmake
+configure_args="-DBUILD_FORMATS=html"
+hostmakedepends="ruby-asciidoctor po4a"
+depends="kicad>=${version}"
+short_desc="Electronic schematic and PCB design software - documentation"
+maintainer="classabbyamp <void@placeviolette.net>"
 license="GPL-3.0-or-later, CC-BY-3.0"
 homepage="http://kicad.org"
-distfiles="https://kicad-downloads.s3.cern.ch/docs/kicad-doc-${version}.tar.gz"
-checksum=923752b5667f76cb4b3a9cbd00c14f36f1bf8cd3930d273c25d67331412f954b
+changelog="https://www.kicad.org/blog/categories/Release-Notes/"
+distfiles="https://gitlab.com/kicad/services/kicad-doc/-/archive/${version}/kicad-doc-${version}.tar.gz
+ https://gitlab.com/kicad/libraries/kicad-templates/-/archive/${version}/kicad-templates-${version}.tar.gz
+ https://gitlab.com/kicad/libraries/kicad-symbols/-/archive/${version}/kicad-symbols-${version}.tar.gz
+ https://gitlab.com/kicad/libraries/kicad-footprints/-/archive/${version}/kicad-footprints-${version}.tar.gz
+ https://gitlab.com/kicad/libraries/kicad-packages3D/-/archive/${version}/kicad-packages3D-${version}.tar.gz"
+checksum="00b453d17877b559a0c1d6a5fb6567802665d4e7df7f4718b2580e9c97566d68
+ 4e5b6fe99e532a5aa88afc2fa0c935674a5bf2b873491dbf15ac0c1212756eb9
+ f7fc4be38bd21ff97fa7532dd61b98600981d66986a7958d5a7c274bc435250c
+ 94d712756d3129df9886fd005a69669973a31865827eadf762722eeefcdb1763
+ efb6b74aa8c343aac882c1c225e0a214df15cfe7a45694af8df1b44273c0b858"
 
-if [ "$XBPS_WORDSIZE" != "$XBPS_TARGET_WORDSIZE" ]; then
-	broken="kicad not available"
-fi
+# none of these packages contain ELFs, but do contain a bunch of files,
+# so skip stripping and elf_in_usrshare lint to speed things up significantly
+nostrip=yes
+ignore_elf_dirs="/usr/share/kicad"
 
-if [ "$XBPS_TARGET_NO_ATOMIC8" ]; then
-	broken="kicad not available"
-fi
+post_configure() {
+	for subpkg in footprints packages3D symbols templates; do
+		msg_normal "kicad-${subpkg}-${version}_${revision}: running do_configure ...\n"
+		(
+			build_wrksrc="kicad-${subpkg}-${version}"
+			cd "../${build_wrksrc}" && do_configure
+		)
+	done
+}
 
-do_install() {
-	vmkdir usr/
-	vcopy share/ usr/
+post_build() {
+	for subpkg in footprints packages3D symbols templates; do
+		msg_normal "kicad-${subpkg}-${version}_${revision}: running do_build ...\n"
+		(
+			cd "../kicad-${subpkg}-${version}" && do_build
+		)
+	done
+}
+
+kicad-footprints_package() {
+	short_desc="${short_desc/documentation/footprint libraries}"
+	license="CC-BY-SA-4.0"
+	depends="kicad>=${version}"
+	nostrip=yes
+	ignore_elf_dirs="/usr/share/kicad"
+	pkg_install() {
+		cd "../${pkgname}-${version}/build" && \
+			DESTDIR="${PKGDESTDIR}" ninja install
+	}
+}
+
+kicad-packages3D_package() {
+	short_desc="${short_desc/documentation/3D model libraries}"
+	license="CC-BY-SA-4.0"
+	depends="kicad>=${version}"
+	nostrip=yes
+	ignore_elf_dirs="/usr/share/kicad"
+	pkg_install() {
+		cd "../${pkgname}-${version}/build" && \
+			DESTDIR="${PKGDESTDIR}" ninja install
+	}
+}
+
+kicad-symbols_package() {
+	short_desc="${short_desc/documentation/schematic symbol libraries}"
+	license="CC-BY-SA-4.0"
+	depends="kicad>=${version}"
+	nostrip=yes
+	ignore_elf_dirs="/usr/share/kicad"
+	pkg_install() {
+		cd "../${pkgname}-${version}/build" && \
+			DESTDIR="${PKGDESTDIR}" ninja install
+	}
+}
+
+kicad-templates_package() {
+	short_desc="${short_desc/documentation/project templates}"
+	license="CC-BY-SA-4.0"
+	depends="kicad>=${version}"
+	nostrip=yes
+	ignore_elf_dirs="/usr/share/kicad"
+	pkg_install() {
+		cd "../${pkgname}-${version}/build" && \
+			DESTDIR="${PKGDESTDIR}" ninja install
+	}
+}
+
+kicad-library_package() {
+	short_desc="${short_desc/documentation/all libraries}"
+	depends="kicad>=${version} kicad-footprints>=${version}_${revision}
+	 kicad-packages3D>=${version}_${revision} kicad-symbols>=${version}_${revision}
+	 kicad-templates>=${version}_${revision}"
+	metapackage=yes
 }

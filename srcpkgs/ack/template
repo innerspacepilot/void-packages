@@ -1,13 +1,15 @@
 # Template file for 'ack'
 pkgname=ack
-version=3.7.0
+version=3.10.0
 revision=1
 build_style=perl-module
 hostmakedepends="perl perl-File-Next"
 depends="${hostmakedepends}"
+checkdepends="perl-YAML-PP"
 short_desc="Tool like grep, optimized for programmers"
-maintainer="Jan S. <jan.schreib@gmail.com>"
+maintainer="Orphaned <orphan@voidlinux.org>"
 license="Artistic-2.0"
 homepage="https://beyondgrep.com/"
-distfiles="${CPAN_SITE}/App/ack-v${version}.tar.gz"
-checksum=ea7caa14f757de083310ed2cba298661ddcca5dee06ec8f18043ea625a79df20
+changelog="https://beyondgrep.com/changes.txt"
+distfiles="https://cpan.metacpan.org/authors/id/P/PE/PETDANCE/ack-v${version}.tar.gz"
+checksum=65e83cfb38a71fca725e9a14a8201ee871e629fc6b10231e1303dd3501ba563a

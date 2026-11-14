@@ -1,0 +1,19 @@
+# Template file for 'chess-tui'
+pkgname=chess-tui
+version=2.8.0
+revision=1
+build_style=cargo
+hostmakedepends="pkg-config"
+makedepends="openssl-devel alsa-lib-devel"
+short_desc="Play chess from your terminal"
+maintainer="Dora 'cat' <cat@thenight.club>"
+license="MIT"
+homepage="https://thomas-mauran.github.io/chess-tui/"
+changelog="https://github.com/thomas-mauran/chess-tui/releases"
+distfiles="https://github.com/thomas-mauran/chess-tui/archive/refs/tags/${version}.tar.gz"
+checksum=29c49dbc8fd69b7dc65ddd3006123b8bf05c223629ec7f6c4110ca6992cb0d4b
+
+post_install() {
+	vlicense LICENSE
+	vdoc README.md
+}

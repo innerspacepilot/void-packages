@@ -1,0 +1,43 @@
+# Template file for 'jujutsu'
+pkgname=jujutsu
+version=0.47.1
+revision=1
+build_style=cargo
+build_helper=qemu
+hostmakedepends="pkg-config"
+depends="openssh"
+checkdepends="openssh git"
+short_desc="Git-compatible VCS that is both simple and powerful"
+maintainer="Leah Neukirchen <leah@vuxu.org>"
+license="Apache-2.0"
+homepage="https://github.com/martinvonz/jj"
+changelog="https://github.com/martinvonz/jj/blob/main/CHANGELOG.md"
+distfiles="https://github.com/martinvonz/jj/archive/refs/tags/v${version}.tar.gz"
+checksum=838fb5ddbf474ccee6639ce68835cedf88c8285b5c812599c56688286fb0b7a6
+conflicts="jj>=0"
+
+pre_build() {
+	# workaround the cc-rs mixing CFLAGS for host and target.
+	# https://github.com/rust-lang/cc-rs/issues/1469
+	export CFLAGS_${RUST_BUILD//-/_}="${CFLAGS_host}" \
+		CXXFLAGS_${RUST_BUILD//-/_}="${CXXFLAGS_host}" \
+		LDFLAGS_${RUST_BUILD//-/_}="${LDFLAGS_host}" \
+		CFLAGS_${RUST_TARGET//-/_}="${CFLAGS}" \
+		CXXFLAGS_${RUST_TARGET//-/_}="${CXXFLAGS}" \
+		LDFLAGS_${RUST_TARGET//-/_}="${LDFLAGS}" \
+		CFLAGS="" CXXFLAGS="" LDFLAGS=""
+}
+
+do_install() {
+	for f in target/*/release/jj; do
+		vbin $f
+	done
+
+	vtargetrun ${DESTDIR}/usr/bin/jj util install-man-pages ${DESTDIR}/usr/share/man
+
+	for _shell in bash fish zsh; do
+		COMPLETE=${_shell} vtargetrun ${DESTDIR}/usr/bin/jj > jj.${_shell}
+		sed -i -e "s:$DESTDIR::g" jj.${_shell}
+		vcompletion jj.${_shell} ${_shell} jj
+	done
+}

@@ -1,17 +1,26 @@
 # Template file for 'kodi-addon-inputstream-adaptive'
 pkgname=kodi-addon-inputstream-adaptive
-version=2.6.7
-revision=2
-_kodi_release=Matrix
+version=21.5.25
+revision=1
+_kodi_release=Omega
+# Bento4 version defined in https://github.com/xbmc/inputstream.adaptive/blob/Omega/depends/common/bento4/bento4.txt
+_bento4_version=1.6.0-641-3-Omega
 build_style=cmake
-makedepends="kodi-devel kodi-platform-devel p8-platform-devel tinyxml-devel
- expat-devel"
+configure_args="
+ -DVERBOSE=ON
+ -DENABLE_INTERNAL_BENTO4=ON
+ -DBENTO4_URL=${XBPS_SRCDISTDIR}/${pkgname}-${version}/${_bento4_version}.tar.gz"
+makedepends="gtest-devel kodi-devel kodi-platform-devel pugixml-devel rapidjson"
 short_desc="Kodi inputstream addon for several manifest types"
 maintainer="Orphaned <orphan@voidlinux.org>"
 license="GPL-2.0-or-later"
 homepage="https://github.com/peak3d/inputstream.adaptive"
-distfiles="https://github.com/peak3d/inputstream.adaptive/archive/${version}-${_kodi_release}.tar.gz"
-checksum=353207f5f98bf81ce8d79cec903c28da8c0227d7c7a632692c910d81e59c2dbe
+distfiles="https://github.com/peak3d/inputstream.adaptive/archive/${version}-${_kodi_release}.tar.gz
+  https://github.com/xbmc/Bento4/archive/refs/tags/${_bento4_version}.tar.gz"
+checksum="c4a458045bf4edfe51a1f9f03ac777c7101c9b00e0e72c76ac51a2b3f530779a
+ a9b231b63159b3a4d9e47c5328b476308852bf092ccb9ce98f7cf46a386465ce"
+
+skip_extraction="${_bento4_version}.tar.gz"
 
 if [ -n "${CROSS_BUILD}" ]; then
 	configure_args+=" -DCMAKE_MODULE_PATH=${XBPS_CROSS_BASE}/usr/share/kodi/cmake"

@@ -1,13 +1,13 @@
 # Template file for 'tuimoji'
 pkgname=tuimoji
 version=1.0.0
-revision=7
+revision=9
 build_style=python3-module
 pycompile_module="tuimoji"
 hostmakedepends="python3-setuptools"
 depends="python3-urwid xclip python3-setuptools"
 short_desc="Terminal based emoji chooser"
-maintainer="travankor <travankor@tuta.io>"
+maintainer="Orphaned <orphan@voidlinux.org>"
 license="GPL-3.0-or-later"
 homepage="https://github.com/Fingel/tuimoji"
 distfiles="https://github.com/Fingel/tuimoji/archive/v${version}.tar.gz"

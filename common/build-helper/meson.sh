@@ -1,8 +1,41 @@
 # This build helper writes a Meson cross-file, allowing other build styles
 # to properly drive cross-builds in Meson when appropriate
 
-# Action is only taken for cross builds
-[ -z "$CROSS_BUILD" ] && return 0
+# allows meson to automatically unpack wrapped dependencies specified in distfiles
+export MESON_PACKAGE_CACHE_DIR="${XBPS_SRCDISTDIR}/${pkgname}-${version}/"
+
+if [ -z "$CROSS_BUILD" ]; then
+	# The native file should only be written once, unless forced
+	[ -e "${XBPS_WRAPPERDIR}/meson/xbps_meson.native" ] && [ -z "$XBPS_BUILD_FORCEMODE" ] && return 0
+	mkdir -p "${XBPS_WRAPPERDIR}/meson"
+	cat > "${XBPS_WRAPPERDIR}/meson/xbps_meson.native" <<-EOF
+		[built-in options]
+		prefix = '/usr'
+		libdir = '/usr/lib${XBPS_TARGET_WORDSIZE}'
+		libexecdir = '/usr/libexec'
+		bindir = '/usr/bin'
+		sbindir = '/usr/bin'
+		includedir = '/usr/include'
+		datadir = '/usr/share'
+		mandir = '/usr/share/man'
+		infodir = '/usr/share/info'
+		localedir = '/usr/share/locale'
+		sysconfdir = '/etc'
+		localstatedir = '/var'
+		sharedstatedir = '/var/lib'
+
+		buildtype = 'plain'
+		auto_features = 'auto'
+		wrap_mode = 'nodownload'
+
+		b_lto = true
+		b_ndebug = 'true'
+		b_staticpic = true
+
+		pkgconfig.relocatable = false
+		EOF
+	return 0
+fi
 
 # The cross file should only be written once, unless forced
 [ -e "${XBPS_WRAPPERDIR}/meson/xbps_meson.cross" ] && [ -z "$XBPS_BUILD_FORCEMODE" ] && return 0
@@ -47,7 +80,7 @@ esac
 # Tell meson to run binaries with qemu if desired
 _MESON_EXE_WRAPPER=""
 if [[ "${build_helper}" = *qemu* ]]; then
-	_MESON_EXE_WRAPPER="exe_wrapper = '/usr/bin/qemu-${XBPS_TARGET_QEMU_MACHINE}-static'"
+	_MESON_EXE_WRAPPER="exe_wrapper = '/usr/bin/qemu-${XBPS_TARGET_QEMU_MACHINE}'"
 fi
 
 # Record cross-compiling information in cross file.
@@ -59,27 +92,57 @@ cat > "${XBPS_WRAPPERDIR}/meson/xbps_meson.cross" <<-EOF
 	${_MESON_EXE_WRAPPER:-# exe_wrapper is not set}
 	c = '${CC}'
 	cpp = '${CXX}'
+	d = 'ldc2'
 	ar = '${XBPS_CROSS_TRIPLET}-gcc-ar'
 	nm = '${NM}'
 	strip = '${STRIP}'
 	readelf = '${READELF}'
 	objcopy = '${OBJCOPY}'
-	pkgconfig = '${PKG_CONFIG}'
+	pkg-config = '${PKG_CONFIG}'
 	rust = ['rustc', '--target', '${RUST_TARGET}' ,'--sysroot', '${XBPS_CROSS_BASE}/usr']
 	g-ir-scanner = '${XBPS_CROSS_BASE}/usr/bin/g-ir-scanner'
 	g-ir-compiler = '${XBPS_CROSS_BASE}/usr/bin/g-ir-compiler'
 	g-ir-generate = '${XBPS_CROSS_BASE}/usr/bin/g-ir-generate'
-	llvm-config = '/usr/bin/llvm-config'
+	llvm-config = 'llvm-config-qemu'
 	cups-config = '${XBPS_CROSS_BASE}/usr/bin/cups-config'
-	
+	qmake6 = 'qmake6'
+	qmake5 = 'qmake5'
+	cmake = 'cmake'
+
 	[properties]
 	needs_exe_wrapper = true
-	
+	bindgen_clang_arguments = ['--target=${XBPS_CROSS_TRIPLET}']
+
 	[host_machine]
 	system = 'linux'
 	cpu_family = '${_MESON_CPU_FAMILY}'
 	cpu = '${_MESON_TARGET_CPU}'
 	endian = '${_MESON_TARGET_ENDIAN}'
+
+	[built-in options]
+	prefix = '/usr'
+	libdir = '/usr/lib${XBPS_TARGET_WORDSIZE}'
+	libexecdir = '/usr/libexec'
+	bindir = '/usr/bin'
+	sbindir = '/usr/bin'
+	includedir = '/usr/include'
+	datadir = '/usr/share'
+	mandir = '/usr/share/man'
+	infodir = '/usr/share/info'
+	localedir = '/usr/share/locale'
+	sysconfdir = '/etc'
+	localstatedir = '/var'
+	sharedstatedir = '/var/lib'
+
+	buildtype = 'plain'
+	auto_features = 'auto'
+	wrap_mode = 'nodownload'
+
+	b_lto = true
+	b_ndebug = 'true'
+	b_staticpic = true
+
+	pkgconfig.relocatable = false
 	EOF
 
 unset _MESON_CPU_FAMILY _MESON_TARGET_CPU _MESON_TARGET_ENDIAN _MESON_EXE_WRAPPER

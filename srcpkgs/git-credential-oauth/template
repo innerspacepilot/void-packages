@@ -1,0 +1,12 @@
+# Template file for 'git-credential-oauth'
+pkgname=git-credential-oauth
+version=0.18.0
+revision=1
+build_style=go
+go_import_path=github.com/hickford/git-credential-oauth
+short_desc="Git credential helper that authenticates using OAuth"
+maintainer="SkinChangerDev <git@skinchanger.dev>"
+license="Apache-2.0"
+homepage="https://github.com/hickford/git-credential-oauth"
+distfiles="https://github.com/hickford/git-credential-oauth/archive/refs/tags/v${version}.tar.gz"
+checksum=2acf2c1c9197e179e3068e318da67ec1af26feae63d8661c930963e3a7704ba2

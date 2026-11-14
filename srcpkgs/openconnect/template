@@ -1,6 +1,6 @@
 # Template file for 'openconnect'
 pkgname=openconnect
-version=9.01
+version=9.21
 revision=1
 build_style=gnu-configure
 configure_args="--with-vpnc-script=/usr/libexec/vpnc-scripts/vpnc-script"
@@ -12,8 +12,8 @@ short_desc="Free client for Cisco AnyConnect SSL VPN software"
 maintainer="Orphaned <orphan@voidlinux.org>"
 license="LGPL-2.1-only"
 homepage="http://www.infradead.org/openconnect/"
-distfiles="ftp://ftp.infradead.org/pub/${pkgname}/${pkgname}-${version}.tar.gz"
-checksum=b3d7faf830e9793299d6a41e81d84cd4a3e2789c148c9e598e4585010090e4c7
+distfiles="https://www.infradead.org/openconnect/download/${pkgname}-${version}.tar.gz"
+checksum=5b32369467db6e5f317aa1ed12cfcbb81ed00bdbc765450b6bfcbdc300944a58
 
 openconnect-devel_package() {
 	short_desc+=" - development files"

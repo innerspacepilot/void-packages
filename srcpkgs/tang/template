@@ -1,0 +1,23 @@
+# Template file for 'tang'
+pkgname=tang
+version=16
+revision=1
+build_style=meson
+configure_args="-Duser=_tang -Dgroup=_tang"
+hostmakedepends="pkg-config asciidoc socat curl jose iproute2"
+makedepends="llhttp-devel jose-devel"
+depends="jose"
+short_desc="Server for binding data to network presence"
+maintainer="Nicolas Porcel <nicolasporcel06@gmail.com>"
+license="GPL-3.0-or-later"
+homepage="https://github.com/latchset/tang"
+distfiles="https://github.com/latchset/tang/archive/v$version/tang-$version.tar.gz"
+checksum=2a618f8174b1c865e705e2de6a74bee2d1966af2f02b2b3e58b2ef06baa220cd
+
+system_accounts="_tang"
+make_dirs="/var/db/tang 0750 _tang _tang"
+
+post_install() {
+	rm -rf ${DESTDIR}/usr/lib/systemd/
+	vsv tangd
+}

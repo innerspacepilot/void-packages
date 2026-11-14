@@ -1,31 +1,32 @@
 # Template file for 'gajim'
 pkgname=gajim
-version=1.8.3
+version=2.6.0
 revision=1
 build_style=python3-pep517
-hostmakedepends="gettext python3-wheel"
-depends="python3-gobject python3-setuptools python3-Pillow
- python3-cairo python3-dbus libsecret gsound libnm
- python3-nbxmpp python3-openssl python3-css-parser python3-keyring
- python3-precis-i18n python3-packaging python3-setuptools python3-distro
- python3-qrcode python3-omemo-dr
- python3-netifaces python3-pyasn1 python3-jeepney libsoup3 farstream gst-plugins-base1
- gst-plugins-ugly1 gst-libav gtksourceview4"
+hostmakedepends="gettext python3-setuptools"
+depends="gst-libav gst-plugins-bad1 gst-plugins-base1 gst-plugins-good1
+ gst-plugins-rs1 gtksourceview5 libadwaita libnm libsecret libsoup3 python3-Pillow
+ python3-SQLAlchemy2 python3-cairo python3-cryptography python3-css-parser
+ python3-dbus python3-distro python3-emoji python3-gobject python3-h2
+ python3-httpx python3-jeepney python3-keyring python3-nbxmpp python3-netifaces
+ python3-omemo-dr python3-openssl python3-packaging python3-precis-i18n
+ python3-pyasn1 python3-qrcode python3-setuptools python3-socksio
+ python3-truststore python3-mediafile python3-pysequoia"
 checkdepends="${depends} python3-packaging"
 short_desc="Full featured Jabber/XMPP client"
-maintainer="Orphaned <orphan@voidlinux.org>"
+maintainer="Emil Tomczyk <emru@emru.xyz>"
 license="GPL-3.0-only"
-homepage="https://www.gajim.org"
-changelog="https://dev.gajim.org/gajim/gajim/-/raw/master/ChangeLog"
-distfiles="https://gajim.org/downloads/${version%.*}/gajim-${version}.tar.gz"
-checksum=cb222cf134fab4daeac9c826609547742430517e4d951d881d35be43e27d0884
+homepage="https://gajim.org"
+changelog="https://gitlab.com/gajim/gajim/-/raw/master/ChangeLog"
+distfiles="https://gitlab.com/gajim/gajim/-/archive/${version}/gajim-${version}.tar.gz"
+checksum="3693f83fbb5cb78f6a8e6333b40f62151dac8005a27e689af3e38ece3798943f"
 
 post_build() {
-	./pep517build/build_metadata.py -o dist/metadata
+	./make.py build --dist=unix
 }
 
 post_install() {
-	./pep517build/install_metadata.py dist/metadata --prefix=$DESTDIR/usr
+	./make.py install --dist=unix --prefix=$DESTDIR/usr
 	vdoc "${FILESDIR}/README.voidlinux"
 }
 
@@ -36,5 +37,5 @@ do_check() {
 gajim-omemo_package() {
 	depends="gajim"
 	short_desc+=" (transitional dummy package)"
-	build_style=meta
+	metapackage=yes
 }

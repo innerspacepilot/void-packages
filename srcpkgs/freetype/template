@@ -1,6 +1,6 @@
 # Template file for 'freetype'
 pkgname=freetype
-version=2.13.2
+version=2.15.0
 revision=1
 build_style=gnu-configure
 configure_args="--enable-freetype-config"
@@ -8,12 +8,13 @@ hostmakedepends="pkg-config"
 makedepends="bzip2-devel libpng-devel brotli-devel"
 short_desc="Font rendering engine and library API"
 maintainer="Orphaned <orphan@voidlinux.org>"
-license="GPL-2.0-or-later, FTL"
+license="GPL-2.0-or-later OR FTL"
 homepage="https://www.freetype.org/"
+changelog="https://sourceforge.net/projects/freetype/files/freetype2/${version}/"
 # Should be using NONGNU_SITE instead, but that often redirects to outdated
 # mirrors, causing fetching the distfile to fail.
 distfiles="https://download-mirror.savannah.gnu.org/releases/freetype/freetype-${version}.tar.xz"
-checksum=12991c4e55c506dd7f9b765933e62fd2be2e06d421505d7950a132e4f1bb484d
+checksum=93cd47eb719c325107f2d3cf087d06299e944c3b48a40b55537302304dea1dd5
 
 post_patch() {
 	vsed -i -e "s/%PKG_CONFIG%/pkg-config/" builds/unix/freetype-config.in

@@ -1,0 +1,21 @@
+# Template file for 'vermin'
+pkgname=vermin
+version=1.9.2
+revision=1
+build_style=python3-pep517
+hostmakedepends="python3-setuptools python3-wheel"
+short_desc="Concurrently detect the minimum Python versions needed to run code"
+maintainer="classabbyamp <void@placeviolette.net>"
+license="MIT"
+homepage="https://github.com/netromdk/vermin"
+changelog="https://github.com/netromdk/vermin/releases"
+distfiles="https://github.com/netromdk/vermin/archive/refs/tags/v${version}.tar.gz"
+checksum=0620f743bc53b916d3db9b9f9701ae9441f28febbf4ca0a77817025f0998e189
+
+do_check() {
+	make test
+}
+
+post_install() {
+	vlicense LICENSE.txt
+}

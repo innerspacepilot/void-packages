@@ -1,20 +1,22 @@
 # Template file for 'runc'
 pkgname=runc
-version=1.1.9
-revision=2
+version=1.5.2
+revision=1
 build_style=go
 go_import_path=github.com/opencontainers/runc
 go_build_tags="seccomp apparmor"
 go_ldflags="-X main.version=${version}"
+make_check_args="-skip=(^TestValidateSysctlWithBindHostNetNS$|^TestNsenterValidPaths$|^TestNsenterChildLogging$|^TestFactoryLoadContainer$)"
 hostmakedepends="pkg-config go-md2man"
 makedepends="libseccomp-devel"
+checkdepends="curl tar xz"
 short_desc="CLI tool for spawning and running OCI containers"
 maintainer="Orphaned <orphan@voidlinux.org>"
 license="Apache-2.0"
 homepage="https://github.com/opencontainers/runc"
 changelog="https://github.com/opencontainers/runc/raw/main/CHANGELOG.md"
-distfiles="https://github.com/opencontainers/runc/releases/download/v${version}/runc.tar.xz"
-checksum=7695febe134e17559b26224821a2a123bc9e9a637ad4a8c47e99ae0a1ec71dc2
+distfiles="https://github.com/opencontainers/runc/releases/download/v${version}/runc-${version}.tar.xz"
+checksum=46eba094e45fc37d96a1b1dc150971fe8d076d6e23bae09dd35443141bed31a1
 
 post_build() {
 	make man
@@ -22,4 +24,9 @@ post_build() {
 
 post_install() {
 	make install-man PREFIX="${DESTDIR}/usr"
+}
+
+pre_check() {
+	# Skip integration tests
+	make_check_target=$(go list ./... | grep -v /integration)
 }

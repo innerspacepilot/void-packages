@@ -5,12 +5,16 @@
 do_build() {
 	: ${make_build_target:=.}
 
-	if [ "${CROSS_BUILD}" ] && [[ "${build_helper}" = *meson* ]]; then
-		local mcross="-Csetup-args=--cross-file=${XBPS_WRAPPERDIR}/meson"
-		make_build_args+=" ${mcross}/xbps_meson.cross"
+	if [[ "${build_helper}" = *meson* ]]; then
+		if [ "${CROSS_BUILD}" ]; then
+			local mcross="-Csetup-args=--cross-file=${XBPS_WRAPPERDIR}/meson"
+			make_build_args+=" ${mcross}/xbps_meson.cross"
 
-		if [[ "${build_helper}" = *numpy* ]]; then
-			make_build_args+=" ${mcross}/xbps_numpy.cross"
+			if [[ "${build_helper}" = *numpy* ]]; then
+				make_build_args+=" ${mcross}/xbps_numpy.cross"
+			fi
+		else
+			make_build_args+=" -Csetup-args=--native-file=${XBPS_WRAPPERDIR}/meson/xbps_meson.native"
 		fi
 	fi
 
@@ -33,7 +37,7 @@ do_check() {
 	python3 -m installer --destdir "${testdir}" \
 		${make_install_args} ${make_install_target:-dist/*.whl}
 
-	PATH="${testdir}/usr/bin:${PATH}" PYTHONPATH="${testdir}/${py3_sitelib}" \
+	PATH="${testdir}/usr/bin:${PATH}" PYTHONPATH="${testdir}/${py3_sitelib}" PY_IGNORE_IMPORTMISMATCH=1 \
 		${make_check_pre} pytest3 ${testjobs} ${make_check_args} ${make_check_target}
 }
 

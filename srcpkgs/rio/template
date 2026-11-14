@@ -1,29 +1,39 @@
 # Template file for 'rio'
 pkgname=rio
-version=0.0.27
+version=0.5.28
 revision=1
 build_style=cargo
-make_install_args="--path rio"
-hostmakedepends="pkg-config"
-makedepends="fontconfig-devel freetype-devel libglvnd-devel libxcb-devel libxkbcommon-devel wayland-devel"
+build_wrksrc="frontends/rioterm"
+hostmakedepends="pkg-config scdoc shaderc"
+makedepends="oniguruma-devel freetype-devel fontconfig-devel glslang-devel"
 depends="rio-terminfo-${version}_${revision}"
 short_desc="Hardware-accelerated GPU terminal emulator powered by WebGPU"
-maintainer="Marcin Puc <tranzystorek.io@protonmail.com>"
+maintainer="Orphaned <orphan@voidlinux.org>"
 license="MIT"
-homepage="https://raphamorim.io/rio/"
-changelog="https://raw.githubusercontent.com/raphamorim/rio/main/CHANGELOG.md"
+homepage="https://rioterm.com/"
+changelog="https://rioterm.com/changelog"
 distfiles="https://github.com/raphamorim/rio/archive/refs/tags/v${version}.tar.gz"
-checksum=2338d679eaec987bd50ab12ca1e9b79853690899d2e8e70efa88315d0c626090
+checksum=80ddf991cef26b8f49a80b911d35c7361879f4e072479410d29f1b67dd965213
 
-do_install() {
-	# avoid doing a rebuild in install due to complex feature setup
-	vbin target/${RUST_TARGET}/release/rio
-	vinstall misc/logo.svg 644 usr/share/icons/hicolor/scalable/apps rio.svg
-	vinstall misc/rio.desktop 644 usr/share/applications
-	vlicense LICENSE
+case "${XBPS_TARGET_MACHINE}" in
+	i686*)
+		# rustc-LLVM ERROR: out of memory
+		export CARGO_PROFILE_RELEASE_LTO=off
+		;;
+esac
+
+post_install() {
+	vinstall ${wrksrc}/misc/logo.svg 644 usr/share/icons/hicolor/scalable/apps rio.svg
+	vinstall ${wrksrc}/misc/rio.desktop 644 usr/share/applications
+	vlicense ${wrksrc}/LICENSE
+
+	for _manpage in rio.1 rio.5 rio-bindings.5; do
+		scdoc < ${wrksrc}/extra/man/${_manpage}.scd > ${_manpage}
+		vman ${_manpage}
+	done
 
 	vmkdir usr/share/terminfo
-	tic -sx -o ${DESTDIR}/usr/share/terminfo misc/rio.terminfo
+	tic -sx -o ${DESTDIR}/usr/share/terminfo ${wrksrc}/misc/rio.terminfo
 }
 
 rio-terminfo_package() {

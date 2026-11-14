@@ -1,13 +1,18 @@
 # Template file for 'dolphin-plugins'
+# group=kde-gear
 pkgname=dolphin-plugins
-version=23.08.3
+version=26.08.1
 revision=1
 build_style=cmake
-hostmakedepends="extra-cmake-modules gettext qt5-qmake qt5-host-tools kcoreaddons kconfig"
-makedepends="qt5-devel kxmlgui-devel kio-devel ktexteditor-devel dolphin"
+configure_args="-DBUILD_TESTING=OFF
+ -DKDE_INSTALL_QTPLUGINDIR=lib/qt6/plugins"
+hostmakedepends="extra-cmake-modules gettext qt6-base qt6-tools kf6-kcoreaddons
+ kf6-kconfig"
+makedepends="kf6-ki18n-devel kf6-kio-devel kf6-ktexteditor-devel kf6-ktextwidgets-devel
+ kf6-kxmlgui-devel dolphin"
 short_desc="Plugins to integrate Dolphin with various revision control systems"
 maintainer="Domenico Panella <pandom79@gmail.com>"
 license="GPL-2.0-or-later"
 homepage="https://kde.org/applications/en/system/org.kde.dolphin_plugins"
 distfiles="${KDE_SITE}/release-service/${version}/src/${pkgname}-${version}.tar.xz"
-checksum=094dfe8e674e6a0c01ee4415f47ae6312eb39df11ae18c86ec096bf056b1a768
+checksum=f9edc41bb0fc75dba1ac32a8c15ef33fb8152740f10b90265dbc6f1724eb929b

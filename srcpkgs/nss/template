@@ -1,19 +1,19 @@
 # Template file for 'nss'
 
-_nsprver=4.35
+_nsprver=4.39
 
 pkgname=nss
-version=3.94
+version=3.132
 revision=1
-hostmakedepends="perl which"
+_v="${version//\./_}"
+hostmakedepends="perl"
 makedepends="nspr-devel sqlite-devel zlib-devel"
-depends="nspr>=${_nsprver}"
 short_desc="Mozilla Network Security Services"
 maintainer="Đoàn Trần Công Danh <congdanhqx@gmail.com>"
 license="MPL-2.0, MIT, BSD-3-Clause"
 homepage="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS"
-distfiles="${MOZILLA_SITE}/security/nss/releases/NSS_${version//\./_}_RTM/src/nss-${version}.tar.gz"
-checksum=463ae180ee9e5ee9e3ad4f629326657e236780cc865572a930a16520abad9dd8
+distfiles="${MOZILLA_SITE}/security/nss/releases/NSS_${_v}_RTM/src/nss-${version}.tar.gz"
+checksum=ee9cf4837ba801141a804321c4462ad8f452ff4314275c6d5108a6b05af227ff
 
 export NS_USE_GCC=1
 export LIBRUNPATH=
@@ -23,6 +23,7 @@ export NSS_ENABLE_WERROR=0
 export NSS_ENABLE_ECC=1
 export NSPR_INCLUDE_DIR=${XBPS_CROSS_BASE}/usr/include/nspr
 export NSPR_LIB_DIR=${XBPS_CROSS_BASE}/usr/lib
+export NSDISTMODE=copy
 
 do_build() {
 	local _use64 _ARCH
@@ -69,11 +70,17 @@ do_build() {
 do_check() {
 	local _use_64
 	export XCFLAGS="${CFLAGS}"
+	export NSS_CYCLES=standard
 	if [ "$XBPS_TARGET_WORDSIZE" = "64" ]; then
 		_use_64="USE_64=1"
 	fi
+	if [ ! -L dist/voidlinux ]; then
+		ln -sfr dist/Linux*.OBJ dist/voidlinux
+	fi
 	cd nss/tests
-	env $_use_64 HOST=localhost DOMSUF=localdomain ./all.sh
+	env $_use_64 HOST=localhost DOMSUF=localdomain \
+		OBJDIR="voidlinux" \
+		./all.sh
 }
 
 do_install() {
@@ -81,44 +88,48 @@ do_install() {
 	vmkdir usr/bin
 	vmkdir usr/include/nss
 
-	NSS_VMAJOR=$(grep "#define.*NSS_VMAJOR" nss/lib/nss/nss.h | awk '{print $3}')
-	NSS_VMINOR=$(grep "#define.*NSS_VMINOR" nss/lib/nss/nss.h | awk '{print $3}')
-	NSS_VPATCH=$(grep "#define.*NSS_VPATCH" nss/lib/nss/nss.h | awk '{print $3}')
+	eval $(awk '
+	    /#define.*NSS_VMAJOR/{printf "NSS_VMAJOR=%d\n", $3}
+            /#define.*NSS_VMINOR/{printf "NSS_VMINOR=%d\n", $3}
+            /#define.*NSS_VPATCH/{printf "NSS_VPATCH=%d\n", $3}
+	' nss/lib/nss/nss.h)
 
-	sed     -e "s,%prefix%,/usr,g" \
-		-e 's,%exec_prefix%,${prefix},g' \
-		-e 's,%includedir%,${prefix}/include/nss,g' \
-		-e 's,%libdir%,${prefix}/lib,g' \
-		-e "s,%NSPR_VERSION%,${_nsprver},g" \
-		-e "s,%NSS_VERSION%,${version},g" \
-		nss/pkg/pkg-config/nss.pc.in \
-		> ${DESTDIR}/usr/lib/pkgconfig/nss.pc
+	sed -e "
+	    s,%prefix%,/usr,g
+	    s,%exec_prefix%,\${prefix},g
+	    s,%includedir%,\${prefix}/include/nss,g
+	    s,%libdir%,\${prefix}/lib,g
+	    s,%NSPR_VERSION%,${_nsprver},g
+	    s,%NSS_VERSION%,${version},g
+	" nss/pkg/pkg-config/nss.pc.in > nss/pkg/pkg-config/nss.pc
+
+	vinstall nss/pkg/pkg-config/nss.pc 644 usr/lib/pkgconfig
 
 	ln -sf nss.pc ${DESTDIR}/usr/lib/pkgconfig/mozilla-nss.pc
-	chmod 644 ${DESTDIR}/usr/lib/pkgconfig/*.pc
 
-	sed     -e "s,@prefix@,/usr,g" \
-		-e 's,@exec_prefix@,${prefix},g' \
-		-e 's,@includedir@,${prefix}/include/nss,g' \
-		-e 's,@libdir@,${prefix}/lib,g' \
-		-e "s,@MOD_MAJOR_VERSION@,${NSS_VMAJOR},g" \
-		-e "s,@MOD_MINOR_VERSION@,${NSS_VMINOR},g" \
-		-e "s,@MOD_PATCH_VERSION@,${NSS_VPATCH},g" \
-		nss/pkg/pkg-config/nss-config.in \
-		> ${DESTDIR}/usr/bin/nss-config
-	chmod 755 ${DESTDIR}/usr/bin/nss-config
+	sed -e "
+	    s,@prefix@,/usr,g
+	    s,@exec_prefix@,\${prefix},g
+	    s,@includedir@,\${prefix}/include/nss,g
+	    s,@libdir@,\${prefix}/lib,g
+	    s,@MOD_MAJOR_VERSION@,${NSS_VMAJOR},g
+	    s,@MOD_MINOR_VERSION@,${NSS_VMINOR},g
+	    s,@MOD_PATCH_VERSION@,${NSS_VPATCH},g
+	" nss/pkg/pkg-config/nss-config.in > nss/pkg/pkg-config/nss-config
+	vbin nss/pkg/pkg-config/nss-config
 
 	for f in libsoftokn3.so libfreebl3.so libfreeblpriv3.so libnss3.so libnssutil3.so \
 		libssl3.so libsmime3.so libnssckbi.so libnssdbm3.so libnsssysinit.so; do
 		install -m755 dist/*.OBJ/lib/${f} ${DESTDIR}/usr/lib
 	done
 
-	install -m644 dist/*.OBJ/lib/libcrmf.a ${DESTDIR}/usr/lib
+	# install -m644 dist/*.OBJ/lib/libcrmf.a ${DESTDIR}/usr/lib
 
 	for f in certutil cmsutil crlutil derdump modutil pk12util pp shlibsign \
 		signtool signver ssltap vfychain vfyserv; do
 		install -m755 dist/*.OBJ/bin/${f} ${DESTDIR}/usr/bin
 	done
+	mv ${DESTDIR}/usr/bin/pp ${DESTDIR}/usr/bin/nss-pp
 
 	vmkdir usr/libexec/nss
 	for f in addbuiltin chktest dbtest dbtool ecperf httpserv \
@@ -132,6 +143,7 @@ do_install() {
 	do
 		vman $f
 	done
+	mv "${DESTDIR}/usr/share/man/man1/pp.1" "${DESTDIR}/usr/share/man/man1/nss-pp.1"
 
 	install -m644 dist/public/nss/*.h ${DESTDIR}/usr/include/nss
 
@@ -157,6 +169,6 @@ nss-devel_package() {
 		vmove usr/bin/nss-config
 		vmove usr/lib/pkgconfig
 		vmove usr/include
-		vmove "usr/lib/*.a"
+		# vmove "usr/lib/*.a"
 	}
 }

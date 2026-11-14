@@ -1,18 +1,17 @@
 # Template file for 'trash-cli'
 pkgname=trash-cli
-version=0.23.11.10
+version=0.26.9.29
 revision=1
 build_style=python3-pep517
-hostmakedepends="python3-wheel"
+make_check_args="--ignore=tests/test_put/cmd/e2e/test_on_links_to_dirs.py"
+hostmakedepends="python3-wheel python3-setuptools"
 depends="python3-psutil python3-six"
 checkdepends="${depends} python3-pytest-xdist python3-mock
  python3-flexmock python3-parameterized"
 short_desc="Command line interface to the freedesktop.org trashcan"
-maintainer="triallax <triallax@tutanota.com>"
+maintainer="Orphaned <orphan@voidlinux.org>"
 license="GPL-2.0-or-later"
 homepage="https://github.com/andreafrancia/trash-cli"
 changelog="https://raw.githubusercontent.com/andreafrancia/trash-cli/master/HISTORY.txt"
 distfiles="https://github.com/andreafrancia/trash-cli/archive/refs/tags/${version}.tar.gz"
-checksum=166a5b725c323a801b884b7040877788eefa592866149cf5647ef1fd3a14ceb9
-# Can not be run as root
-make_check=ci-skip
+checksum=33ec648238d291f1fd247bea9a260ab158528e184b3f83c9da10ea792bd4cdd2

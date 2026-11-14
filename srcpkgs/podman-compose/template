@@ -1,8 +1,8 @@
 # Template file for 'podman-compose'
 pkgname=podman-compose
-version=1.0.6
-revision=2
-build_style=python3-module
+version=1.6.0
+revision=1
+build_style=python3-pep517
 hostmakedepends="python3-setuptools"
 depends="podman python3-yaml python3-dotenv"
 short_desc="Script to run docker-compose.yml using podman"
@@ -10,6 +10,13 @@ maintainer="Orphaned <orphan@voidlinux.org>"
 license="GPL-2.0-or-later"
 homepage="https://github.com/containers/podman-compose"
 distfiles="https://github.com/containers/podman-compose/archive/v${version}.tar.gz"
-checksum=0b9ee7cc000ef5d0ce7f81ce2e306be56d1edb0f494a883ca25c4d163469b12b
+checksum=dffdec88deb6da8437a86d82340e213c3a616933807fe3fd5978f0c8c325e5e2
 # Source distribution does not script unit tests
 make_check=no
+
+post_install() {
+	vdoc README.md
+	vdoc docs/Mappings.md
+	vdoc docs/Extensions.md
+	vcompletion completion/bash/podman-compose bash
+}
